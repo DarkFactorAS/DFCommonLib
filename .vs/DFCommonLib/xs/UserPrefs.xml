@@ -1,0 +1,56 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workbench ActiveDocument="Logger/ConsoleLogHandler.cs">
+    <Files>
+      <File FileName="DataAccess/MySQL/MySQLDbConnectionFactory.cs" Line="16" Column="1" />
+      <File FileName="DataAccess/MySQL/MySQLDbConnection.cs" />
+      <File FileName="DataAccess/Oracle/OracleDbConnectionFactory.cs" />
+      <File FileName="DataAccess/Oracle/PagawebConnectionFactory.cs" />
+      <File FileName="DataAccess/MySQL/MySQLDbDataReader.cs" />
+      <File FileName="DataAccess/Oracle/OracleDbDataReader.cs" />
+      <File FileName="DataAccess/Oracle/OracleDbCommand.cs" />
+      <File FileName="DataAccess/MySQL/MySQLDbCommand.cs" />
+      <File FileName="DataAccess/Oracle/OracleDbConnection.cs" />
+      <File FileName="DataAccess/Base/IDbConnectionFactory.cs" />
+      <File FileName="DataAccess/MySQL/LocalMysqlConnectionFactory.cs" Line="12" Column="1" />
+      <File FileName="Config/AppSettings.cs" />
+      <File FileName="Config/ConfigurationFactory.cs" />
+      <File FileName="DataAccess/Base/BaseDbDataReader.cs" />
+      <File FileName="Utils/MySqlLogger.cs" Line="19" Column="14" />
+      <File FileName="Utils/IExternalLogger.cs" Line="6" Column="1" />
+      <File FileName="Config/ConfigurationHelper.cs" />
+      <File FileName="Config/ConfigurationSettings.cs" />
+      <File FileName="Config/CustomerConfiguration.cs" />
+      <File FileName="Utils/DFCommonLib.cs" Line="37" Column="10" />
+      <File FileName="Utils/DFLogger.cs" Line="76" Column="22" />
+      <File FileName="Logger/ConsoleLogHandler.cs" Line="31" Column="35" />
+      <File FileName="Logger/Severity.cs" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="DFCommonLib" expanded="True">
+            <Node name="DFCommonLib" expanded="True" selected="True">
+              <Node name="Dependencies" expanded="True">
+                <Node name="PackageDependencies" expanded="True" />
+              </Node>
+              <Node name="DataAccess" expanded="True">
+                <Node name="MySQL" expanded="True" />
+              </Node>
+              <Node name="Logger" expanded="True" />
+              <Node name="Utils" expanded="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <DisabledProjects>
+    <String>BGCommonLib/BGCommonLib.csproj</String>
+  </DisabledProjects>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
