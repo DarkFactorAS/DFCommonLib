@@ -26,6 +26,9 @@ namespace DFCommonLib.Utils
         public DFServices SetupMySql()
         {
             _services.AddScoped<IDbConnectionFactory, LocalMysqlConnectionFactory>();
+            _services.BuildServiceProvider();
+            _services.AddScoped<IDBPatcher, MySQLDBPatcher>();
+            _services.BuildServiceProvider();
             return this;
         }
 
