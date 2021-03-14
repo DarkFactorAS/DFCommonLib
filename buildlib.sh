@@ -11,3 +11,5 @@ dotnet pack DFCommonLib.csproj -o bin/debug
 
 # Push packet
 dotnet nuget push bin/debug/DarkFactor.Common.Lib.*.nupkg --api-key 1337 --source DarkFactor --skip-duplicate
+
+read -p "Press any key to resume ..."
