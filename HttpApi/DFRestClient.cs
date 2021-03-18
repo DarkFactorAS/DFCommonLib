@@ -59,13 +59,17 @@ namespace DFCommonLib.HttpApi
         private string GetFullUrl(string method)
         {
             var hostname = GetHostname();
-            var module = GetModule();
-
-            if ( module != null )
+            if ( hostname != null )
             {
-                return String.Format("{0}/{1}/{2}", hostname, module, method);
+                var module = GetModule();
+
+                if ( module != null )
+                {
+                    return String.Format("{0}/{1}/{2}", hostname, module, method);
+                }
+                return String.Format("{0}/{1}", hostname, method);
             }
-            return String.Format("{0}/{1}", hostname, method);
+            return null;
         }
 
         public async Task<WebAPIData> GetJsonData(int methodId, string url)
@@ -77,7 +81,7 @@ namespace DFCommonLib.HttpApi
 
             //Debug.LogWarning("Get:" + fullUrl);
 
-            var data = await HandleRequest(methodId, fullUrl, webRequest);
+            var data = await HandleRequest(methodId, webRequest);
             return data;
         }
 
@@ -86,7 +90,7 @@ namespace DFCommonLib.HttpApi
             var fullUrl = GetFullUrl(url);
             var webRequest = new HttpRequestMessage(HttpMethod.Post, fullUrl);
             webRequest.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var data = await HandleRequest(methodId, fullUrl, webRequest);
+            var data = await HandleRequest(methodId, webRequest);
             return data;
         }
 
@@ -102,7 +106,7 @@ namespace DFCommonLib.HttpApi
             var fullUrl = GetFullUrl(url);
             var webRequest = new HttpRequestMessage(HttpMethod.Put , fullUrl);
             webRequest.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");;
-            var data = await HandleRequest(methodId, fullUrl, webRequest);
+            var data = await HandleRequest(methodId, webRequest);
             return data;
         }
 
@@ -113,7 +117,7 @@ namespace DFCommonLib.HttpApi
             return data;
         }
 
-        private static async Task<WebAPIData> HandleRequest(int methodId, string url, HttpRequestMessage webRequest)
+        private static async Task<WebAPIData> HandleRequest(int methodId, HttpRequestMessage webRequest)
         {
             try
             {
