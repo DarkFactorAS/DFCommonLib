@@ -15,7 +15,7 @@ namespace DFCommonLib .Config
 
     public class ConfigurationHelper : ConfigurationFactory, IConfigurationHelper
     {
-        public static ConfigurationSettings _configSettings;
+        public ConfigurationSettings _configSettings;
 
         public ConfigurationSettings ConfigurationSettings
         {
@@ -50,7 +50,8 @@ namespace DFCommonLib .Config
             }
         }
 
-        private ConfigurationSettings GetConfigurationFromBuilder(IConfiguration builder)
+        virtual
+        protected ConfigurationSettings GetConfigurationFromBuilder(IConfiguration builder)
         {
             var configSettings = new ConfigurationSettings();
             builder.Bind(configSettings);
