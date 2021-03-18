@@ -15,11 +15,15 @@ namespace DFCommonLib.Utils
             _services = services;
         }
 
+        public DFServices SetupConfig()
+        {
+            _services.AddScoped<IConfigurationHelper, ConfigurationHelper>();
+            return this;
+        }
+
         public DFServices SetupLogger()
         {
-            // Add all template variants
             _services.AddSingleton(typeof(IDFLogger<>), typeof(DFLogger<>));
-            _services.AddScoped<IConfigurationHelper, ConfigurationHelper>();
             return this;
         }
 
