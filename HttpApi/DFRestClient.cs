@@ -15,6 +15,8 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
+using DFCommonLib.Logger;
+
 namespace DFCommonLib.HttpApi
 {
     public class WebAPIData
@@ -32,6 +34,12 @@ namespace DFCommonLib.HttpApi
     public class DFRestClient
     {
         private static readonly HttpClient client = new HttpClient();
+        protected IDFLogger<DFRestClient> _logger;
+
+        public DFRestClient(IDFLogger<DFRestClient> logger)
+        {
+            _logger = logger;
+        }
 
         virtual protected string GetHostname()
         {
@@ -81,7 +89,7 @@ namespace DFCommonLib.HttpApi
 
             //Debug.LogWarning("Get:" + fullUrl);
 
-            var data = await HandleRequest(methodId, webRequest);
+            var data = await HandleRequest(methodId, webRequest, _logger);
             return data;
         }
 
@@ -90,7 +98,7 @@ namespace DFCommonLib.HttpApi
             var fullUrl = GetFullUrl(url);
             var webRequest = new HttpRequestMessage(HttpMethod.Post, fullUrl);
             webRequest.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var data = await HandleRequest(methodId, webRequest);
+            var data = await HandleRequest(methodId, webRequest, _logger);
             return data;
         }
 
@@ -106,7 +114,7 @@ namespace DFCommonLib.HttpApi
             var fullUrl = GetFullUrl(url);
             var webRequest = new HttpRequestMessage(HttpMethod.Put , fullUrl);
             webRequest.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");;
-            var data = await HandleRequest(methodId, webRequest);
+            var data = await HandleRequest(methodId, webRequest, _logger);
             return data;
         }
 
@@ -117,8 +125,20 @@ namespace DFCommonLib.HttpApi
             return data;
         }
 
-        private static async Task<WebAPIData> HandleRequest(int methodId, HttpRequestMessage webRequest)
+        private static string GetUrl( HttpRequestMessage webRequest )
         {
+            var uri = webRequest.RequestUri;
+            if ( uri != null )
+            {
+                return uri.AbsoluteUri;
+            }
+            return "";
+        }
+
+        private static async Task<WebAPIData> HandleRequest(int methodId, HttpRequestMessage webRequest, IDFLogger<DFRestClient> logger)
+        {
+            var webUrl = GetUrl( webRequest );
+
             try
             {
                 var returnData = await client.SendAsync( webRequest );
@@ -131,13 +151,25 @@ namespace DFCommonLib.HttpApi
                     }
                     else
                     {
+                        logger.LogWarning( string.Format("DFRestClient: {0} => 500:Could not read content ", webUrl));
                         return new WebAPIData( 500, "Could not read content" );
                     }
                 }
+
+                logger.LogWarning( string.Format("DFRestClient: {0} => {1}:{2} ", 
+                    webUrl, 
+                    returnData.StatusCode,
+                    returnData.ReasonPhrase ));
+
                 return new WebAPIData( (int) returnData.StatusCode , returnData.ReasonPhrase );
             }
             catch( Exception ex )
             {
+                logger.LogWarning( string.Format("DFRestClient: {0} => {1}:{2} ", 
+                    webUrl, 
+                    500,
+                    ex.ToString() ));
+
                 return new WebAPIData( 500 , ex.ToString() );
             }
         }
