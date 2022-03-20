@@ -31,6 +31,11 @@ namespace DFCommonLib.HttpApi
         }
     }
 
+    public interface IDFRestClient
+    {
+        Task<WebAPIData> PingServer();
+    }
+
     public class DFRestClient
     {
         private static readonly HttpClient client = new HttpClient();
@@ -62,6 +67,16 @@ namespace DFCommonLib.HttpApi
             var data = Convert.FromBase64String(encodedString);
             string decodedString = Encoding.UTF8.GetString(data);
             return decodedString;
+        }
+
+        public async Task<WebAPIData> PingServer()
+        {
+            var fullUrl = GetFullUrl("PingServer");
+            var webRequest = new HttpRequestMessage(HttpMethod.Get, fullUrl);
+            //webRequest.Headers.Add("Content-Type", "application/json");
+            //webRequest.Headers.Add("User-Agent", "DarkFactor BE");
+            var data = await HandleRequest(0, webRequest, _logger);
+            return data;
         }
 
         private string GetFullUrl(string method)

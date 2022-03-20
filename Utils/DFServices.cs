@@ -9,10 +9,22 @@ namespace DFCommonLib.Utils
     public class DFServices
     {
         IServiceCollection _services;
+        private static DFServices instance;
 
         public DFServices(IServiceCollection services)
         {
             _services = services;
+        }
+
+        public static void Create(IServiceCollection serviceCollector)
+        {
+            instance = new DFServices(serviceCollector);
+        }
+
+        public static T GetService<T>()
+        {
+            var serviceProvider = instance._services.BuildServiceProvider();
+            return (T) serviceProvider.GetService<T>();
         }
 
         public DFServices SetupConfig()
