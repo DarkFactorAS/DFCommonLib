@@ -19,18 +19,6 @@ using DFCommonLib.Logger;
 
 namespace DFCommonLib.HttpApi
 {
-    public class WebAPIData
-    {
-        public int errorCode;
-        public string message;
-
-        public WebAPIData(int errorCode, string message )
-        {
-            this.errorCode = errorCode;
-            this.message = message;
-        }
-    }
-
     public interface IDFRestClient
     {
         Task<WebAPIData> PingServer();
@@ -95,17 +83,37 @@ namespace DFCommonLib.HttpApi
             return null;
         }
 
+        private WebAPIData ConvertFromRestData<T>(WebAPIData apiData) where T:WebAPIData, new()
+        {
+            if ( apiData.errorCode == 0 )
+            {
+                var data = JsonConvert.DeserializeObject<T>(apiData.message);
+                return data;
+            }
+            var cls = new T();
+            cls.errorCode = apiData.errorCode;
+            cls.message = apiData.message;
+            return cls;
+        }
+
         public async Task<WebAPIData> GetJsonData(int methodId, string url)
         {
             var fullUrl = GetFullUrl(url);
-            var webRequest = new HttpRequestMessage(HttpMethod.Get, url);
-            webRequest.Headers.Add("Content-Type", "application/json");
+            var webRequest = new HttpRequestMessage(HttpMethod.Get, fullUrl);
+            //webRequest.Headers.Add("Content-Type", "application/json");
             webRequest.Headers.Add("User-Agent", "DarkFactor BE");
 
             //Debug.LogWarning("Get:" + fullUrl);
 
             var data = await HandleRequest(methodId, webRequest, _logger);
             return data;
+        }
+
+        public async Task<WebAPIData> GetJsonData<T>(int methodId, string url) where T:WebAPIData, new()
+        {
+            var data = await GetJsonData(methodId, url);
+            var result = ConvertFromRestData<T>(data);
+            return result;
         }
 
         public async Task<WebAPIData> PostJsonData(int methodId,string url, string jsonData)
