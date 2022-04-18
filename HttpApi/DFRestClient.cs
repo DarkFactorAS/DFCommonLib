@@ -132,11 +132,11 @@ namespace DFCommonLib.HttpApi
             return data;
         }
 
-        public async Task<WebAPIData> PutJsonData(int methodId,string url, string jsonData)
+        public async Task<WebAPIData> PutJsonData(int methodId, string url, string jsonData)
         {
             var fullUrl = GetFullUrl(url);
             var webRequest = new HttpRequestMessage(HttpMethod.Put , fullUrl);
-            webRequest.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");;
+            webRequest.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");
             var data = await HandleRequest(methodId, webRequest, _logger);
             return data;
         }

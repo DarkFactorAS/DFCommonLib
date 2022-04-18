@@ -17,5 +17,14 @@ namespace DFCommonLib.HttpApi
             this.errorCode = errorCode;
             this.message = message;
         }
+
+        public bool IsCodeOK()
+        {
+            if ( this.errorCode < 300 )
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

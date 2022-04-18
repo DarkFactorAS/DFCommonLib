@@ -10,8 +10,10 @@ namespace DFCommonLib.Logger
         void Startup(string appName);
         void LogDebug(string message);
         void LogInfo(string message);
+        void LogImportant(string message);
         void LogWarning(string message);
         void LogError(string message);
+       
     }
 
     public class OutputWriter
@@ -68,6 +70,14 @@ namespace DFCommonLib.Logger
             #if DEBUG
                 var group = GetClassName();
                 DFLogger.LogOutput(DFLogLevel.DEBUG, group, message );
+            #endif
+        }
+
+        public void LogImportant( string message )
+        {
+            #if DEBUG
+                var group = GetClassName();
+                DFLogger.LogOutput(DFLogLevel.IMPORTANT, group, message );
             #endif
         }
 
