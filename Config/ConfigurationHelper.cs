@@ -13,7 +13,8 @@ namespace DFCommonLib .Config
         Customer GetFirstCustomer();
     }
 
-    public class ConfigurationHelper : ConfigurationFactory, IConfigurationHelper
+    public class ConfigurationHelper<T> : ConfigurationFactory, IConfigurationHelper
+        where T:Customer, new()
     {
         public ConfigurationSettings _configSettings;
 
@@ -29,14 +30,10 @@ namespace DFCommonLib .Config
         {
             if (_configSettings != null )
             {
-                var customerSetting = _configSettings.CustomerSettings;
+                var customerSetting = _configSettings.GetConfig();
                 if ( customerSetting != null )
                 {
-                    var customers = customerSetting.Customers;
-                    if ( customers != null )
-                    {
-                        return customers.FirstOrDefault();
-                    }
+                    return customerSetting.GetFirstCustomer();
                 }
             }
             return null;
@@ -50,10 +47,9 @@ namespace DFCommonLib .Config
             }
         }
 
-        virtual
-        protected ConfigurationSettings GetConfigurationFromBuilder(IConfiguration builder)
+        virtual protected ConfigurationSettings GetConfigurationFromBuilder(IConfiguration builder)
         {
-            var configSettings = new ConfigurationSettings();
+            var configSettings = new ConfigurationSettings<T>();
             builder.Bind(configSettings);
             return configSettings;
         }

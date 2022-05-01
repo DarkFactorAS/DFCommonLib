@@ -29,7 +29,7 @@ namespace DFCommonLib.Utils
 
         public DFServices SetupConfig()
         {
-            _services.AddScoped<IConfigurationHelper, ConfigurationHelper>();
+            _services.AddScoped<IConfigurationHelper, ConfigurationHelper<Customer> >();
             return this;
         }
 
