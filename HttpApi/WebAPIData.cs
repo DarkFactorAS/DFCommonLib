@@ -3,10 +3,11 @@ using System;
 
 namespace DFCommonLib.HttpApi
 {
-    public class WebAPIData
+    // [Serializable]
+    public class WebAPIData : Object
     {
-        public int errorCode;
-        public string message;
+        public int errorCode { get; set; }
+        public string message { get; set; }
 
         public WebAPIData()
         {
