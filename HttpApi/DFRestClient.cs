@@ -21,6 +21,7 @@ namespace DFCommonLib.HttpApi
 {
     public interface IDFRestClient
     {
+        void SetEndpoint(string endpoint);
         Task<WebAPIData> PingServer();
     }
 
@@ -28,6 +29,7 @@ namespace DFCommonLib.HttpApi
     {
         private static readonly HttpClient client = new HttpClient();
         protected IDFLogger<DFRestClient> _logger;
+        protected string _endpoint;
 
         public DFRestClient(IDFLogger<DFRestClient> logger)
         {
@@ -36,6 +38,10 @@ namespace DFCommonLib.HttpApi
 
         virtual protected string GetHostname()
         {
+            if ( _endpoint != null )
+            {
+                return _endpoint;
+            }
             return "http://127.0.0.1";
         }
 
@@ -43,7 +49,12 @@ namespace DFCommonLib.HttpApi
         {
             return null;
         }
-        
+
+        public void SetEndpoint(string endpoint)
+        {
+            _endpoint = endpoint;
+        }
+
         public static string EncodeInput(string plaintext)
         {
             var data = Encoding.UTF8.GetBytes(plaintext);
