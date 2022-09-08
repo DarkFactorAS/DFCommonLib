@@ -2,7 +2,7 @@
 rm -Rf bin/debug
 
 # Flush Nuget repo
-dotnet nuget locals all -c
+#dotnet nuget locals all -c
 
 # Build and pack common lib
 dotnet restore DFCommonLib.csproj
