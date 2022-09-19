@@ -18,7 +18,12 @@ namespace DFCommonLib.Logger
             return "EventLogWriter";
         }
 
-        public void LogMessage(DFLogLevel logLevel, string group, string message)
+        public int LogMessage(DFLogLevel logLevel, string group, string message)
+        {
+            return 0;
+        }
+
+        public void LogMessage(DFLogLevel logLevel, string group, string message, int errorId)
         {
             // Create node if it does not exist
             if (!EventLog.SourceExists(_appName))

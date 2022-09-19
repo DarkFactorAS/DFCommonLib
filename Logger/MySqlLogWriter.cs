@@ -24,7 +24,11 @@ namespace DFCommonLib.Logger
             patcher.Patch("DbPatcher", 1, "CREATE TABLE `logtable` ( `id` int(11) NOT NULL AUTO_INCREMENT, `created` datetime NOT NULL, `loglevel` int(11) NOT NULL, `groupname` varchar(100) NOT NULL DEFAULT '', `message` varchar(1024) NOT NULL DEFAULT '', PRIMARY KEY (`id`))");
         }
 
-        public void LogMessage(DFLogLevel logLevel, string group, string message)
+        public void LogMessage(DFLogLevel logLevel, string group, string message, int errorId)
+        {
+        }
+
+        public int LogMessage(DFLogLevel logLevel, string group, string message)
         {
             var sql = @"insert into logtable (id,created, loglevel, groupname, message) values(0,sysdate(), @loglevel,@group,@message)";
             using (var command = _connection.CreateCommand(sql))
@@ -33,6 +37,23 @@ namespace DFCommonLib.Logger
                 command.AddParameter("@group", group);
                 command.AddParameter("@message", DFCommonUtil.CapString(message, MESSAGE_LENGTH) );
                 command.ExecuteNonQuery();
+            }
+            return GetLastId();
+        }
+
+        private int GetLastId()
+        {
+            var sql = "SELECT LAST_INSERT_ID() as ID";
+            using (var cmd = _connection.CreateCommand(sql))
+            {
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        return Convert.ToInt32(reader["id"]);
+                    }
+                }
+                return 0;
             }
         }
     }

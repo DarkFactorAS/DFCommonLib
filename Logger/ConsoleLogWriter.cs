@@ -3,12 +3,25 @@ namespace DFCommonLib.Logger
 {
     public class ConsoleLogWriter : ILogOutputWriter
     {
-        public void LogMessage(DFLogLevel logLevel, string group, string message)
+        public int LogMessage(DFLogLevel logLevel, string group, string message)
+        {
+            return 0;            
+        }
+
+        public void LogMessage(DFLogLevel logLevel, string group, string message, int errorId)
         {
             SetSeverityColor(logLevel);
             var logName = GetLogLevelName(logLevel);
-            Console.WriteLine("[{0}][{1}] {2,-70}", logName, group, message);
+            if ( errorId != 0 )
+            {
+                Console.WriteLine("[{0}][{1}][{2}] {3,-70}", logName, group, errorId,message);
+            }
+            else
+            {                
+                Console.WriteLine("[{0}][{1}] {2,-70}", logName, group,message);
+            }
         }
+        
         public string GetName()
         {
             return "ConsoleLogWriter";

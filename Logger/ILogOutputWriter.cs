@@ -3,7 +3,8 @@ namespace DFCommonLib.Logger
 {
     public interface ILogOutputWriter
     {
-        void LogMessage(DFLogLevel logLevel, string group, string message);
+        int LogMessage(DFLogLevel logLevel, string group, string message);
+        void LogMessage(DFLogLevel logLevel, string group, string message, int errorId);
         string GetName();
     }
 }

@@ -12,8 +12,7 @@ namespace DFCommonLib.Logger
         void LogInfo(string message);
         void LogImportant(string message);
         void LogWarning(string message);
-        void LogError(string message);
-       
+        int LogError(string message);       
     }
 
     public class OutputWriter
@@ -87,10 +86,10 @@ namespace DFCommonLib.Logger
             DFLogger.LogOutput(DFLogLevel.WARNING, group, message );
         }
 
-        public void LogError(string message)
+        public int LogError(string message)
         {
             var group = GetClassName();
-            DFLogger.LogOutput(DFLogLevel.ERROR, group, message);
+            return DFLogger.LogOutput(DFLogLevel.ERROR, group, message);
         }
     }
 
@@ -107,15 +106,49 @@ namespace DFCommonLib.Logger
             }
         }
 
-        public static void LogOutput(DFLogLevel logLevel, string group, string message)
+        private static int InternalLogOutput(DFLogLevel checkLogLevel, DFLogLevel logLevel, string group, string message)
         {
+            int errorCode = 0;
+
             foreach (OutputWriter outputWriter in _ouputWriters)
             {
-                if (outputWriter.logLevel <= logLevel && outputWriter.logOutputWriter != null)
+                if (outputWriter.logLevel <= checkLogLevel && outputWriter.logOutputWriter != null)
                 {
                     try
                     {
-                        outputWriter.logOutputWriter.LogMessage(logLevel, group, message);
+                        var err = outputWriter.logOutputWriter.LogMessage(logLevel, group, message);
+                        if ( err != 0 )
+                        {
+                            errorCode = err;
+                        }
+                    }
+                    catch(System.PlatformNotSupportedException ex)
+                    {
+                        outputWriter.logLevel = DFLogLevel.DISABLED;
+                        LogOutput(DFLogLevel.ERROR, "DFLogger", string.Format("Removing {0} due to : {1} ", outputWriter.logOutputWriter.GetName(), ex.ToString()));
+                    }
+                    catch(Exception ex)
+                    {
+                        // Temp disable this and try to log error to other outputs
+                        var tmpLogLevel = outputWriter.logLevel;
+                        outputWriter.logLevel = DFLogLevel.DISABLED;
+                        LogOutput(DFLogLevel.EXCEPTION, "DFLogger", string.Format("{0}:{1}", outputWriter.logOutputWriter.GetName(), ex.ToString()));
+                        outputWriter.logLevel = tmpLogLevel;
+                    }
+                }
+            }
+            return errorCode;
+        }
+
+        private static void InternalLogOutputWithId(DFLogLevel checkLogLevel, DFLogLevel logLevel, string group, string message, int errorId)
+        {
+            foreach (OutputWriter outputWriter in _ouputWriters)
+            {
+                if (outputWriter.logLevel <= checkLogLevel && outputWriter.logOutputWriter != null)
+                {
+                    try
+                    {
+                        outputWriter.logOutputWriter.LogMessage(logLevel, group, message, errorId);
                     }
                     catch(System.PlatformNotSupportedException ex)
                     {
@@ -134,31 +167,16 @@ namespace DFCommonLib.Logger
             }
         }
 
-        public static void PrintStartup(DFLogLevel logLevel, string group, string message)
+        public static int LogOutput(DFLogLevel logLevel, string group, string message)
         {
-            foreach (OutputWriter outputWriter in _ouputWriters)
-            {
-                if (outputWriter.logOutputWriter != null)
-                {
-                    try
-                    {
-                        outputWriter.logOutputWriter.LogMessage(logLevel, group, message);
-                    }
-                    catch(System.PlatformNotSupportedException ex)
-                    {
-                        outputWriter.logLevel = DFLogLevel.DISABLED;
-                        LogOutput(DFLogLevel.ERROR, "DFLogger", string.Format("Removing {0} due to : {1} ", outputWriter.logOutputWriter.GetName(), ex.ToString()));
-                    }
-                    catch(Exception ex)
-                    {
-                        // Temp disable this and try to log error to other outputs
-                        var tmpLogLevel = outputWriter.logLevel;
-                        outputWriter.logLevel = DFLogLevel.DISABLED;
-                        LogOutput(DFLogLevel.EXCEPTION, "DFLogger", string.Format("{0}:{1}", outputWriter.logOutputWriter.GetName(), ex.ToString()));
-                        outputWriter.logLevel = tmpLogLevel;
-                    }
-                }
-            }
+            int errorId = InternalLogOutput(logLevel, logLevel, group, message);
+            InternalLogOutputWithId(logLevel, logLevel, group, message, errorId);
+            return errorId;
+        }
+
+        public static int PrintStartup(DFLogLevel logLevel, string group, string message)
+        {
+            return InternalLogOutput(DFLogLevel.FORCE_PRINT, logLevel, group, message);
         }
     }
 }

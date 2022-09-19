@@ -12,5 +12,6 @@
         ERROR = 50,
         EXCEPTION = 100,
         DISABLED = 1000,
+        FORCE_PRINT = 1001,
     }
 }
