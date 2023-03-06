@@ -7,7 +7,7 @@ namespace DFCommonLib.Logger
 {
     public interface IDFLogger<T>
     {
-        void Startup(string appName);
+        void Startup(string appName, string appVersion);
         void LogDebug(string message);
         void LogInfo(string message);
         void LogImportant(string message);
@@ -45,15 +45,15 @@ namespace DFCommonLib.Logger
             return groupName;
         }
 
-        public void Startup(string appName)
+        public void Startup(string appName, string appversion)
         {
             var group = GetClassName();
-            var message = string.Format("Init application {0}",appName);
+            var message = string.Format("Init application {0} v:{1}", appName, appversion);
             DFLogger.PrintStartup(DFLogLevel.INFO, group,message);
 
             LogInfo("******************************************************");    
             LogInfo("***                                                ***");    
-            LogInfo(string.Format("***  Starting {0,-20}{1,20:N0}", appName, "***"));    
+            LogInfo(string.Format("***  Starting {0,-28} {1,7} ***", appName, appversion));    
             LogInfo("***                                                ***");    
             LogInfo("******************************************************");    
         }
