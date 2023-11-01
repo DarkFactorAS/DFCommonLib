@@ -74,6 +74,9 @@ jobs:
       - name: Snyk Code test
         run: snyk code test -d --file=${{ vars.SOLUTION }} --severity-threshold=medium --sarif > snyk-code.sarif # || true
         # --file=./src/web-game/Globomantics.sln --severity-threshold=medium
+        env:
+          # This is where you will need to introduce the Snyk API token created with your Snyk account
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
         # Runs Snyk Open Source (SCA) analysis and uploads result to Snyk.
       - name: Snyk Open Source monitor
