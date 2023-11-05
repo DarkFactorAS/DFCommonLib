@@ -29,5 +29,9 @@
     <Folder Include="DataAccess\Base\" />
     <Folder Include="DataAccess\MySQL\" />
     <Folder Include="Logger\" />
+    <Folder Include="Docs\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Docs\readme.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 </Project>
