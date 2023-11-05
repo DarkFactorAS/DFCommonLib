@@ -24,5 +24,6 @@ jobs:
     - name: Pack Nuget
       run: dotnet pack --configuration Release
     - name: Deploy
-      run: dotnet nuget add source --username USERNAME --password ${{ secrets.NUGET_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/DarkFactorAS/index.json"
-      run: dotnet nuget push "bin/Release/*.nupkg"  --api-key ${{ secrets.NUGET_TOKEN }} --source "github"
+      run: 
+        dotnet nuget add source --username USERNAME --password ${{ secrets.NUGET_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/DarkFactorAS/index.json"
+        dotnet nuget push "bin/Release/*.nupkg"  --api-key ${{ secrets.NUGET_TOKEN }} --source "github"
