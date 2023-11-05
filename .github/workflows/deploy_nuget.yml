@@ -5,6 +5,11 @@ name: Deploy NuGet package
 
 on:
   workflow_dispatch:
+
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
   
 jobs:
   build:
@@ -28,5 +33,5 @@ jobs:
         dotnet nuget add source --username ${{ vars.NUGET_USERNAME }}  --password ${{ secrets.NUGET_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/DarkFactorAS/index.json"
     - name: Deploy
       run: 
-        dotnet nuget push "bin/Release/*.nupkg"  --api-key ${{ secrets.NUGET_TOKEN }} --source "github"
+        dotnet nuget push "bin/Release/*.nupkg"  --api-key ${{ secrets.NUGET_TOKEN }} --source "github" --skip-duplicate
   
