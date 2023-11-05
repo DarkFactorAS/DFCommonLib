@@ -28,6 +28,8 @@ jobs:
       run: dotnet build --no-restore --configuration Release
     - name: Test
       run: dotnet test --no-build --verbosity normal --configuration Release
+    - name: Pack Nuget
+      run: dotnet pack --configuration Release
     - name: Add GitHub nuget repository
       run: 
         dotnet nuget add source --username ${{ vars.NUGET_USERNAME }}  --password ${{ secrets.NUGET_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/DarkFactorAS/index.json"
