@@ -19,8 +19,8 @@ jobs:
         dotnet-version: 6.0.x
     - name: Restore dependencies
       run: dotnet restore
-#    - name: Build
-#      run: dotnet build --no-restore
+    - name: Build
+      run: dotnet build --no-restore
     - name: Pack Nuget
       run: dotnet pack --configuration Release
     - name: Deploy
