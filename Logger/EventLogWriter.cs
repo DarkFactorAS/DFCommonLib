@@ -25,7 +25,8 @@ namespace DFCommonLib.Logger
 
         public void LogMessage(DFLogLevel logLevel, string group, string message, int errorId)
         {
-            // Create node if it does not exist
+#if WINDOWS
+            // Create node if it does not exist            
             if (!EventLog.SourceExists(_appName))
             {
                 EventLog.CreateEventSource(_appName, "Application");
@@ -33,11 +34,14 @@ namespace DFCommonLib.Logger
 
             var eventLogEntryType = GetLogEntryType(logLevel);
             EventLog.WriteEntry(_appName, message, eventLogEntryType);
+#endif
         }
 
+#if WINDOWS
         private EventLogEntryType GetLogEntryType(DFLogLevel logLevel)
         {
             return EventLogEntryType.Error;
         }
+#endif
     }
 }
