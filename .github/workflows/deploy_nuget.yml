@@ -5,11 +5,13 @@ name: Deploy NuGet package
 
 on:
   workflow_dispatch:
+    tags:
  
 jobs:
   build:
 
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
     - uses: actions/checkout@v3
