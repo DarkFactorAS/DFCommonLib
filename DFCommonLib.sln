@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFCommonLib", "DFCommonLib\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFCommonLib.TestApp", "DFCommonLib.TestApp\DFCommonLib.TestApp.csproj", "{4944A7E1-4587-4206-B71E-ACD770872A39}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFCommonLib.Unittests", "DFCommonLib.Unittests\DFCommonLib.Unittests.csproj", "{E987DFE2-6976-4C10-B886-64F815EB1F27}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,5 +46,17 @@ Global
 		{4944A7E1-4587-4206-B71E-ACD770872A39}.Release|x64.Build.0 = Release|Any CPU
 		{4944A7E1-4587-4206-B71E-ACD770872A39}.Release|x86.ActiveCfg = Release|Any CPU
 		{4944A7E1-4587-4206-B71E-ACD770872A39}.Release|x86.Build.0 = Release|Any CPU
+		{E987DFE2-6976-4C10-B886-64F815EB1F27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E987DFE2-6976-4C10-B886-64F815EB1F27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E987DFE2-6976-4C10-B886-64F815EB1F27}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E987DFE2-6976-4C10-B886-64F815EB1F27}.Debug|x64.Build.0 = Debug|Any CPU
+		{E987DFE2-6976-4C10-B886-64F815EB1F27}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E987DFE2-6976-4C10-B886-64F815EB1F27}.Debug|x86.Build.0 = Debug|Any CPU
+		{E987DFE2-6976-4C10-B886-64F815EB1F27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E987DFE2-6976-4C10-B886-64F815EB1F27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E987DFE2-6976-4C10-B886-64F815EB1F27}.Release|x64.ActiveCfg = Release|Any CPU
+		{E987DFE2-6976-4C10-B886-64F815EB1F27}.Release|x64.Build.0 = Release|Any CPU
+		{E987DFE2-6976-4C10-B886-64F815EB1F27}.Release|x86.ActiveCfg = Release|Any CPU
+		{E987DFE2-6976-4C10-B886-64F815EB1F27}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
