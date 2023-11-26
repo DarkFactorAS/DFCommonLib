@@ -3,10 +3,7 @@
 
 name: CI Build
 
-on:
-  push:
-
-  pull_request:
+on: [push,pull_request]:
 
 jobs:
   build:
@@ -19,9 +16,15 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
-    - name: Restore dependencies
+
+    # Build DFCommonLib
+    - name: Lib - Restore dependencies
       run: dotnet restore DFCommonLib/DFCommonLib.csproj
-    - name: Build
+    - name: Lib - Build
       run: dotnet build DFCommonLib/DFCommonLib.csproj --no-restore --configuration Release
-#    - name: Test
-#      run: dotnet test --no-build --verbosity normal
+
+    # Run Unittests
+    - name: Test Build
+      run: dotnet build DFCommonLib.Unittests/DFCommonLib.Unittests.csproj --configuration Release
+    - name: Test Run
+      run: dotnet test --no-build --verbosity normal
