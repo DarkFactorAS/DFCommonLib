@@ -77,6 +77,5 @@ namespace DFCommonLib.Utils
             DFLogger.AddOutput(logLevel, new EventLogWriter(appName));
             return this;
         }
-
     }
 }

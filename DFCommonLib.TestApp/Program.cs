@@ -31,7 +31,7 @@ namespace DFCommonLibApp
             {
                 DFServices.Create(services);
 
-                //services.AddTransient<IConfigurationHelper, ConfigurationHelper<AccountCustomer> >();
+                services.AddTransient<IConfigurationHelper, ConfigurationHelper<Customer> >();
 
                 new DFServices(services)
                     .SetupLogger()
@@ -41,10 +41,6 @@ namespace DFCommonLibApp
                     .LogToEvent(DFLogLevel.ERROR, AppName);
                 ;
 
-//                services.AddTransient<IStartupDatabasePatcher, StartupDatabasePatcher>();
-//                services.AddTransient<IAccountSessionProvider, AccountSessionProvider>();
-//                services.AddTransient<IAccountRepository, AccountRepository>();
-//                services.AddTransient<IAccountProvider, AccountProvider>();
                 services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             })
             .ConfigureWebHostDefaults(webBuilder =>
