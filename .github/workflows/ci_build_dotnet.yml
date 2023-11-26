@@ -30,4 +30,4 @@ jobs:
     - name: Test Build
       run: dotnet build DFCommonLib.Unittests/DFCommonLib.Unittests.csproj --configuration Release
     - name: Test Run
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --verbosity normal --configuration Release
