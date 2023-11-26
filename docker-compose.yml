@@ -1,0 +1,48 @@
+version: '3.6'
+services:
+
+  dfcommonlib_test_db:
+    image: mariadb:10.9
+    container_name: dfcommonlib_test_db
+    user: root
+    restart: always
+    networks: 
+      - dfcommonlib_network
+    environment:
+      - "MYSQL_ROOT_PASSWORD=secret"
+      - "MYSQL_DATABASE=testdatabase"
+      - "MYSQL_USER=dfuser"
+      - "MYSQL_PASSWORD=unity"
+    volumes:
+      - dfcommmonlib-testapp-mariadb:/var/lib/mysql
+    ports:
+      - 5605:3306
+  
+  dfcommonlib_test_admin:
+    image: adminer
+    restart: always
+    networks: 
+      - dfcommonlib_network
+    environment: 
+      ADMINER_DEFAULT_SERVER: dfcommonlib_test_db
+    ports:
+      - 5606:8080
+
+  dfcommonlib_test_server:
+    build:
+      network: host
+      context: ./
+      dockerfile: ./Dockerfile
+    ports:
+      - "5100:80"
+#    dfcommonlib_test_db: 
+#      - accountdb
+
+networks:
+  dfcommonlib_network:
+    name: dfcommonlib_network
+
+volumes:
+  # docker volume create dfcommmonlib-testapp-mariadb
+  dfcommmonlib-testapp-mariadb:
+    external: true  
