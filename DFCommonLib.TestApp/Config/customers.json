@@ -1,0 +1,15 @@
+{
+    "CustomerSettings": {
+      "Customers": [
+        {
+          "Id": "DFCommonLib",
+          "DatabaseConnections": [
+            {
+              "ConnectionType": "",
+              "ConnectionString": ""
+            }
+          ]
+        }
+      ]
+    }
+  }

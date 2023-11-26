@@ -1,13 +1,22 @@
-# Use .Net Core 3.1 image
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
+# Use .Net Core 7 image
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env
 WORKDIR /app
 
-# Copy csproj and restore as distinct layers
-COPY ./DFCommonLib/*.csproj ./
-RUN dotnet restore DFCommonLib.csproj
+# Copy files
+COPY ./ ./
 
-# Copy everything else
-COPY ./DFCommonLib/ ./
+# Restore and build web
+RUN dotnet restore DFCommonLib.TestApp/DFCommonLib.TestApp.csproj
+RUN dotnet publish DFCommonLib.TestApp/DFCommonLib.TestApp.csproj -c Release -o out
 
-# Pack nuget 
-RUN dotnet pack -o /nuget
+# Create self signed sertificate
+RUN dotnet dev-certs https -ep /app/out/certificate.pfx -p smurfepoliz
+RUN dotnet dev-certs https --trust
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:7.0
+WORKDIR /app
+COPY --from=build-env /app/out .
+ENTRYPOINT ["dotnet", "DFCommonLib.dll"]
+
+EXPOSE 5100:80
