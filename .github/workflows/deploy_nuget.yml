@@ -30,5 +30,5 @@ jobs:
         dotnet nuget add source --username ${{ vars.NUGET_USERNAME }}  --password ${{ secrets.NUGET_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/DarkFactorAS/index.json"
     - name: Deploy
       run: 
-        dotnet nuget push "bin/Debug/*.nupkg"  --api-key ${{ secrets.NUGET_TOKEN }} --source "github" --skip-duplicate
+        dotnet nuget push "DFCommonLib/bin/Debug/*.nupkg"  --api-key ${{ secrets.NUGET_TOKEN }} --source "github" --skip-duplicate
   
