@@ -24,6 +24,7 @@ namespace DFCommonLibApp
 
             // Run database script
             IStartupDatabasePatcher startupRepository = DFServices.GetService<IStartupDatabasePatcher>();
+            startupRepository.WaitForConnection();
             startupRepository.RunPatcher();
 
             IDFLogger<Startup> logger = new DFLogger<Startup>();

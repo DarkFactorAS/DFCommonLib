@@ -1,3 +1,6 @@
+using System;
+using System.Data.Common;
+using System.Threading;
 using DFCommonLib.DataAccess;
 using DFCommonLib.Logger;
 
@@ -5,6 +8,8 @@ namespace DFCommonLib.DataAccess
 {
     public interface IStartupDatabasePatcher
     {
+        void WaitForConnection();
+        void WaitForConnection(int timeoutSeconds);
         bool RunPatcher();
     }
 
@@ -17,6 +22,26 @@ namespace DFCommonLib.DataAccess
         public StartupDatabasePatcher(IDBPatcher dbPatcher)
         {
             _dbPatcher = dbPatcher;
+        }
+
+        public void WaitForConnection()
+        {
+            WaitForConnection(60);
+        }
+
+        public void WaitForConnection(int timeoutSeconds)
+        {
+            while( timeoutSeconds > 0.0f )
+            {
+                if ( _dbPatcher.IsConnected() )
+                {
+                    return;
+                }
+
+                // Sleep one second
+                Thread.Sleep(1000);
+                timeoutSeconds -= 1;
+            }
         }
 
         public virtual bool RunPatcher()

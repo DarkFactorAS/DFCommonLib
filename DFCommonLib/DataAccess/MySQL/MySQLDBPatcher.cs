@@ -16,6 +16,30 @@ namespace DFCommonLib.DataAccess
             _isSuccessful = true;
         }
 
+        //
+        // Return true if we are connected to the database
+        //
+        public bool IsConnected()
+        {
+            try
+            {
+                using (var cmd = _connection.CreateCommand("SELECT 1 as a from dual") )
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            catch( Exception )
+            {
+            }
+            return false;
+        }
+
         public void Init(string patcherName)
         {
             try
