@@ -43,7 +43,7 @@ namespace DFCommonLibApp
                 ;
 
                 services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-                services.AddTransient<IStartupDatabasePatcher, StartupDatabasePatcher >();
+                services.AddTransient<IStartupDatabasePatcher, TestAppDatabasePatcher >();
             })
             .ConfigureWebHostDefaults(webBuilder =>
             {

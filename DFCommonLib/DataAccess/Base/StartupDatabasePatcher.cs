@@ -17,7 +17,7 @@ namespace DFCommonLib.DataAccess
     {
         private static string PATCHER = "StartupDatabasePatcher";
 
-        private IDBPatcher _dbPatcher;
+        protected IDBPatcher _dbPatcher;
 
         public StartupDatabasePatcher(IDBPatcher dbPatcher)
         {
