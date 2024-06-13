@@ -19,11 +19,6 @@ namespace DFCommonLib.Logger
             return "MySqlLogWriter";
         }
 
-        public void CreateTable(IDBPatcher patcher)
-        {
-            patcher.Patch("DbPatcher", 1, "CREATE TABLE `logtable` ( `id` int(11) NOT NULL AUTO_INCREMENT, `created` datetime NOT NULL, `loglevel` int(11) NOT NULL, `groupname` varchar(100) NOT NULL DEFAULT '', `message` varchar(1024) NOT NULL DEFAULT '', PRIMARY KEY (`id`))");
-        }
-
         public void LogMessage(DFLogLevel logLevel, string group, string message, int errorId)
         {
         }

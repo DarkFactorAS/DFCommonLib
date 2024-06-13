@@ -5,7 +5,7 @@ namespace DFCommonLib.DataAccess
 {
     public interface IDBPatcher
     {
-        void Init();
+        void Init(string system);
         bool Patch(string system, int patchId, string sql);
         bool Successful();
     }
