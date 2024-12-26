@@ -124,7 +124,7 @@ namespace DFCommonLib.DataAccess
                     return true;
                 }
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
                 _logger.LogWarning( string.Format("DBPatcher: {0} Failed to apply patch {1} => {2}", patcherName, patchId, sql) );
                 _isSuccessful = false;
