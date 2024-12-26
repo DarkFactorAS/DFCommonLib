@@ -16,10 +16,69 @@ namespace DFCommonLib.DataAccess
             _isSuccessful = true;
         }
 
-        public void Init()
+        //
+        // Return true if we are connected to the database
+        //
+        public bool IsConnected()
         {
             try
             {
+                using (var cmd = _connection.CreateCommand("SELECT 1 as a from dual") )
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            catch( Exception )
+            {
+            }
+            return false;
+        }
+
+        public void Init(string patcherName)
+        {
+            try
+            {
+                // Select current database
+                string schema = "no-database";
+                using (var cmd = _connection.CreateCommand("SELECT database() as db") )
+                {
+                    cmd.AddParameter("@schema", schema);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            schema = reader["db"].ToString();
+                        }
+                    }
+                }
+
+                //
+                // Check if the version table already exist
+                //
+                string sql =    "SELECT * FROM information_schema.tables " +
+                                "WHERE table_schema = '@schema' " +
+                                "AND table_name = 'version' " +
+                                "LIMIT 1";
+
+                using (var cmd = _connection.CreateCommand(sql) )
+                {
+                    cmd.AddParameter("@schema", schema);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return;
+                        }
+                    }
+                }
+
+                // Create the table if it does no exist
                 using (var cmd = _connection.CreateCommand("create table version ( `system` varchar(50) NOT NULL DEFAULT '', `patchId` int(11) not null, `created` datetime not null, PRIMARY KEY (`patchId`))"))
                 {
                     cmd.ExecuteNonQuery();
@@ -30,16 +89,16 @@ namespace DFCommonLib.DataAccess
             }
         }
 
-        public bool Patch(string system, int patchId, string sql)
+        public bool Patch(string patcherName, int patchId, string sql)
         {
             // Previous was not successful. Ignore this patch
             if ( !_isSuccessful)
             {
-                _logger.LogWarning( string.Format("DBPatcher: Ignoring patch {0} since previous failed", patchId) );
+                _logger.LogWarning( string.Format("DBPatcher: {0} Ignoring patch {1} since previous failed", patcherName, patchId) );
                 return false;
             }
 
-            if ( IsPatchExecuted( system, patchId ) )
+            if ( IsPatchExecuted( patcherName, patchId ) )
             {
                 return false;
             }
@@ -57,27 +116,27 @@ namespace DFCommonLib.DataAccess
                 {
                     using (var cmd = _connection.CreateCommand("insert into version( system, patchId, created ) values( @system, @patchId, now()) "))
                     {
-                        cmd.AddParameter("@system", system);
+                        cmd.AddParameter("@system", patcherName);
                         cmd.AddParameter("@patchId", patchId);
                         cmd.ExecuteNonQuery();
-                        _logger.LogInfo( string.Format("DBPatcher: {0} => Applied patch {1}", system, patchId) );
+                        _logger.LogInfo( string.Format("DBPatcher: {0} => Applied patch {1}", patcherName, patchId) );
                     }
                     return true;
                 }
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
-                _logger.LogWarning( string.Format("DBPatcher: {0} Failed to apply patch {1} => {2}", system, patchId, ex.ToString()) );
+                _logger.LogWarning( string.Format("DBPatcher: {0} Failed to apply patch {1} => {2}", patcherName, patchId, sql) );
                 _isSuccessful = false;
             }
             return _isSuccessful;
         }
 
-        private bool IsPatchExecuted(string system, int patchId)
+        private bool IsPatchExecuted(string patcherName, int patchId)
         {
             using (var cmd = _connection.CreateCommand("select patchId from version where system=@system and patchId = @patchId"))
             {
-                cmd.AddParameter("@system", system);
+                cmd.AddParameter("@system", patcherName);
                 cmd.AddParameter("@patchId", patchId);
                 using (var reader = cmd.ExecuteReader())
                 {

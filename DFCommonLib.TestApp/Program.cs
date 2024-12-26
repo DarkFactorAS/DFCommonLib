@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using DFCommonLib.Config;
 using DFCommonLib.Logger;
 using DFCommonLib.Utils;
+using DFCommonLib.DataAccess;
 
 namespace DFCommonLibApp
 {
@@ -42,6 +43,7 @@ namespace DFCommonLibApp
                 ;
 
                 services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+                services.AddTransient<IStartupDatabasePatcher, TestAppDatabasePatcher >();
             })
             .ConfigureWebHostDefaults(webBuilder =>
             {

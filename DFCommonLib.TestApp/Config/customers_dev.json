@@ -1,0 +1,15 @@
+{
+    "CustomerSettings": {
+      "Customers": [
+        {
+          "Id": "DFCommonLib",
+          "DatabaseConnections": [
+            {
+              "ConnectionType": "LOCAL",
+              "ConnectionString": "Server=localhost;Port=6605;Database=testdatabase;Uid=dfuser;Pwd=unity;SslMode=Preferred;"
+            }
+          ]
+        }
+      ]
+    }
+  }

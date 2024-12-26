@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using DFCommonLib.Utils;
 using DFCommonLib.Logger;
+using DFCommonLib.DataAccess;
 
 namespace DFCommonLibApp
 {
@@ -22,8 +23,9 @@ namespace DFCommonLibApp
             Configuration = configuration;
 
             // Run database script
-            //IStartupDatabasePatcher startupRepository = DFServices.GetService<IStartupDatabasePatcher>();
-            //startupRepository.RunPatcher();
+            IStartupDatabasePatcher startupRepository = DFServices.GetService<IStartupDatabasePatcher>();
+            startupRepository.WaitForConnection();
+            startupRepository.RunPatcher();
 
             IDFLogger<Startup> logger = new DFLogger<Startup>();
             logger.Startup(Program.AppName, Program.AppVersion);

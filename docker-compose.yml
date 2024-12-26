@@ -16,7 +16,7 @@ services:
     volumes:
       - dfcommmonlib-testapp-mariadb:/var/lib/mysql
     ports:
-      - 5605:3306
+      - 6605:3306
   
   dfcommonlib_test_admin:
     image: adminer
@@ -26,7 +26,7 @@ services:
     environment: 
       ADMINER_DEFAULT_SERVER: dfcommonlib_test_db
     ports:
-      - 5606:8080
+      - 6606:8080
 
   dfcommonlib_test_server:
     build:
@@ -34,7 +34,7 @@ services:
       context: ./
       dockerfile: ./Dockerfile
     ports:
-      - "5100:80"
+      - "6100:80"
 #    dfcommonlib_test_db: 
 #      - accountdb
 
