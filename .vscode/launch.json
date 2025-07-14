@@ -10,7 +10,7 @@
              "request": "launch",
              "preLaunchTask": "build",
              // If you have changed target frameworks, make sure to update the program path.
-             "program": "${workspaceFolder}/DFCommonLib.TestApp/bin/Debug/net7.0/DFCommonLib.TestApp.dll",
+             "program": "${workspaceFolder}/DFCommonLib.TestApp/bin/Debug/net8.0/DFCommonLib.TestApp.dll",
              "args": [],
              "cwd": "${workspaceFolder}/DFCommonLib.TestApp",
              "stopAtEntry": false,
