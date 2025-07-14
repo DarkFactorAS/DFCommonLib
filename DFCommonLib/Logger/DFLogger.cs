@@ -66,18 +66,14 @@ namespace DFCommonLib.Logger
 
         public void LogDebug( string message )
         {
-            #if DEBUG
-                var group = GetClassName();
-                DFLogger.LogOutput(DFLogLevel.DEBUG, group, message );
-            #endif
+            var group = GetClassName();
+            DFLogger.LogOutput(DFLogLevel.DEBUG, group, message );
         }
 
         public void LogImportant( string message )
         {
-            #if DEBUG
-                var group = GetClassName();
-                DFLogger.LogOutput(DFLogLevel.IMPORTANT, group, message );
-            #endif
+            var group = GetClassName();
+            DFLogger.LogOutput(DFLogLevel.IMPORTANT, group, message );
         }
 
         public void LogWarning( string message )
