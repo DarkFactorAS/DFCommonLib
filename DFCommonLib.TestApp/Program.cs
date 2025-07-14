@@ -25,6 +25,8 @@ namespace DFCommonLibApp
         {
             var builder = CreateHostBuilder(args).Build();
 
+            IDFLogger<Program> logger = new DFLogger<Program>();
+
             try
             {
                 IConfigurationHelper configuration = DFServices.GetService<IConfigurationHelper>();
@@ -34,22 +36,24 @@ namespace DFCommonLibApp
 
                 IStartupDatabasePatcher startupRepository = DFServices.GetService<IStartupDatabasePatcher>();
                 startupRepository.WaitForConnection();
-                if (startupRepository.RunPatcher() )
+                if (startupRepository.RunPatcher())
                 {
-                    DFLogger.LogOutput(DFLogLevel.INFO, "Startup", "Database patcher ran successfully" );
+                    DFLogger.LogOutput(DFLogLevel.INFO, "Startup", "Database patcher ran successfully");
                 }
                 else
                 {
-                    DFLogger.LogOutput(DFLogLevel.ERROR, "Startup", "Database patcher failed" );
+                    DFLogger.LogOutput(DFLogLevel.ERROR, "Startup", "Database patcher failed");
                     Environment.Exit(1);
-                    return;                    
+                    return;
                 }
+
+                new LoggingProgram();
 
                 builder.Run();
             }
             catch (Exception ex)
             {
-                DFLogger.LogOutput(DFLogLevel.WARNING, "Startup", ex.ToString());
+                logger.LogException("An error occurred during startup", ex);
             }
         }
 

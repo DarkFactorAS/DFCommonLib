@@ -8,11 +8,13 @@ namespace DFCommonLib.Logger
     public interface IDFLogger<T>
     {
         void Startup(string appName, string appVersion);
-        void LogDebug(string message);
-        void LogInfo(string message);
-        void LogImportant(string message);
-        void LogWarning(string message);
-        int LogError(string message);       
+        void LogInfo(string message, params object[] args);
+        void LogDebug(string message, params object[] args);
+        void LogImportant(string message, params object[] args);
+        void LogWarning(string message, params object[] args);
+        int LogError(string message, params object[] args);
+        int LogException(string message, Exception ex);
+        int LogException(string message, Exception ex, params object[] args);
     }
 
     public class OutputWriter
@@ -38,7 +40,7 @@ namespace DFCommonLib.Logger
         {
             var groupName = GetGroup();
             var lastGroup = groupName.Split(".").LastOrDefault();
-            if ( lastGroup != null )
+            if (lastGroup != null)
             {
                 return lastGroup;
             }
@@ -49,43 +51,56 @@ namespace DFCommonLib.Logger
         {
             var group = GetClassName();
             var message = string.Format("Init application {0} v:{1}", appName, appversion);
-            DFLogger.PrintStartup(DFLogLevel.INFO, group,message);
+            DFLogger.PrintStartup(DFLogLevel.INFO, group, message);
 
-            LogInfo("******************************************************");    
-            LogInfo("***                                                ***");    
-            LogInfo(string.Format("***  Starting {0,-28} {1,7} ***", appName, appversion));    
-            LogInfo("***                                                ***");    
-            LogInfo("******************************************************");    
+            LogInfo("******************************************************");
+            LogInfo("***                                                ***");
+            LogInfo(string.Format("***  Starting {0,-28} {1,7} ***", appName, appversion));
+            LogInfo("***                                                ***");
+            LogInfo("******************************************************");
         }
 
-        public void LogInfo( string message )
+        public void LogInfo(string message, params object[] args)
         {
             var group = GetClassName();
-            DFLogger.LogOutput(DFLogLevel.INFO, group, message );
+            DFLogger.LogOutput(DFLogLevel.INFO, group, string.Format(message, args));
         }
 
-        public void LogDebug( string message )
+        public void LogDebug(string message, params object[] args)
         {
             var group = GetClassName();
-            DFLogger.LogOutput(DFLogLevel.DEBUG, group, message );
+            DFLogger.LogOutput(DFLogLevel.DEBUG, group, string.Format(message, args));
         }
 
-        public void LogImportant( string message )
+        public void LogImportant(string message, params object[] args)
         {
             var group = GetClassName();
-            DFLogger.LogOutput(DFLogLevel.IMPORTANT, group, message );
+            DFLogger.LogOutput(DFLogLevel.IMPORTANT, group, string.Format(message, args));
         }
 
-        public void LogWarning( string message )
+        public void LogWarning(string message, params object[] args)
         {
             var group = GetClassName();
-            DFLogger.LogOutput(DFLogLevel.WARNING, group, message );
+            DFLogger.LogOutput(DFLogLevel.WARNING, group, string.Format(message, args));
         }
 
-        public int LogError(string message)
+        public int LogError(string message, params object[] args)
         {
             var group = GetClassName();
-            return DFLogger.LogOutput(DFLogLevel.ERROR, group, message);
+            return DFLogger.LogOutput(DFLogLevel.ERROR, group, string.Format(message, args));
+        }
+
+        public int LogException(string message, Exception ex)
+        {
+            var group = GetClassName();
+            return DFLogger.LogOutput(DFLogLevel.EXCEPTION, group, string.Format("{0} => {1} ", message, ex.ToString()));
+        }
+
+        public int LogException(string message, Exception ex, params object[] args)
+        {
+            var group = GetClassName();
+            var formattedMessage = string.Format(message, args);
+            return DFLogger.LogOutput(DFLogLevel.EXCEPTION, group, string.Format("{0} => {1} ", formattedMessage, ex.ToString()));
         }
     }
 
