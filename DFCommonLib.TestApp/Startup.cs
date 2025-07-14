@@ -22,11 +22,6 @@ namespace DFCommonLibApp
         {
             Configuration = configuration;
 
-            // Run database script
-            IStartupDatabasePatcher startupRepository = DFServices.GetService<IStartupDatabasePatcher>();
-            startupRepository.WaitForConnection();
-            startupRepository.RunPatcher();
-
             IDFLogger<Startup> logger = new DFLogger<Startup>();
             logger.Startup(Program.AppName, Program.AppVersion);
         }
@@ -36,12 +31,13 @@ namespace DFCommonLibApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddControllers();
+            DFServices.Create(services);
 
+            services.AddControllers();
             services.AddMvc();
 
             // register the swagger generator
-            //services.AddSwaggerGen();
+            // services.AddSwaggerGen();
 
             services.AddSession(options =>
             {
@@ -53,6 +49,9 @@ namespace DFCommonLibApp
             });
 
             services.AddHttpContextAccessor();
+
+            //services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient(typeof(IStartupDatabasePatcher), typeof(TestAppDatabasePatcher));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,28 +63,15 @@ namespace DFCommonLibApp
                 app.UseDeveloperExceptionPage();
             }
 
-            //app.UseHttpsRedirection();
-
+            app.UseHttpsRedirection();
             app.UseRouting();
-            app.UseSession();
-
             //app.UseAuthorization();
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
-
-/*
-            app.UseSwagger();
-
-            // specify the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-                c.RoutePrefix = string.Empty;
-            });
-            */
         }
     }
 }

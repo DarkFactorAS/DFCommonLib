@@ -33,19 +33,19 @@ namespace DFCommonLib.Logger
             {
                 case DFLogLevel.UNKNOWN:
                 case DFLogLevel.INFO:
-                    return "info";
+                    return "INFO     ";
                 case DFLogLevel.DEBUG:
-                    return "dbug";
-                case DFLogLevel.NOTIFICATION:
-                    return "noti";
+                    return "DEBUG    ";
+                case DFLogLevel.IMPORTANT:
+                    return "IMPORTANT";
                 case DFLogLevel.WARNING:
-                    return "warn";
+                    return "WARNING  ";
                 case DFLogLevel.ERROR:
-                    return "err ";
+                    return "ERROR    ";
                 case DFLogLevel.EXCEPTION:
-                    return "exec";
+                    return "EXCEPTION";
                 default:
-                    return "";
+                    return "???      "; // Default case for unknown log levels
             }
         }
 
@@ -57,7 +57,7 @@ namespace DFCommonLib.Logger
                 case DFLogLevel.INFO:
                     SetColor(ConsoleColor.White);
                     break;
-                case DFLogLevel.NOTIFICATION:
+                case DFLogLevel.IMPORTANT:
                     SetColor(ConsoleColor.Blue);
                     break;
                 case DFLogLevel.DEBUG:

@@ -16,22 +16,51 @@ using DFCommonLib.DataAccess;
 
 namespace DFCommonLibApp
 {
-    class Program
+    public class Program
     {
-        public static string AppName = "DFCommonLibApp";
-        public static string AppVersion = "1.0.0";
+        public static string AppName = "DFCommonLib.TestApp";
+        public static string AppVersion = "1.0.1";
 
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var builder = CreateHostBuilder(args).Build();
+
+            IDFLogger<Program> logger = new DFLogger<Program>();
+
+            try
+            {
+                IConfigurationHelper configuration = DFServices.GetService<IConfigurationHelper>();
+                var customer = configuration.GetFirstCustomer();
+                var msg = string.Format("Connecting to DB : {0}", customer.DatabaseConnections.FirstOrDefault()?.ConnectionString);
+                DFLogger.LogOutput(DFLogLevel.INFO, "BotServer", msg);
+
+                IStartupDatabasePatcher startupRepository = DFServices.GetService<IStartupDatabasePatcher>();
+                startupRepository.WaitForConnection();
+                if (startupRepository.RunPatcher())
+                {
+                    DFLogger.LogOutput(DFLogLevel.INFO, "Startup", "Database patcher ran successfully");
+                }
+                else
+                {
+                    DFLogger.LogOutput(DFLogLevel.ERROR, "Startup", "Database patcher failed");
+                    Environment.Exit(1);
+                    return;
+                }
+
+                new LoggingProgram();
+
+                builder.Run();
+            }
+            catch (Exception ex)
+            {
+                logger.LogException("An error occurred during startup", ex);
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
             .ConfigureServices((hostContext, services) =>
             {
-                DFServices.Create(services);
-
                 services.AddTransient<IConfigurationHelper, ConfigurationHelper<Customer> >();
 
                 new DFServices(services)
@@ -41,9 +70,6 @@ namespace DFCommonLibApp
                     .LogToMySQL(DFLogLevel.WARNING)
                     .LogToEvent(DFLogLevel.ERROR, AppName);
                 ;
-
-                services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-                services.AddTransient<IStartupDatabasePatcher, TestAppDatabasePatcher >();
             })
             .ConfigureWebHostDefaults(webBuilder =>
             {
