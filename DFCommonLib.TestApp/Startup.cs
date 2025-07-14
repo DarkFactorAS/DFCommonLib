@@ -33,7 +33,7 @@ namespace DFCommonLibApp
         {
             DFServices.Create(services);
 
-            // services.AddControllers();
+            services.AddControllers();
             services.AddMvc();
 
             // register the swagger generator
@@ -51,8 +51,7 @@ namespace DFCommonLibApp
             services.AddHttpContextAccessor();
 
             //services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddTransient<IStartupDatabasePatcher, TestAppDatabasePatcher >();
-
+            services.AddTransient(typeof(IStartupDatabasePatcher), typeof(TestAppDatabasePatcher));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
