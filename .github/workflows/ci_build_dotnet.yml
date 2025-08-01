@@ -32,6 +32,6 @@ jobs:
     - name: Test Build
       run: dotnet build DFCommonLib.Unittests/DFCommonLib.Unittests.csproj --configuration Release
     - name: Copy config files
-      run: cp -R DFCommonLib.Unittests/Config DFCommonLib.Unittests/bin/Release/net8.0/
+      run: cp DFCommonLib.Unittests/Config/appsettings.development.json DFCommonLib.Unittests/bin/Release/net8.0/appsettings.development.json
     - name: Test Run
       run: dotnet test --no-build --verbosity normal --configuration Release
