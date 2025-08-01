@@ -31,6 +31,6 @@ jobs:
 
     # Run Unittests
     - name: Test Build
-      run: dotnet build DFCommonLib.Unittests/DFCommonLib.Unittests.csproj --configuration Release
+      run: dotnet build DFCommonLib.Unittests/DFCommonLib.Unittests.csproj --verbosity diagnostic --configuration Release
     - name: Test Run
-      run: dotnet test --no-build --verbosity normal --configuration Release
+      run: dotnet test --no-build --verbosity diagnostic --configuration Release
