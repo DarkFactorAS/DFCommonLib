@@ -31,6 +31,8 @@ jobs:
     # Run Unittests
     - name: Test Build
       run: dotnet build DFCommonLib.Unittests/DFCommonLib.Unittests.csproj --configuration Release
+    - name: Create config directory
+      run: mkdir -p DFCommonLib.Unittests/bin/Release/net8.0/Config
     - name: Copy config files
       run: cp DFCommonLib.Unittests/Config/appsettings.development.json DFCommonLib.Unittests/bin/Release/net8.0/appsettings.development.json
     - name: Test Run
