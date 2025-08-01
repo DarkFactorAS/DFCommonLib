@@ -43,17 +43,12 @@ namespace DFCommonLib .Config
 
         private IConfiguration GetConfigurationBuilder()
         {
-            string appSettings = "appsettings.json";
-            if ( _env.IsDevelopment() )
-            {
-                appSettings = "appsettings." + _env.EnvironmentName + ".json";
-            }
+            string appSettings = "appsettings." + _env.EnvironmentName + ".json";
+            string configPath = Path.Combine(Directory.GetCurrentDirectory(), "Config");
 
             IConfiguration config = new ConfigurationBuilder()
-                .SetBasePath($"{Directory.GetCurrentDirectory()}/Config")
+                .SetBasePath(configPath)
                 .AddJsonFile(path: appSettings, optional: false, reloadOnChange: true)
-                //.AddJsonFile(path: customerConfig, optional: false, reloadOnChange: true)
-                //.AddJsonFile(path: "testsettings.json", optional: true, reloadOnChange: true)
                 .Build();
 
             return config;

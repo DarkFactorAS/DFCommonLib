@@ -12,7 +12,14 @@ namespace DFCommonLib.Config
         public string Username { get; set; }
         public string Password { get; set; }
         public string SslMode { get; set; }
-    }       
+    }
+
+    public class ServerHost
+    {
+        public string Server { get; set; }
+        public int Port { get; set; }
+        public string ApiKey { get; set; }
+    }
 
     public class AppSettings
     {
