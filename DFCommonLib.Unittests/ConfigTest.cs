@@ -18,7 +18,9 @@ public class ConfigTest
             .Returns("Development");
 
         var helper = new ConfigurationHelper<TestAppSetting>(mockEnvironment.Object);
-        appSettings = helper.Settings as TestAppSetting ?? throw new AssertionException("AppSettings could not be initialized.");
+        Assert.That(helper.Settings, Is.Not.Null, "AppSettings could not be initialized.");
+        Assert.That(helper.Settings, Is.InstanceOf<TestAppSetting>(), "AppSettings is not of type TestAppSetting.");
+        appSettings = (TestAppSetting)helper.Settings;
     }
 
     [Test]
