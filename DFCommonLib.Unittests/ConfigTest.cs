@@ -18,11 +18,7 @@ public class ConfigTest
             .Returns("Development");
 
         var helper = new ConfigurationHelper<TestAppSetting>(mockEnvironment.Object);
-        appSettings = helper.Settings as TestAppSetting;
-        if (appSettings == null)
-        {
-            Assert.Fail("AppSettings could not be initialized.");
-        }
+        appSettings = helper.Settings as TestAppSetting ?? throw new AssertionException("AppSettings could not be initialized.");
     }
 
     [Test]
@@ -37,8 +33,8 @@ public class ConfigTest
         Assert.That(appSettings.DatabaseConnection.Password, Is.EqualTo("dbpass"));
 
         // Extended
-        Assert.That(appSettings.AccountServer.Server, Is.EqualTo("127.0.0.1"));
-        Assert.That(appSettings.AccountServer.Port, Is.EqualTo(6606));
-        Assert.That(appSettings.AccountServer.ApiKey, Is.EqualTo("ApiKey"));
+        Assert.That(appSettings.AccountServer?.Server, Is.EqualTo("127.0.0.1"));
+        Assert.That(appSettings.AccountServer?.Port, Is.EqualTo(6606));
+        Assert.That(appSettings.AccountServer?.ApiKey, Is.EqualTo("ApiKey"));
     }
 }

@@ -59,7 +59,7 @@ namespace DFCommonLib.Unittests
         {
             mockOutputWriter.Setup(x => x.LogMessage(DFLogLevel.ERROR, "Object", "Error message")).Returns(1);
             int errorCode = logger.LogError("Error message");
-            Assert.AreEqual(1, errorCode);
+            Assert.That(errorCode, Is.EqualTo(1));
             mockOutputWriter.Verify(x => x.LogMessage(DFLogLevel.ERROR, "Object", "Error message"), Times.Once);
         }
     }
