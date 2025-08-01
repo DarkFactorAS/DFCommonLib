@@ -9,8 +9,8 @@ namespace DFCommonLib.DataAccess
 
     public class PagawebConnectionFactory : OracleDbConnectionFactory, IPagawebConnectionFactory
     {
-        public PagawebConnectionFactory(Customer customer) :
-            base("PAGAWEB", customer)
+        public PagawebConnectionFactory(IConfigurationHelper helper) :
+            base("PAGAWEB", helper)
         {
         }
     }

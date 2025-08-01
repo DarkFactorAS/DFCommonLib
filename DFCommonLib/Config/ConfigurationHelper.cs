@@ -4,54 +4,59 @@ using System.Text;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using System.IO;
 
 namespace DFCommonLib .Config
 {
     public interface IConfigurationHelper
     {
-        ConfigurationSettings ConfigurationSettings { get; }
-        Customer GetFirstCustomer();
+        AppSettings Settings { get; }
     }
 
-    public class ConfigurationHelper<T> : ConfigurationFactory, IConfigurationHelper
-        where T:Customer, new()
+    public class ConfigurationHelper<T> : IConfigurationHelper
+        where T : AppSettings, new()
     {
-        public ConfigurationSettings _configSettings;
+        public AppSettings _appSettings;
+        IHostEnvironment _env;
 
-        public ConfigurationSettings ConfigurationSettings
+        public AppSettings Settings
         {
-            get
+            get { return _appSettings; }
+        }
+
+        public ConfigurationHelper(IHostEnvironment env)
+        {
+            _env = env;
+            if (_appSettings == null)
             {
-                return _configSettings;
+                var builder = GetConfigurationBuilder();
+                _appSettings = GetConfigurationFromBuilder(builder);
             }
         }
 
-        public Customer GetFirstCustomer()
+        virtual protected AppSettings GetConfigurationFromBuilder(IConfiguration builder)
         {
-            if (_configSettings != null )
-            {
-                var customerSetting = _configSettings.GetConfig();
-                if ( customerSetting != null )
-                {
-                    return customerSetting.GetFirstCustomer();
-                }
-            }
-            return null;
-        }
-
-        public ConfigurationHelper(IHostEnvironment env) : base(env)
-        {
-            if (_configSettings == null)
-            {
-                _configSettings = GetConfigurationFromBuilder(ConfigurationBuilder);
-            }
-        }
-
-        virtual protected ConfigurationSettings GetConfigurationFromBuilder(IConfiguration builder)
-        {
-            var configSettings = new ConfigurationSettings<T>();
+            var configSettings = new T();
             builder.Bind(configSettings);
             return configSettings;
         }
+
+        private IConfiguration GetConfigurationBuilder()
+        {
+            string appSettings = "appsettings.json";
+            if ( _env.IsDevelopment() )
+            {
+                appSettings = "appsettings." + _env.EnvironmentName + ".json";
+            }
+
+            IConfiguration config = new ConfigurationBuilder()
+                .SetBasePath($"{Directory.GetCurrentDirectory()}/Config")
+                .AddJsonFile(path: appSettings, optional: false, reloadOnChange: true)
+                //.AddJsonFile(path: customerConfig, optional: false, reloadOnChange: true)
+                //.AddJsonFile(path: "testsettings.json", optional: true, reloadOnChange: true)
+                .Build();
+
+            return config;
+        }        
     }
 }

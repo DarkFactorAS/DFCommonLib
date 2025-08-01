@@ -13,6 +13,7 @@ using DFCommonLib.Config;
 using DFCommonLib.Logger;
 using DFCommonLib.Utils;
 using DFCommonLib.DataAccess;
+using TestApp;
 
 namespace DFCommonLibApp
 {
@@ -29,9 +30,9 @@ namespace DFCommonLibApp
 
             try
             {
-                IConfigurationHelper configuration = DFServices.GetService<IConfigurationHelper>();
-                var customer = configuration.GetFirstCustomer();
-                var msg = string.Format("Connecting to DB : {0}", customer.DatabaseConnections.FirstOrDefault()?.ConnectionString);
+                IConfigurationHelper configurationHelper = DFServices.GetService<IConfigurationHelper>();
+                var settings = configurationHelper.Settings;
+                var msg = string.Format("Connecting to DB : {0}", settings.DatabaseConnection.Server);
                 DFLogger.LogOutput(DFLogLevel.INFO, "BotServer", msg);
 
                 IStartupDatabasePatcher startupRepository = DFServices.GetService<IStartupDatabasePatcher>();
@@ -61,7 +62,7 @@ namespace DFCommonLibApp
             Host.CreateDefaultBuilder(args)
             .ConfigureServices((hostContext, services) =>
             {
-                services.AddTransient<IConfigurationHelper, ConfigurationHelper<Customer> >();
+                services.AddTransient<IConfigurationHelper, ConfigurationHelper<TestAppConfig> >();
 
                 new DFServices(services)
                     .SetupLogger()

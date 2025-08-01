@@ -27,9 +27,9 @@ namespace DFCommonLib.Utils
             return (T) serviceProvider.GetService<T>();
         }
 
-        public DFServices SetupConfig()
+        public DFServices SetupBasicConfig()
         {
-            _services.AddScoped<IConfigurationHelper, ConfigurationHelper<Customer> >();
+            _services.AddScoped<IConfigurationHelper, ConfigurationHelper<AppSettings> >();
             return this;
         }
 

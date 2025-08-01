@@ -50,26 +50,21 @@ namespace DFCommonLib.DataAccess
         {
             if (_connectionString == null)
             {
-                if (_helper == null)
-                {
-                    throw new Exception("DB helper returned NULL, make sure customer has a connection in the config");
-                }
-
-                var customer = _helper.GetFirstCustomer();
-                if (customer == null)
-                {
-                    throw new Exception("DB customer returned NULL, make sure customer has a connection in the config");
-                }
-
-                var configDbConnection = customer.GetDbConnection(_connectionType);
+                var configDbConnection = _helper.Settings.DatabaseConnection;
                 if (configDbConnection == null)
                 {
                     throw new Exception("DB connection returned NULL, make sure customer has a connection in the config");
                 }
 
-                _connectionString = configDbConnection.ConnectionString;
+                _connectionString = string.Format("Server={0};Port={1};Database={2};Uid={3};Pwd={4};SslMode={5};",
+                    configDbConnection.Server,
+                    configDbConnection.Port,
+                    configDbConnection.Database,
+                    configDbConnection.Username,
+                    configDbConnection.Password,
+                    configDbConnection.SslMode);
 
-                //_logger.LogDebug(string.Format("Connection string: {0} / {1}", _connectionType, _connectionString));
+                _logger.LogDebug(string.Format("Connection string: {0} / {1}", _connectionString));
             }
             return _connectionString;
         }
