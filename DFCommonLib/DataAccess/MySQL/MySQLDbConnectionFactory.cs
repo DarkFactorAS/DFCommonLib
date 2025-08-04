@@ -63,8 +63,6 @@ namespace DFCommonLib.DataAccess
                     configDbConnection.Username,
                     configDbConnection.Password,
                     configDbConnection.SslMode);
-
-                _logger.LogDebug(string.Format("Connection string: {0} / {1}", _connectionString));
             }
             return _connectionString;
         }

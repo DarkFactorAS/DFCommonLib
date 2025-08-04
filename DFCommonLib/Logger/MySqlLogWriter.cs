@@ -25,6 +25,11 @@ namespace DFCommonLib.Logger
 
         public int LogMessage(DFLogLevel logLevel, string group, string message)
         {
+            if ( _connection == null )
+            {
+                return 0;
+            }
+
             var sql = @"insert into logtable (id,created, loglevel, groupname, message) values(0,sysdate(), @loglevel,@group,@message)";
             using (var command = _connection.CreateCommand(sql))
             {
