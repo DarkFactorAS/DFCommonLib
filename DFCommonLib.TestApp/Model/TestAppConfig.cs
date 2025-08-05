@@ -4,12 +4,18 @@ using DFCommonLib.Config;
 
 namespace TestApp
 {
+    public class TestApi
+    {
+        public string Endpoint { get; set; }
+        public string ApiKey { get; set; }
+    }
+
     public class TestAppConfig : AppSettings
     {
-        public class TestApi
+        public TestApi TestApi { get; set; }
+
+        public TestAppConfig()
         {
-            public string Endpoint { get; set; }
-            public string ApiKey { get; set; }
         }
     }
 }

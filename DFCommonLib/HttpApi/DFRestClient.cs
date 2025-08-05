@@ -22,10 +22,10 @@ namespace DFCommonLib.HttpApi
     public interface IDFRestClient
     {
         void SetEndpoint(string endpoint);
-        Task<WebAPIData> PingServer();
+        string PingServer();
     }
 
-    public class DFRestClient
+    public class DFRestClient : IDFRestClient
     {
         private static readonly HttpClient client = new HttpClient();
         protected IDFLogger<DFRestClient> _logger;
@@ -42,7 +42,7 @@ namespace DFCommonLib.HttpApi
             {
                 return _endpoint;
             }
-            return "http://127.0.0.1";
+            return "http://NO_ENDPOINT_SET";
         }
 
         virtual protected string GetModule()
@@ -53,6 +53,11 @@ namespace DFCommonLib.HttpApi
         public void SetEndpoint(string endpoint)
         {
             _endpoint = endpoint;
+        }
+
+        public string GetEndpoint()
+        {
+            return _endpoint;
         }
 
         public static string EncodeInput(string plaintext)
@@ -68,14 +73,32 @@ namespace DFCommonLib.HttpApi
             return decodedString;
         }
 
-        public async Task<WebAPIData> PingServer()
+        public string PingServer()
         {
-            var fullUrl = GetFullUrl("PingServer");
-            var webRequest = new HttpRequestMessage(HttpMethod.Get, fullUrl);
-            //webRequest.Headers.Add("Content-Type", "application/json");
-            //webRequest.Headers.Add("User-Agent", "DarkFactor BE");
-            var data = await HandleRequest(0, webRequest, _logger);
-            return data;
+            // Force async execution to wait for the result
+            var data = GetJsonData(0, "PingServer").Result;
+            if (data == null)
+            {
+                _logger.LogWarning("DFRestClient: PingServer returned null data");
+                return "PingServer returned null data";
+            }
+
+            if (data.errorCode > 299)
+            {
+                var msg = string.Format("DFRestClient: PingServer failed with error code {0} and message: {1}",
+                    data.errorCode,
+                    data.message);
+                _logger.LogWarning(msg);
+                return msg;
+            }
+
+            if (data.message == null)
+            {
+                _logger.LogWarning("DFRestClient: PingServer returned null message");
+                return "PingServer returned null message";
+            }
+
+            return data.message;
         }
 
         private string GetFullUrl(string method)

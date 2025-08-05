@@ -9,7 +9,7 @@ namespace DFCommonLib.HttpApi
     public interface IDFClient
     {
         void SetEndpoint( string endpoint );
-        Task<WebAPIData> PingServer();
+        string PingServer();
     }
 
     public class DFClient : IDFClient
@@ -26,7 +26,7 @@ namespace DFCommonLib.HttpApi
             _dfRestClient.SetEndpoint(endpoint);
         }
 
-        public Task<WebAPIData> PingServer()
+        public string PingServer()
         {
             return _dfRestClient.PingServer();
         }

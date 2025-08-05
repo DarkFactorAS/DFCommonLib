@@ -14,6 +14,8 @@ using DFCommonLib.Logger;
 using DFCommonLib.Utils;
 using DFCommonLib.DataAccess;
 using TestApp;
+using DFCommonLib.TestApp.Programs;
+using Google.Protobuf.WellKnownTypes;
 
 namespace DFCommonLibApp
 {
@@ -35,8 +37,11 @@ namespace DFCommonLibApp
                 var msg = string.Format("Connecting to DB : {0}", settings.DatabaseConnection.Server);
                 DFLogger.LogOutput(DFLogLevel.INFO, "BotServer", msg);
 
+                new LoggingProgram();
+                new DFRestClientProgram();
+
                 IStartupDatabasePatcher startupRepository = DFServices.GetService<IStartupDatabasePatcher>();
-                startupRepository.WaitForConnection();
+                startupRepository.WaitForConnection(1);
                 if (startupRepository.RunPatcher())
                 {
                     DFLogger.LogOutput(DFLogLevel.INFO, "Startup", "Database patcher ran successfully");
@@ -47,8 +52,6 @@ namespace DFCommonLibApp
                     Environment.Exit(1);
                     return;
                 }
-
-                new LoggingProgram();
 
                 builder.Run();
             }

@@ -15,16 +15,26 @@ namespace DFCommonLib.Utils
         {
             _services = services;
         }
+       
 
         public static void Create(IServiceCollection serviceCollector)
         {
             instance = new DFServices(serviceCollector);
         }
+        
+        public static IServiceProvider GetServiceProvider()
+        {
+            if (instance == null)
+            {
+                throw new InvalidOperationException("DFServices has not been initialized. Call Create() first.");
+            }
+            return instance._services.BuildServiceProvider();
+        }
 
         public static T GetService<T>()
         {
-            var serviceProvider = instance._services.BuildServiceProvider();
-            return (T) serviceProvider.GetService<T>();
+            var serviceProvider = GetServiceProvider();
+            return (T)serviceProvider.GetService<T>();
         }
 
         public DFServices SetupBasicConfig()
