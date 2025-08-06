@@ -1,5 +1,3 @@
-
-
 using System.Net;
 using System;
 using System.IO;
@@ -16,6 +14,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 using DFCommonLib.Logger;
+using DFCommonLib.Utils;
 
 namespace DFCommonLib.HttpApi
 {
@@ -31,9 +30,12 @@ namespace DFCommonLib.HttpApi
         protected IDFLogger<DFRestClient> _logger;
         protected string _endpoint;
 
-        public DFRestClient(IDFLogger<DFRestClient> logger)
+        private string _accessToken;
+        private DateTime _tokenExpiry;
+
+        public DFRestClient()
         {
-            _logger = logger;
+            _logger = DFServices.GetService<IDFLogger<DFRestClient>>();
         }
 
         virtual protected string GetHostname()
@@ -76,7 +78,7 @@ namespace DFCommonLib.HttpApi
         public string PingServer()
         {
             // Force async execution to wait for the result
-            var data = GetJsonData(0, "PingServer").Result;
+            var data = GetJsonData(0, "Ping").Result;
             if (data == null)
             {
                 _logger.LogWarning("DFRestClient: PingServer returned null data");
@@ -132,12 +134,11 @@ namespace DFCommonLib.HttpApi
 
         public async Task<WebAPIData> GetJsonData(int methodId, string url)
         {
+
             var fullUrl = GetFullUrl(url);
             var webRequest = new HttpRequestMessage(HttpMethod.Get, fullUrl);
             //webRequest.Headers.Add("Content-Type", "application/json");
             webRequest.Headers.Add("User-Agent", "DarkFactor BE");
-
-            //Debug.LogWarning("Get:" + fullUrl);
 
             var data = await HandleRequest(methodId, webRequest, _logger);
             return data;
