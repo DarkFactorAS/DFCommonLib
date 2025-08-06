@@ -134,10 +134,11 @@ namespace DFCommonLib.HttpApi
 
         public async Task<WebAPIData> GetJsonData(int methodId, string url)
         {
+            //EnsureAuthenticated();
 
             var fullUrl = GetFullUrl(url);
             var webRequest = new HttpRequestMessage(HttpMethod.Get, fullUrl);
-            //webRequest.Headers.Add("Content-Type", "application/json");
+            //webRequest.Headers.Add("Authorization", "Bearer " + _accessToken);
             webRequest.Headers.Add("User-Agent", "DarkFactor BE");
 
             var data = await HandleRequest(methodId, webRequest, _logger);
@@ -230,6 +231,47 @@ namespace DFCommonLib.HttpApi
 
                 return new WebAPIData( 500 , ex.ToString() );
             }
+        }
+
+        public async Task Authenticate(string clientId, string clientSecret, string tokenUrl)
+        {
+            var requestBody = new Dictionary<string, string>
+            {
+                { "client_id", clientId },
+                { "client_secret", clientSecret },
+                { "grant_type", "client_credentials" }
+            };
+
+            var requestContent = new FormUrlEncodedContent(requestBody);
+            var response = await client.PostAsync(tokenUrl, requestContent);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("Failed to authenticate: " + response.ReasonPhrase);
+            }
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var tokenData = JsonConvert.DeserializeObject<OAuthTokenResponse>(responseContent);
+
+            _accessToken = tokenData.AccessToken;
+            _tokenExpiry = DateTime.UtcNow.AddSeconds(tokenData.ExpiresIn);
+        }
+
+        private void EnsureAuthenticated()
+        {
+            if (string.IsNullOrEmpty(_accessToken) || DateTime.UtcNow >= _tokenExpiry)
+            {
+                throw new Exception("Client is not authenticated or token has expired.");
+            }
+        }
+
+        public class OAuthTokenResponse
+        {
+            [JsonProperty("access_token")]
+            public string AccessToken { get; set; }
+
+            [JsonProperty("expires_in")]
+            public int ExpiresIn { get; set; }
         }
     }
 }
