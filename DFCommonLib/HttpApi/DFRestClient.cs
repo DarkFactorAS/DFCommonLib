@@ -26,6 +26,8 @@ namespace DFCommonLib.HttpApi
 
     public class DFRestClient : IDFRestClient
     {
+        private const string UserAgentName = "DFRestClient";
+
         private static readonly HttpClient client = new HttpClient();
         protected IDFLogger<DFRestClient> _logger;
         protected string _endpoint;
@@ -40,7 +42,7 @@ namespace DFCommonLib.HttpApi
 
         virtual protected string GetHostname()
         {
-            if ( _endpoint != null )
+            if (_endpoint != null)
             {
                 return _endpoint;
             }
@@ -106,11 +108,11 @@ namespace DFCommonLib.HttpApi
         private string GetFullUrl(string method)
         {
             var hostname = GetHostname();
-            if ( hostname != null )
+            if (hostname != null)
             {
                 var module = GetModule();
 
-                if ( module != null )
+                if (module != null)
                 {
                     return String.Format("{0}/{1}/{2}", hostname, module, method);
                 }
@@ -119,9 +121,9 @@ namespace DFCommonLib.HttpApi
             return null;
         }
 
-        private WebAPIData ConvertFromRestData<T>(WebAPIData apiData) where T:WebAPIData, new()
+        private T ConvertFromRestData<T>(WebAPIData apiData) where T : WebAPIData, new()
         {
-            if ( apiData.errorCode == 0 )
+            if (apiData.errorCode == 0)
             {
                 var data = JsonConvert.DeserializeObject<T>(apiData.message);
                 return data;
@@ -138,25 +140,34 @@ namespace DFCommonLib.HttpApi
 
             var fullUrl = GetFullUrl(url);
             var webRequest = new HttpRequestMessage(HttpMethod.Get, fullUrl);
-            //webRequest.Headers.Add("Authorization", "Bearer " + _accessToken);
-            webRequest.Headers.Add("User-Agent", "DarkFactor BE");
+            webRequest.Headers.Add("User-Agent", UserAgentName);
+            if (!string.IsNullOrEmpty(_accessToken))
+            {
+                webRequest.Headers.Add("Authorization", "Bearer " + _accessToken);
+            }
 
             var data = await HandleRequest(methodId, webRequest, _logger);
             return data;
         }
 
-        public async Task<WebAPIData> GetJsonData<T>(int methodId, string url) where T:WebAPIData, new()
+        public async Task<T> GetJsonData<T>(int methodId, string url) where T : WebAPIData, new()
         {
             var data = await GetJsonData(methodId, url);
             var result = ConvertFromRestData<T>(data);
             return result;
         }
 
-        public async Task<WebAPIData> PostJsonData(int methodId,string url, string jsonData)
+        public async Task<WebAPIData> PostJsonData(int methodId, string url, string jsonData)
         {
             var fullUrl = GetFullUrl(url);
             var webRequest = new HttpRequestMessage(HttpMethod.Post, fullUrl);
             webRequest.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            webRequest.Headers.Add("User-Agent", UserAgentName);
+            if (!string.IsNullOrEmpty(_accessToken))
+            {
+                webRequest.Headers.Add("Authorization", "Bearer " + _accessToken);
+            }
+
             var data = await HandleRequest(methodId, webRequest, _logger);
             return data;
         }
@@ -171,23 +182,44 @@ namespace DFCommonLib.HttpApi
         public async Task<WebAPIData> PutJsonData(int methodId, string url, string jsonData)
         {
             var fullUrl = GetFullUrl(url);
-            var webRequest = new HttpRequestMessage(HttpMethod.Put , fullUrl);
+            var webRequest = new HttpRequestMessage(HttpMethod.Put, fullUrl);
             webRequest.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            webRequest.Headers.Add("User-Agent", UserAgentName);
+            if (!string.IsNullOrEmpty(_accessToken))
+            {
+                webRequest.Headers.Add("Authorization", "Bearer " + _accessToken);
+            }
             var data = await HandleRequest(methodId, webRequest, _logger);
             return data;
         }
 
-        public async Task<WebAPIData> PutJsonData(int methodId, string postUrl, object obj)
+        public async Task<T> PutJsonData<T>(int methodId, string url, string jsonData) where T : WebAPIData, new()
+        {
+            var data = await PutJsonData(methodId, url, jsonData);
+            var result = ConvertFromRestData<T>(data);
+            return result;
+        }
+
+
+        public async Task<WebAPIData> PutData(int methodId, string postUrl, object obj)
         {
             string jsonData = await Task.Run(() => JsonConvert.SerializeObject(obj));
             var data = await PutJsonData(methodId, postUrl, jsonData);
             return data;
         }
 
-        private static string GetUrl( HttpRequestMessage webRequest )
+        public async Task<T> PutData<T>(int methodId, string postUrl, object obj) where T : WebAPIData, new()
+        {
+            string jsonData = await Task.Run(() => JsonConvert.SerializeObject(obj));
+            var data = await PutJsonData<T>(methodId, postUrl, jsonData);
+            return data;
+        }
+
+
+        private static string GetUrl(HttpRequestMessage webRequest)
         {
             var uri = webRequest.RequestUri;
-            if ( uri != null )
+            if (uri != null)
             {
                 return uri.AbsoluteUri;
             }
@@ -196,82 +228,41 @@ namespace DFCommonLib.HttpApi
 
         private static async Task<WebAPIData> HandleRequest(int methodId, HttpRequestMessage webRequest, IDFLogger<DFRestClient> logger)
         {
-            var webUrl = GetUrl( webRequest );
+            var webUrl = GetUrl(webRequest);
 
             try
             {
-                var returnData = await client.SendAsync( webRequest );
-                if ( returnData.IsSuccessStatusCode )
+                var returnData = await client.SendAsync(webRequest);
+                if (returnData.IsSuccessStatusCode)
                 {
-                    if ( returnData.Content != null )
+                    if (returnData.Content != null)
                     {
-                        string dataString = await Task.Run(() => returnData.Content.ReadAsStringAsync() );
-                        return new WebAPIData( 0, dataString );
+                        string dataString = await Task.Run(() => returnData.Content.ReadAsStringAsync());
+                        return new WebAPIData(0, dataString);
                     }
                     else
                     {
-                        logger.LogWarning( string.Format("DFRestClient: {0} => 500:Could not read content ", webUrl));
-                        return new WebAPIData( 500, "Could not read content" );
+                        logger.LogWarning(string.Format("DFRestClient: {0} => 500:Could not read content ", webUrl));
+                        return new WebAPIData(500, "Could not read content");
                     }
                 }
 
-                logger.LogWarning( string.Format("DFRestClient: {0} => {1}:{2} ", 
-                    webUrl, 
+                logger.LogWarning(string.Format("DFRestClient: {0} => {1}:{2} ",
+                    webUrl,
                     returnData.StatusCode,
-                    returnData.ReasonPhrase ));
+                    returnData.ReasonPhrase));
 
-                return new WebAPIData( (int) returnData.StatusCode , returnData.ReasonPhrase );
+                return new WebAPIData((int)returnData.StatusCode, returnData.ReasonPhrase);
             }
-            catch( Exception ex )
+            catch (Exception ex)
             {
-                logger.LogWarning( string.Format("DFRestClient: {0} => {1}:{2} ", 
-                    webUrl, 
+                logger.LogWarning(string.Format("DFRestClient: {0} => {1}:{2} ",
+                    webUrl,
                     500,
-                    ex.ToString() ));
+                    ex.ToString()));
 
-                return new WebAPIData( 500 , ex.ToString() );
+                return new WebAPIData(500, ex.ToString());
             }
-        }
-
-        public async Task Authenticate(string clientId, string clientSecret, string tokenUrl)
-        {
-            var requestBody = new Dictionary<string, string>
-            {
-                { "client_id", clientId },
-                { "client_secret", clientSecret },
-                { "grant_type", "client_credentials" }
-            };
-
-            var requestContent = new FormUrlEncodedContent(requestBody);
-            var response = await client.PostAsync(tokenUrl, requestContent);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception("Failed to authenticate: " + response.ReasonPhrase);
-            }
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-            var tokenData = JsonConvert.DeserializeObject<OAuthTokenResponse>(responseContent);
-
-            _accessToken = tokenData.AccessToken;
-            _tokenExpiry = DateTime.UtcNow.AddSeconds(tokenData.ExpiresIn);
-        }
-
-        private void EnsureAuthenticated()
-        {
-            if (string.IsNullOrEmpty(_accessToken) || DateTime.UtcNow >= _tokenExpiry)
-            {
-                throw new Exception("Client is not authenticated or token has expired.");
-            }
-        }
-
-        public class OAuthTokenResponse
-        {
-            [JsonProperty("access_token")]
-            public string AccessToken { get; set; }
-
-            [JsonProperty("expires_in")]
-            public int ExpiresIn { get; set; }
         }
     }
 }

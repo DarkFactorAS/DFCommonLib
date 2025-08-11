@@ -4,20 +4,22 @@ using DFCommonLib.Logger;
 using DFCommonLib.Utils;
 using DFCommonLib.Config;
 using TestApp;
+using TestApp.Model;
 
 namespace DFCommonLib.TestApp.Controller
 {
+    
     public class DFRestClientController : DFRestClient
     {
-        private readonly IDFRestClient _dfRestClient;
+        private readonly TestRestClient _restClient;
 
         public DFRestClientController()
         {
             var configurationHelper = DFServices.GetService<IConfigurationHelper>();
             var config = configurationHelper.Settings as TestAppConfig;
 
-            _dfRestClient = new DFRestClient();
-            _dfRestClient.SetEndpoint(config.TestApi.Endpoint);
+            _restClient = new TestRestClient();
+            _restClient.SetEndpoint(config.TestApi.Endpoint);
         }
 
         [HttpGet("RunAllPrograms")]
@@ -25,6 +27,7 @@ namespace DFCommonLib.TestApp.Controller
         {
             RunLogTest();
             RunPingTest();
+            RunModelClassTest();
             return "All programs are running";
         }
 
@@ -46,8 +49,21 @@ namespace DFCommonLib.TestApp.Controller
         public void RunPingTest()
         {
             // The test is set to ping the account server for now
-            var result = _dfRestClient.PingServer();
+            var result = _restClient.PingServer();
             _logger.LogDebug($"Ping result: {result}");
+        }
+
+        [HttpGet("RunModelClassTest")]
+        public RestDataModel RunModelClassTest()
+        {
+            var model = new RestDataModel
+            {
+                Id = 1,
+                Name = "Test Model"
+            };
+            RestDataModel resultModel = _restClient.TestModelClass(model).Result;
+            _logger.LogDebug($"Model class test result: {resultModel.Name}");
+            return resultModel;
         }
     }
 }

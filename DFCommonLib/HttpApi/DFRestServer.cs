@@ -13,13 +13,13 @@ namespace DFCommonLib.HttpApi
 {
     [ApiController]
     [Route("[controller]")]
-    public class DFRestServer : ControllerBase
+    public class DFRestServerController : ControllerBase
     {
-        private readonly ILogger<DFRestServer> _logger;
+        private readonly ILogger<DFRestServerController> _logger;
 
-        public DFRestServer()
+        public DFRestServerController()
         {
-            _logger = DFServices.GetService<ILogger<DFRestServer>>();
+            _logger = DFServices.GetService<ILogger<DFRestServerController>>();
         }
 
         [HttpGet("Ping")]
