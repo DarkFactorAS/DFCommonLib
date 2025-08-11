@@ -33,5 +33,5 @@ jobs:
       run: dotnet pack ${{ env.SOURCE_PATH }} --configuration ${{ env.CONFIGURATION }}
     - name: Deploy
       run: 
-        dotnet nuget push "DFCommonLib/bin/Debug/*.nupkg"  --api-key ${{ secrets.NUGET_TOKEN }} --source "github" --skip-duplicate
+        dotnet nuget push "DFCommonLib/bin/${{ env.CONFIGURATION }}/*.nupkg"  --api-key ${{ secrets.NUGET_TOKEN }} --source "DarkFactorAS" --skip-duplicate
   
