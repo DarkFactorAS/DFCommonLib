@@ -29,7 +29,7 @@ namespace DFCommonLib.Utils
         }
 
         // JWT Token Generation
-        public static string GenerateJwtToken(string secret, IList<KeyValuePair<string, string>> claims)
+        public static string GenerateJwtToken(string secret, IList<KeyValuePair<string, string>> claims, uint expiresIn = 1)
         {
             // Enforce minimum secret length for security (e.g., 32 characters for HMAC-SHA256)
             if (string.IsNullOrEmpty(secret) || secret.Length < 32)
@@ -38,11 +38,12 @@ namespace DFCommonLib.Utils
             }
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var timeSpan = TimeSpan.FromHours(expiresIn);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new System.Security.Claims.ClaimsIdentity(claims.Select(c => new System.Security.Claims.Claim(c.Key, c.Value))),
-                Expires = DateTime.UtcNow.Add((expiresIn ?? TimeSpan.FromHours(1))),
+                Expires = DateTime.UtcNow.Add(timeSpan),
                 SigningCredentials = credentials
             };
 
