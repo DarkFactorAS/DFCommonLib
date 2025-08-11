@@ -136,7 +136,6 @@ namespace DFCommonLib.HttpApi
 
         public async Task<WebAPIData> GetJsonData(int methodId, string url)
         {
-            //EnsureAuthenticated();
 
             var fullUrl = GetFullUrl(url);
             var webRequest = new HttpRequestMessage(HttpMethod.Get, fullUrl);
