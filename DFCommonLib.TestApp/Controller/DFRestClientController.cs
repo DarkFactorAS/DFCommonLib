@@ -5,6 +5,7 @@ using DFCommonLib.Utils;
 using DFCommonLib.Config;
 using TestApp;
 using TestApp.Model;
+using System.Threading.Tasks;
 
 namespace DFCommonLib.TestApp.Controller
 {
@@ -54,14 +55,7 @@ namespace DFCommonLib.TestApp.Controller
         }
 
         [HttpGet("RunModelClassTest")]
-        public RestDataModel RunModelClassTest()
-        {
-            var model = new RestDataModel
-            {
-                Id = 1,
-                Name = "Test Model"
-            };
-        public async System.Threading.Tasks.Task<RestDataModel> RunModelClassTest()
+        public async Task<RestDataModel> RunModelClassTest()
         {
             var model = new RestDataModel
             {
