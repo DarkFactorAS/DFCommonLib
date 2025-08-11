@@ -3,9 +3,17 @@
 
 name: Deploy NuGet package
 
+env:
+  PROJECT: DFCommonLib.csproj
+  CONFIGURATION: Debug
+
 on:
   workflow_dispatch:
- 
+
+defaults:
+  run:
+    working-directory: ./DFCommonLib
+
 jobs:
   build:
 
@@ -17,18 +25,20 @@ jobs:
       uses: actions/setup-dotnet@v3
 #      with:
 #        dotnet-version: 7.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore --configuration Debug
-    - name: Test
-      run: dotnet test --no-build --verbosity normal --configuration Debug
-    - name: Pack Nuget
-      run: dotnet pack --configuration Debug
+
     - name: Add GitHub nuget repository
-      run: 
-        dotnet nuget add source --username ${{ vars.NUGET_USERNAME }}  --password ${{ secrets.NUGET_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/DarkFactorAS/index.json"
+      run: dotnet nuget update source DarkFactorAS --username ${{ secrets.NUGET_USERNAME }}  --password ${{ secrets.NUGET_TOKEN }} --store-password-in-clear-text
+
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.PROJECT }}
+
+    - name: Build
+      run: dotnet build ${{ env.PROJECT }} --no-restore --configuration ${{ env.CONFIGURATION }}
+
+    - name: Pack Nuget
+      run: dotnet pack ${{ env.PROJECT }} --configuration ${{ env.CONFIGURATION }}
+
     - name: Deploy
       run: 
-        dotnet nuget push "DFCommonLib/bin/Debug/*.nupkg"  --api-key ${{ secrets.NUGET_TOKEN }} --source "github" --skip-duplicate
+        dotnet nuget push "bin/${{ env.CONFIGURATION }}/*.nupkg"  --api-key ${{ secrets.NUGET_TOKEN }} --source "DarkFactorAS" --skip-duplicate
   
