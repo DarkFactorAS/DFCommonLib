@@ -24,11 +24,11 @@ namespace DFCommonLib.TestApp.Controller
         }
 
         [HttpGet("RunAllPrograms")]
-        public string RunAllPrograms()
+        public async Task<string> RunAllPrograms()
         {
             RunLogTest();
             RunPingTest();
-            RunModelClassTest();
+            await RunModelClassTest();
             return "All programs are running";
         }
 
