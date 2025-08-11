@@ -61,7 +61,14 @@ namespace DFCommonLib.TestApp.Controller
                 Id = 1,
                 Name = "Test Model"
             };
-            RestDataModel resultModel = _restClient.TestModelClass(model).Result;
+        public async System.Threading.Tasks.Task<RestDataModel> RunModelClassTest()
+        {
+            var model = new RestDataModel
+            {
+                Id = 1,
+                Name = "Test Model"
+            };
+            RestDataModel resultModel = await _restClient.TestModelClass(model);
             _logger.LogDebug($"Model class test result: {resultModel.Name}");
             return resultModel;
         }
