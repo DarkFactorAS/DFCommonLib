@@ -192,7 +192,7 @@ namespace DFCommonLib.HttpApi
             return data;
         }
 
-        public async Task<T> PutJsonData<T>(int methodId, string url, string jsonData) where T : WebAPIData, new()
+        public async Task<T> PutJsonDataAs<T>(int methodId, string url, string jsonData) where T : WebAPIData, new()
         {
             var data = await PutJsonData(methodId, url, jsonData);
             var result = ConvertFromRestData<T>(data);
