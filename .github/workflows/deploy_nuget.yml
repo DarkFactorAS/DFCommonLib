@@ -3,6 +3,10 @@
 
 name: Deploy NuGet package
 
+env:
+  SOURCE_PATH: DFCommonLib/DFCommonLib.csproj
+  CONFIGURATION: Debug
+
 on:
   workflow_dispatch:
  
@@ -20,11 +24,11 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore --configuration Debug
+      run: dotnet build --no-restore --configuration ${{ env.CONFIGURATION }}
     - name: Test
-      run: dotnet test --no-build --verbosity normal --configuration Debug
+      run: dotnet test --no-build --verbosity normal --configuration ${{ env.CONFIGURATION }}
     - name: Pack Nuget
-      run: dotnet pack --configuration Debug
+      run: dotnet pack ${{ env.SOURCE_PATH }} --configuration ${{ env.CONFIGURATION }}
     - name: Add GitHub nuget repository
       run: 
         dotnet nuget add source --username ${{ vars.NUGET_USERNAME }}  --password ${{ secrets.NUGET_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/DarkFactorAS/index.json"
