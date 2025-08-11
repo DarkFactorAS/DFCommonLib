@@ -210,7 +210,7 @@ namespace DFCommonLib.HttpApi
         public async Task<T> PutData<T>(int methodId, string postUrl, object obj) where T : WebAPIData, new()
         {
             string jsonData = await Task.Run(() => JsonConvert.SerializeObject(obj));
-            var data = await PutJsonData<T>(methodId, postUrl, jsonData);
+            var data = await PutJsonDataAs<T>(methodId, postUrl, jsonData);
             return data;
         }
 
