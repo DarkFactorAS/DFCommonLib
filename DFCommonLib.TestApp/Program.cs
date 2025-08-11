@@ -14,7 +14,6 @@ using DFCommonLib.Logger;
 using DFCommonLib.Utils;
 using DFCommonLib.DataAccess;
 using TestApp;
-using DFCommonLib.TestApp.Programs;
 using Google.Protobuf.WellKnownTypes;
 
 namespace DFCommonLibApp
@@ -35,22 +34,24 @@ namespace DFCommonLibApp
                 IConfigurationHelper configurationHelper = DFServices.GetService<IConfigurationHelper>();
                 var settings = configurationHelper.Settings;
                 var msg = string.Format("Connecting to DB : {0}", settings.DatabaseConnection.Server);
-                DFLogger.LogOutput(DFLogLevel.INFO, "BotServer", msg);
+                logger.LogDebug(msg);
 
-                new LoggingProgram();
-                new DFRestClientProgram();
-
-                IStartupDatabasePatcher startupRepository = DFServices.GetService<IStartupDatabasePatcher>();
-                startupRepository.WaitForConnection(1);
-                if (startupRepository.RunPatcher())
+                try
                 {
-                    DFLogger.LogOutput(DFLogLevel.INFO, "Startup", "Database patcher ran successfully");
+                    IStartupDatabasePatcher startupRepository = DFServices.GetService<IStartupDatabasePatcher>();
+                    startupRepository.WaitForConnection(1);
+                    if (startupRepository.RunPatcher())
+                    {
+                        logger.LogDebug("Database patcher ran successfully");
+                    }
+                    else
+                    {
+                        logger.LogError("Database patcher failed");
+                    }
                 }
-                else
+                catch (System.Exception ex)
                 {
-                    DFLogger.LogOutput(DFLogLevel.ERROR, "Startup", "Database patcher failed");
-                    Environment.Exit(1);
-                    return;
+                    logger.LogException("An error occurred while running the database patcher", ex);
                 }
 
                 builder.Run();

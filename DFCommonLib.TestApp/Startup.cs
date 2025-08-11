@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using DFCommonLib.Utils;
 using DFCommonLib.Logger;
 using DFCommonLib.DataAccess;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace DFCommonLibApp
 {
@@ -35,8 +36,8 @@ namespace DFCommonLibApp
 
             services.AddControllers();
             services.AddMvc();
-
             // register the swagger generator
+            services.AddSwaggerGen();
             // services.AddSwaggerGen();
 
             services.AddSession(options =>
@@ -71,6 +72,14 @@ namespace DFCommonLibApp
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSwagger();
+            // specify the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.RoutePrefix = string.Empty;
             });
         }
     }
