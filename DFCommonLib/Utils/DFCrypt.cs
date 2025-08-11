@@ -37,7 +37,7 @@ namespace DFCommonLib.Utils
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new System.Security.Claims.ClaimsIdentity(claims.Select(c => new System.Security.Claims.Claim(c.Key, c.Value))),
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = DateTime.UtcNow.Add((expiresIn ?? TimeSpan.FromHours(1))),
                 SigningCredentials = credentials
             };
 
