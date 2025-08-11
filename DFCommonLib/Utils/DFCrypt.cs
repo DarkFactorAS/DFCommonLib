@@ -31,6 +31,11 @@ namespace DFCommonLib.Utils
         // JWT Token Generation
         public static string GenerateJwtToken(string secret, IList<KeyValuePair<string, string>> claims)
         {
+            // Enforce minimum secret length for security (e.g., 32 characters for HMAC-SHA256)
+            if (string.IsNullOrEmpty(secret) || secret.Length < 32)
+            {
+                throw new ArgumentException("JWT secret is too short. It must be at least 32 characters long for adequate security.", nameof(secret));
+            }
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
