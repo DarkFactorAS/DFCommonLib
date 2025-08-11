@@ -27,8 +27,15 @@ jobs:
     - name: Lib - Build
       run: dotnet build DFCommonLib/DFCommonLib.csproj --no-restore --configuration Release
 
+    # Build test client
+    - name: Test Client - Restore dependencies
+      run: dotnet restore DFCommonLib.TestApp/DFCommonLib.TestApp.csproj
+    - name: Test Client - Build
+      run: dotnet build DFCommonLib.TestApp/DFCommonLib.TestApp.csproj --no-restore --configuration Release
+
     # Run Unittests
     - name: Test Build
       run: dotnet build DFCommonLib.Unittests/DFCommonLib.Unittests.csproj --configuration Release
     - name: Test Run
       run: dotnet test --no-build --verbosity normal --configuration Release
+
