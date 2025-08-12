@@ -9,8 +9,7 @@ namespace DFCommonLib.HttpApi
     public interface IDFClient
     {
         void SetEndpoint(string endpoint);
-        string Ping();
-        Task<WebAPIData> PingServer();
+        string PingServer();
     }
 
     public class DFClient : IDFClient
@@ -27,28 +26,9 @@ namespace DFCommonLib.HttpApi
             _dfRestClient.SetEndpoint(endpoint);
         }
 
-        public string Ping()
+        public string PingServer()
         {
             return _dfRestClient.PingServer();
-        }
-
-        public Task<WebAPIData> PingServer()
-        {
-            var ret = _dfRestClient.PingServer();
-            if (ret == null)
-            {
-                return Task.FromResult(new WebAPIData
-                {
-                    errorCode = 500,
-                    message = "Ping failed"
-                });
-            }
-
-            return Task.FromResult(new WebAPIData
-            {
-                errorCode = 0,
-                message = ret
-            });
         }
     }
 }
