@@ -35,6 +35,11 @@ namespace DFCommonLib.HttpApi
         private string _accessToken;
         private DateTime _tokenExpiry;
 
+        public DFRestClient(IDFLogger<DFRestClient> logger)
+        {
+            _logger = logger;
+        }
+
         public DFRestClient()
         {
             _logger = DFServices.GetService<IDFLogger<DFRestClient>>();
