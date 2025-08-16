@@ -119,6 +119,16 @@ namespace DFCommonLib.HttpApi
                 _logger.LogWarning("DFRestClient: Ping returned null data");
                 return new WebAPIData { errorCode = 500, message = "Ping returned null data" };
             }
+            if (data.errorCode != 0)
+            {
+                _logger.LogWarning($"DFRestClient: Ping failed with error code {data.errorCode} and message: {data.message}");
+                return new WebAPIData { errorCode = data.errorCode, message = data.message };
+            }
+            if ( data.message != "PONG")
+            {
+                _logger.LogWarning($"DFRestClient: Ping returned unexpected message: {data.message}");
+                return new WebAPIData { errorCode = 500, message = "Ping returned unexpected message" };
+            }
             return new WebAPIData { errorCode = data.errorCode, message = data.message };
         }
 

@@ -27,7 +27,7 @@ namespace DFCommonLib.Unittests.Tests
                 return await Task.FromResult(_mockResponse);
             }
         }
-        
+
         [SetUp]
         public void Setup()
         {
@@ -61,7 +61,7 @@ namespace DFCommonLib.Unittests.Tests
         public async Task TestHandleRequestMock()
         {
             // Arrange
-            var mockResponse = new WebAPIData(0, "{\"message\":\"Success\"}");
+            var mockResponse = new WebAPIData(0, "Success");
             var testClient = new TestableDFRestClient(_mockLogger.Object, mockResponse);
 
             // Act
@@ -70,7 +70,41 @@ namespace DFCommonLib.Unittests.Tests
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.errorCode, Is.EqualTo(0));
-            Assert.That(result.message, Is.EqualTo("{\"message\":\"Success\"}"));
+            Assert.That(result.message, Is.EqualTo("Success"));
+        }
+
+        [Test]
+        public async Task TestPingError()
+        {
+            // Arrange
+            string message = "Ping Failed";
+            var mockResponse = new WebAPIData(0, message);
+            var testClient = new TestableDFRestClient(_mockLogger.Object, mockResponse);
+
+            // Act
+            var result = await testClient.Ping();
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.errorCode, Is.Not.EqualTo(0));
+            Assert.That(result.message, Is.Not.EqualTo(message));
+        }
+
+        [Test]
+        public async Task TestPingSuccess()
+        {
+            // Arrange
+            string message = "PONG";
+            var mockResponse = new WebAPIData(0, message);
+            var testClient = new TestableDFRestClient(_mockLogger.Object, mockResponse);
+
+            // Act
+            var result = await testClient.Ping();
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.errorCode, Is.EqualTo(0));
+            Assert.That(result.message, Is.EqualTo(message));
         }
     }
 }
