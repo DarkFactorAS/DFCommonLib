@@ -21,7 +21,7 @@ namespace DFCommonLib.HttpApi
     public interface IDFRestClient
     {
         void SetEndpoint(string endpoint);
-        string PingServer();
+        Task<WebAPIData> Ping();
     }
 
     public class DFRestClient : IDFRestClient
@@ -33,7 +33,6 @@ namespace DFCommonLib.HttpApi
         protected string _endpoint;
 
         private string _accessToken;
-        private DateTime _tokenExpiry;
 
         public DFRestClient(IDFLogger<DFRestClient> logger)
         {
@@ -59,6 +58,11 @@ namespace DFCommonLib.HttpApi
             return null;
         }
 
+        public void SetAccessToken(string token)
+        {
+            _accessToken = token;
+        }
+
         public void SetEndpoint(string endpoint)
         {
             _endpoint = endpoint;
@@ -80,34 +84,6 @@ namespace DFCommonLib.HttpApi
             var data = Convert.FromBase64String(encodedString);
             string decodedString = Encoding.UTF8.GetString(data);
             return decodedString;
-        }
-
-        public string PingServer()
-        {
-            // Force async execution to wait for the result
-            var data = GetJsonData(0, "Ping").Result;
-            if (data == null)
-            {
-                _logger.LogWarning("DFRestClient: PingServer returned null data");
-                return "PingServer returned null data";
-            }
-
-            if (data.errorCode > 299)
-            {
-                var msg = string.Format("DFRestClient: PingServer failed with error code {0} and message: {1}",
-                    data.errorCode,
-                    data.message);
-                _logger.LogWarning(msg);
-                return msg;
-            }
-
-            if (data.message == null)
-            {
-                _logger.LogWarning("DFRestClient: PingServer returned null message");
-                return "PingServer returned null message";
-            }
-
-            return data.message;
         }
 
         private string GetFullUrl(string method)
@@ -139,6 +115,27 @@ namespace DFCommonLib.HttpApi
             return cls;
         }
 
+        public async Task<WebAPIData> Ping()
+        {
+            var data = await GetJsonData(0, "Ping");
+            if (data == null)
+            {
+                _logger.LogWarning("DFRestClient: Ping returned null data");
+                return new WebAPIData { errorCode = 500, message = "Ping returned null data" };
+            }
+            if (data.errorCode != 0)
+            {
+                _logger.LogWarning($"DFRestClient: Ping failed with error code {data.errorCode} and message: {data.message}");
+                return new WebAPIData { errorCode = data.errorCode, message = data.message };
+            }
+            if (data.message != "PONG")
+            {
+                _logger.LogWarning($"DFRestClient: Ping returned unexpected message: {data.message}");
+                return new WebAPIData { errorCode = 500, message = "Ping returned unexpected message" };
+            }
+            return new WebAPIData { errorCode = data.errorCode, message = data.message };
+        }
+
         public async Task<WebAPIData> GetJsonData(int methodId, string url)
         {
 
@@ -150,17 +147,20 @@ namespace DFCommonLib.HttpApi
                 webRequest.Headers.Add("Authorization", "Bearer " + _accessToken);
             }
 
-            var data = await HandleRequest(methodId, webRequest, _logger);
+            var data = await HandleRequest(methodId, webRequest);
             return data;
         }
 
-        public async Task<T> GetJsonData<T>(int methodId, string url) where T : WebAPIData, new()
+        public async Task<T> GetJsonDataAs<T>(int methodId, string url) where T : WebAPIData, new()
         {
             var data = await GetJsonData(methodId, url);
             var result = ConvertFromRestData<T>(data);
             return result;
         }
 
+        //
+        // Put functions
+        //
         public async Task<WebAPIData> PostJsonData(int methodId, string url, string jsonData)
         {
             var fullUrl = GetFullUrl(url);
@@ -171,18 +171,35 @@ namespace DFCommonLib.HttpApi
             {
                 webRequest.Headers.Add("Authorization", "Bearer " + _accessToken);
             }
-
-            var data = await HandleRequest(methodId, webRequest, _logger);
+            var data = await HandleRequest(methodId, webRequest);
             return data;
         }
 
-        public async Task<WebAPIData> PostJsonData(int methodId, string postUrl, object obj)
+        public async Task<T> PostJsonDataAs<T>(int methodId, string url, string jsonData) where T : WebAPIData, new()
+        {
+            var data = await PostJsonData(methodId, url, jsonData);
+            var result = ConvertFromRestData<T>(data);
+            return result;
+        }
+
+
+        public async Task<WebAPIData> PostData(int methodId, string postUrl, object obj)
         {
             string jsonData = await Task.Run(() => JsonConvert.SerializeObject(obj));
             var data = await PostJsonData(methodId, postUrl, jsonData);
             return data;
         }
 
+        public async Task<T> PostDataAs<T>(int methodId, string postUrl, object obj) where T : WebAPIData, new()
+        {
+            string jsonData = await Task.Run(() => JsonConvert.SerializeObject(obj));
+            var data = await PostJsonDataAs<T>(methodId, postUrl, jsonData);
+            return data;
+        }
+
+        //
+        // Put functions
+        //
         public async Task<WebAPIData> PutJsonData(int methodId, string url, string jsonData)
         {
             var fullUrl = GetFullUrl(url);
@@ -193,7 +210,7 @@ namespace DFCommonLib.HttpApi
             {
                 webRequest.Headers.Add("Authorization", "Bearer " + _accessToken);
             }
-            var data = await HandleRequest(methodId, webRequest, _logger);
+            var data = await HandleRequest(methodId, webRequest);
             return data;
         }
 
@@ -212,7 +229,7 @@ namespace DFCommonLib.HttpApi
             return data;
         }
 
-        public async Task<T> PutData<T>(int methodId, string postUrl, object obj) where T : WebAPIData, new()
+        public async Task<T> PutDataAs<T>(int methodId, string postUrl, object obj) where T : WebAPIData, new()
         {
             string jsonData = await Task.Run(() => JsonConvert.SerializeObject(obj));
             var data = await PutJsonDataAs<T>(methodId, postUrl, jsonData);
@@ -220,7 +237,7 @@ namespace DFCommonLib.HttpApi
         }
 
 
-        private static string GetUrl(HttpRequestMessage webRequest)
+        private string GetUrl(HttpRequestMessage webRequest)
         {
             var uri = webRequest.RequestUri;
             if (uri != null)
@@ -230,7 +247,7 @@ namespace DFCommonLib.HttpApi
             return "";
         }
 
-        private static async Task<WebAPIData> HandleRequest(int methodId, HttpRequestMessage webRequest, IDFLogger<DFRestClient> logger)
+        protected virtual async Task<WebAPIData> HandleRequest(int methodId, HttpRequestMessage webRequest)
         {
             var webUrl = GetUrl(webRequest);
 
@@ -246,12 +263,12 @@ namespace DFCommonLib.HttpApi
                     }
                     else
                     {
-                        logger.LogWarning(string.Format("DFRestClient: {0} => 500:Could not read content ", webUrl));
+                        _logger.LogWarning(string.Format("DFRestClient: {0} => 500:Could not read content ", webUrl));
                         return new WebAPIData(500, "Could not read content");
                     }
                 }
 
-                logger.LogWarning(string.Format("DFRestClient: {0} => {1}:{2} ",
+                _logger.LogWarning(string.Format("DFRestClient: {0} => {1}:{2} ",
                     webUrl,
                     returnData.StatusCode,
                     returnData.ReasonPhrase));
@@ -260,7 +277,7 @@ namespace DFCommonLib.HttpApi
             }
             catch (Exception ex)
             {
-                logger.LogWarning(string.Format("DFRestClient: {0} => {1}:{2} ",
+                _logger.LogWarning(string.Format("DFRestClient: {0} => {1}:{2} ",
                     webUrl,
                     500,
                     ex.ToString()));
