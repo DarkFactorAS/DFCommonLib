@@ -33,7 +33,6 @@ namespace DFCommonLib.HttpApi
         protected string _endpoint;
 
         private string _accessToken;
-        private DateTime _tokenExpiry;
 
         public DFRestClient(IDFLogger<DFRestClient> logger)
         {
@@ -57,6 +56,11 @@ namespace DFCommonLib.HttpApi
         virtual protected string GetModule()
         {
             return null;
+        }
+
+        public void SetAccessToken(string token)
+        {
+            _accessToken = token;
         }
 
         public void SetEndpoint(string endpoint)
