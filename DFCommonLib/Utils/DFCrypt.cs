@@ -45,7 +45,6 @@ namespace DFCommonLib.Utils
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                //Subject = new System.Security.Claims.ClaimsIdentity(claims.Select(c => new System.Security.Claims.Claim(c.Key, c.Value))),
                 Expires = DateTime.UtcNow.Add(timeSpan),
                 SigningCredentials = credentials,
                 Audience = audience,
