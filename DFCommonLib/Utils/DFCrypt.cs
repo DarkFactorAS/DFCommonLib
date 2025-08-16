@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using DFCommonLib.Utils;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using DFCommonLib.Logger;
 
 namespace DFCommonLib.Utils
 {
@@ -83,7 +84,7 @@ namespace DFCommonLib.Utils
             catch (Exception ex)
             {
                 // Log or handle the exception based on your application's needs
-                Console.WriteLine($"Token validation failed: {ex.Message}");
+                DFLogger.LogOutput(DFLogLevel.EXCEPTION, "DFCrypt", $"Token validation failed: {ex.Message}");
                 return null;
             }
         }
