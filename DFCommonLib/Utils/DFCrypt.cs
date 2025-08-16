@@ -57,7 +57,7 @@ namespace DFCommonLib.Utils
             return tokenHandler.WriteToken(token);
         }
 
-        public ClaimsPrincipal ValidateJwtToken(string token, string issuer, string audience, string signingKey)
+        public static ClaimsPrincipal ValidateJwtToken(string token, string issuer, string audience, string signingKey)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(signingKey);
