@@ -47,11 +47,19 @@ namespace DFCommonLib.TestApp.Controller
         }
 
         [HttpGet("RunPingTest")]
-        public void RunPingTest()
+        public string RunPingTest()
         {
-            // The test is set to ping the account server for now
-            var result = _restClient.PingServer();
-            _logger.LogDebug($"Ping result: {result}");
+            var result = _restClient.Ping().Result;
+            if (result == null || result.errorCode != 0 || string.IsNullOrEmpty(result.message))
+            {
+                throw new System.Exception($"Ping failed");
+            }
+            _logger.LogDebug($"Ping result: {result.message}");
+            if (result.message != "PONG")
+            {
+                throw new System.Exception($"Ping failed with unexpected message: {result.message}");
+            }
+            return result.message;
         }
 
         [HttpGet("RunModelClassTest")]

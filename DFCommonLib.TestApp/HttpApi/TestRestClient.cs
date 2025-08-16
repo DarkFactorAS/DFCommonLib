@@ -21,7 +21,7 @@ namespace TestApp.Model
 
         public async Task<RestDataModel> TestModelClass(RestDataModel model)
         {
-            var response = await PutData<RestDataModel>(POST_TESTMODEL, "TestModelClass", model);
+            var response = await PutDataAs<RestDataModel>(POST_TESTMODEL, "TestModelClass", model);
             return response;
         }
 
