@@ -28,6 +28,16 @@ namespace DFCommonLib.Unittests.Tests
             }
         }
 
+        private class TestDataObject : WebAPIData
+        {
+            public int extraStuff;
+
+            public TestDataObject()
+            {
+                extraStuff = 0;
+            }
+        }
+
         [SetUp]
         public void Setup()
         {
@@ -54,23 +64,6 @@ namespace DFCommonLib.Unittests.Tests
 
             // Assert
             Assert.That(result, Is.EqualTo(endpoint));
-        }
-
-
-        [Test]
-        public async Task TestHandleRequestMock()
-        {
-            // Arrange
-            var mockResponse = new WebAPIData(0, "Success");
-            var testClient = new TestableDFRestClient(_mockLogger.Object, mockResponse);
-
-            // Act
-            var result = await testClient.GetJsonData(1, "testUrl");
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.errorCode, Is.EqualTo(0));
-            Assert.That(result.message, Is.EqualTo("Success"));
         }
 
         [Test]
@@ -106,5 +99,175 @@ namespace DFCommonLib.Unittests.Tests
             Assert.That(result.errorCode, Is.EqualTo(0));
             Assert.That(result.message, Is.EqualTo(message));
         }
+
+        [Test]
+        public async Task TestGetJsonData()
+        {
+            // Arrange
+            var mockResponse = new WebAPIData(0, "Success");
+            var testClient = new TestableDFRestClient(_mockLogger.Object, mockResponse);
+
+            // Act
+            var result = await testClient.GetJsonData(1, "testUrl");
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.errorCode, Is.EqualTo(0));
+            Assert.That(result.message, Is.EqualTo("Success"));
+        }
+
+
+        [Test]
+        public async Task TestGetJsonDataAs()
+        {
+            // Arrange
+            var mockResponse = new WebAPIData(0, "{ \"errorCode\": 0, \"message\": \"Success\", \"extraStuff\": 42 }");
+            var testClient = new TestableDFRestClient(_mockLogger.Object, mockResponse);
+
+            // Act
+            var result = await testClient.GetJsonDataAs<TestDataObject>(1, "testUrl");
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.errorCode, Is.EqualTo(0));
+            Assert.That(result.message, Is.EqualTo("Success"));
+            Assert.That(result.extraStuff, Is.EqualTo(42));
+        }
+
+        [Test]
+        public async Task TestPutJsonData()
+        {
+            // Arrange
+            var mockResponse = new WebAPIData(0, "Success");
+            var testClient = new TestableDFRestClient(_mockLogger.Object, mockResponse);
+
+            // Act
+            var result = await testClient.PutJsonData(1, "testUrl", "IGNORE-TEXT");
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.errorCode, Is.EqualTo(0));
+            Assert.That(result.message, Is.EqualTo("Success"));
+        }
+
+        [Test]
+        public async Task TestPutData()
+        {
+            // Arrange
+            var mockResponse = new WebAPIData(0, "Success");
+            var testClient = new TestableDFRestClient(_mockLogger.Object, mockResponse);
+
+            // Act
+            var result = await testClient.PutData(1, "testUrl", new TestDataObject());
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.errorCode, Is.EqualTo(0));
+            Assert.That(result.message, Is.EqualTo("Success"));
+        }
+
+        [Test]
+        public async Task TestPutJsonDataAs()
+        {
+            // Arrange
+            var mockResponse = new WebAPIData(0, "{ \"errorCode\": 0, \"message\": \"Success\", \"extraStuff\": 42 }");
+            var testClient = new TestableDFRestClient(_mockLogger.Object, mockResponse);
+
+            // Act
+            var result = await testClient.PutJsonDataAs<TestDataObject>(1, "testUrl", "IGNORE");
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.errorCode, Is.EqualTo(0));
+            Assert.That(result.message, Is.EqualTo("Success"));
+            Assert.That(result.extraStuff, Is.EqualTo(42));
+        }
+
+        [Test]
+        public async Task TestPutDataAs()
+        {
+            // Arrange
+            var mockResponse = new WebAPIData(0, "{ \"errorCode\": 0, \"message\": \"Success\", \"extraStuff\": 42 }");
+            var testClient = new TestableDFRestClient(_mockLogger.Object, mockResponse);
+
+            // Act
+            var result = await testClient.PutDataAs<TestDataObject>(1, "testUrl", new TestDataObject());
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.errorCode, Is.EqualTo(0));
+            Assert.That(result.message, Is.EqualTo("Success"));
+            Assert.That(result.extraStuff, Is.EqualTo(42));
+        }
+
+
+        //
+        // Post functions
+        //
+        [Test]
+        public async Task TestPostJsonData()
+        {
+            // Arrange
+            var mockResponse = new WebAPIData(0, "Success");
+            var testClient = new TestableDFRestClient(_mockLogger.Object, mockResponse);
+
+            // Act
+            var result = await testClient.PostJsonData(1, "testUrl", "IGNORE-TEXT");
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.errorCode, Is.EqualTo(0));
+            Assert.That(result.message, Is.EqualTo("Success"));
+        }
+
+        [Test]
+        public async Task TestPostData()
+        {
+            // Arrange
+            var mockResponse = new WebAPIData(0, "Success");
+            var testClient = new TestableDFRestClient(_mockLogger.Object, mockResponse);
+
+            // Act
+            var result = await testClient.PostData(1, "testUrl", new TestDataObject());
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.errorCode, Is.EqualTo(0));
+            Assert.That(result.message, Is.EqualTo("Success"));
+        }
+
+        [Test]
+        public async Task TestPostJsonDataAs()
+        {
+            // Arrange
+            var mockResponse = new WebAPIData(0, "{ \"errorCode\": 0, \"message\": \"Success\", \"extraStuff\": 42 }");
+            var testClient = new TestableDFRestClient(_mockLogger.Object, mockResponse);
+
+            // Act
+            var result = await testClient.PostJsonDataAs<TestDataObject>(1, "testUrl", "IGNORE");
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.errorCode, Is.EqualTo(0));
+            Assert.That(result.message, Is.EqualTo("Success"));
+            Assert.That(result.extraStuff, Is.EqualTo(42));
+        }            
+
+        [Test]
+        public async Task TestPostDataAs()
+        {
+            // Arrange
+            var mockResponse = new WebAPIData(0, "{ \"errorCode\": 0, \"message\": \"Success\", \"extraStuff\": 42 }");
+            var testClient = new TestableDFRestClient(_mockLogger.Object, mockResponse);
+
+            // Act
+            var result = await testClient.PostDataAs<TestDataObject>(1, "testUrl", new TestDataObject());
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.errorCode, Is.EqualTo(0));
+            Assert.That(result.message, Is.EqualTo("Success"));
+            Assert.That(result.extraStuff, Is.EqualTo(42));
+        }            
     }
 }

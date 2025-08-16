@@ -147,13 +147,16 @@ namespace DFCommonLib.HttpApi
             return data;
         }
 
-        public async Task<T> GetJsonData<T>(int methodId, string url) where T : WebAPIData, new()
+        public async Task<T> GetJsonDataAs<T>(int methodId, string url) where T : WebAPIData, new()
         {
             var data = await GetJsonData(methodId, url);
             var result = ConvertFromRestData<T>(data);
             return result;
         }
 
+        //
+        // Put functions
+        //
         public async Task<WebAPIData> PostJsonData(int methodId, string url, string jsonData)
         {
             var fullUrl = GetFullUrl(url);
@@ -164,18 +167,35 @@ namespace DFCommonLib.HttpApi
             {
                 webRequest.Headers.Add("Authorization", "Bearer " + _accessToken);
             }
-
             var data = await HandleRequest(methodId, webRequest);
             return data;
         }
 
-        public async Task<WebAPIData> PostJsonData(int methodId, string postUrl, object obj)
+        public async Task<T> PostJsonDataAs<T>(int methodId, string url, string jsonData) where T : WebAPIData, new()
+        {
+            var data = await PostJsonData(methodId, url, jsonData);
+            var result = ConvertFromRestData<T>(data);
+            return result;
+        }
+
+
+        public async Task<WebAPIData> PostData(int methodId, string postUrl, object obj)
         {
             string jsonData = await Task.Run(() => JsonConvert.SerializeObject(obj));
             var data = await PostJsonData(methodId, postUrl, jsonData);
             return data;
         }
 
+        public async Task<T> PostDataAs<T>(int methodId, string postUrl, object obj) where T : WebAPIData, new()
+        {
+            string jsonData = await Task.Run(() => JsonConvert.SerializeObject(obj));
+            var data = await PostJsonDataAs<T>(methodId, postUrl, jsonData);
+            return data;
+        }
+
+        //
+        // Put functions
+        //
         public async Task<WebAPIData> PutJsonData(int methodId, string url, string jsonData)
         {
             var fullUrl = GetFullUrl(url);
