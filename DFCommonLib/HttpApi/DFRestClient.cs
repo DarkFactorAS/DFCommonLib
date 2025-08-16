@@ -21,7 +21,7 @@ namespace DFCommonLib.HttpApi
     public interface IDFRestClient
     {
         void SetEndpoint(string endpoint);
-        string PingServer();
+        Task<WebAPIData> Ping();
     }
 
     public class DFRestClient : IDFRestClient
@@ -82,34 +82,6 @@ namespace DFCommonLib.HttpApi
             return decodedString;
         }
 
-        public string PingServer()
-        {
-            // Force async execution to wait for the result
-            var data = GetJsonData(0, "Ping").Result;
-            if (data == null)
-            {
-                _logger.LogWarning("DFRestClient: PingServer returned null data");
-                return "PingServer returned null data";
-            }
-
-            if (data.errorCode > 299)
-            {
-                var msg = string.Format("DFRestClient: PingServer failed with error code {0} and message: {1}",
-                    data.errorCode,
-                    data.message);
-                _logger.LogWarning(msg);
-                return msg;
-            }
-
-            if (data.message == null)
-            {
-                _logger.LogWarning("DFRestClient: PingServer returned null message");
-                return "PingServer returned null message";
-            }
-
-            return data.message;
-        }
-
         private string GetFullUrl(string method)
         {
             var hostname = GetHostname();
@@ -139,6 +111,17 @@ namespace DFCommonLib.HttpApi
             return cls;
         }
 
+        public async Task<WebAPIData> Ping()
+        {
+            var data = await GetJsonData(0, "Ping");
+            if (data == null)
+            {
+                _logger.LogWarning("DFRestClient: Ping returned null data");
+                return new WebAPIData { errorCode = 500, message = "Ping returned null data" };
+            }
+            return new WebAPIData { errorCode = data.errorCode, message = data.message };
+        }
+
         public async Task<WebAPIData> GetJsonData(int methodId, string url)
         {
 
@@ -150,7 +133,7 @@ namespace DFCommonLib.HttpApi
                 webRequest.Headers.Add("Authorization", "Bearer " + _accessToken);
             }
 
-            var data = await HandleRequest(methodId, webRequest, _logger);
+            var data = await HandleRequest(methodId, webRequest);
             return data;
         }
 
@@ -172,7 +155,7 @@ namespace DFCommonLib.HttpApi
                 webRequest.Headers.Add("Authorization", "Bearer " + _accessToken);
             }
 
-            var data = await HandleRequest(methodId, webRequest, _logger);
+            var data = await HandleRequest(methodId, webRequest);
             return data;
         }
 
@@ -193,7 +176,7 @@ namespace DFCommonLib.HttpApi
             {
                 webRequest.Headers.Add("Authorization", "Bearer " + _accessToken);
             }
-            var data = await HandleRequest(methodId, webRequest, _logger);
+            var data = await HandleRequest(methodId, webRequest);
             return data;
         }
 
@@ -212,7 +195,7 @@ namespace DFCommonLib.HttpApi
             return data;
         }
 
-        public async Task<T> PutData<T>(int methodId, string postUrl, object obj) where T : WebAPIData, new()
+        public async Task<T> PutDataAs<T>(int methodId, string postUrl, object obj) where T : WebAPIData, new()
         {
             string jsonData = await Task.Run(() => JsonConvert.SerializeObject(obj));
             var data = await PutJsonDataAs<T>(methodId, postUrl, jsonData);
@@ -220,7 +203,7 @@ namespace DFCommonLib.HttpApi
         }
 
 
-        private static string GetUrl(HttpRequestMessage webRequest)
+        private string GetUrl(HttpRequestMessage webRequest)
         {
             var uri = webRequest.RequestUri;
             if (uri != null)
@@ -230,7 +213,7 @@ namespace DFCommonLib.HttpApi
             return "";
         }
 
-        private static async Task<WebAPIData> HandleRequest(int methodId, HttpRequestMessage webRequest, IDFLogger<DFRestClient> logger)
+        protected virtual async Task<WebAPIData> HandleRequest(int methodId, HttpRequestMessage webRequest)
         {
             var webUrl = GetUrl(webRequest);
 
@@ -246,12 +229,12 @@ namespace DFCommonLib.HttpApi
                     }
                     else
                     {
-                        logger.LogWarning(string.Format("DFRestClient: {0} => 500:Could not read content ", webUrl));
+                        _logger.LogWarning(string.Format("DFRestClient: {0} => 500:Could not read content ", webUrl));
                         return new WebAPIData(500, "Could not read content");
                     }
                 }
 
-                logger.LogWarning(string.Format("DFRestClient: {0} => {1}:{2} ",
+                _logger.LogWarning(string.Format("DFRestClient: {0} => {1}:{2} ",
                     webUrl,
                     returnData.StatusCode,
                     returnData.ReasonPhrase));
@@ -260,7 +243,7 @@ namespace DFCommonLib.HttpApi
             }
             catch (Exception ex)
             {
-                logger.LogWarning(string.Format("DFRestClient: {0} => {1}:{2} ",
+                _logger.LogWarning(string.Format("DFRestClient: {0} => {1}:{2} ",
                     webUrl,
                     500,
                     ex.ToString()));

@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
          {
-             "name": "DFCommonLib TestApp",
+             "name": "TestApp - Debug",
              "type": "coreclr",
              "request": "launch",
              "preLaunchTask": "build",

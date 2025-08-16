@@ -5,7 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Moq;
 using NUnit.Framework;
 
-public class ConfigTest
+public class DFConfigTest
 {
     TestAppSetting appSettings;
 
