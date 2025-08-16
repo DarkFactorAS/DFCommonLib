@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
 
     <PackageId>DarkFactor.Common.Lib</PackageId>
-    <Version>1.5.6</Version>
+    <Version>1.5.7</Version>
     <Authors>Thor Richard Hanssen</Authors>
     <Company>DarkFactor</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
