@@ -53,11 +53,11 @@ namespace DFCommonLib.Logger
             var message = string.Format("Init application {0} v:{1}", appName, appversion);
             DFLogger.PrintStartup(DFLogLevel.INFO, group, message);
 
-            LogInfo("******************************************************");
-            LogInfo("***                                                ***");
-            LogInfo(string.Format("***  Starting {0,-28} {1,7} ***", appName, appversion));
-            LogInfo("***                                                ***");
-            LogInfo("******************************************************");
+            LogImportant("******************************************************");
+            LogImportant("***                                                ***");
+            LogImportant(string.Format("***  Starting {0,-28} {1,7} ***", appName, appversion));
+            LogImportant("***                                                ***");
+            LogImportant("******************************************************");
         }
 
         public void LogInfo(string message, params object[] args)

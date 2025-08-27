@@ -33,7 +33,7 @@ namespace DFCommonLibApp
             {
                 IConfigurationHelper configurationHelper = DFServices.GetService<IConfigurationHelper>();
                 var settings = configurationHelper.Settings;
-                var msg = string.Format("Connecting to DB : {0}", settings.DatabaseConnection.Server);
+                var msg = string.Format("Connecting to DB : {0}:{1}", settings.DatabaseConnection.Server, settings.DatabaseConnection.Port);
                 logger.LogDebug(msg);
 
                 try
