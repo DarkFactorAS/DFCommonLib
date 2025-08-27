@@ -119,7 +119,7 @@ namespace DFCommonLib.DataAccess
                         cmd.AddParameter("@system", patcherName);
                         cmd.AddParameter("@patchId", patchId);
                         cmd.ExecuteNonQuery();
-                        _logger.LogInfo( string.Format("DBPatcher: {0} => Applied patch {1}", patcherName, patchId) );
+                        _logger.LogImportant( string.Format("DBPatcher: {0} => Applied patch {1}", patcherName, patchId) );
                     }
                     return true;
                 }

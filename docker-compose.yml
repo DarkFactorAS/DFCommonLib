@@ -28,7 +28,7 @@ services:
     ports:
       - 6606:8080
 
-  dfcommonlib_test_server:
+  dfcommonlib_test_app:
     build:
       network: host
       context: ./
