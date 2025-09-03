@@ -72,8 +72,8 @@ namespace DFCommonLibApp
                     .SetupLogger()
                     .SetupMySql()
                     .LogToConsole(DFLogLevel.INFO)
-                    //.LogToMySQL(DFLogLevel.WARNING)
-                    .LogToEvent(DFLogLevel.ERROR, AppName);
+                    .LogToMySQL(DFLogLevel.WARNING)
+                    .LogToEvent(DFLogLevel.ERROR, AppName)
                 ;
             })
             .ConfigureWebHostDefaults(webBuilder =>
