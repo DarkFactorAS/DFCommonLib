@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.AspNetCore.Http;
 
 namespace DFCommonLib.HttpApi
@@ -27,7 +28,10 @@ namespace DFCommonLib.HttpApi
             var context = GetContext();
             if ( context != null )
             {
-                return context.Session.GetString(_sessionKey + "." + keyName);
+                if ( context.Session.TryGetValue(_sessionKey + "." + keyName, out var value))
+                {
+                    return Encoding.UTF8.GetString(value);
+                }
             }
             return null;
         }
