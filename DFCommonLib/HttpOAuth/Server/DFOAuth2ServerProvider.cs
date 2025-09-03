@@ -138,6 +138,7 @@ namespace DFCommonLib.HttpApi.OAuth2
                 return ReturnOAuth2CodeError(INVALID_CREDENTIALS);
             }
 
+            GetOAuth2Clients();
             var client = _oauth2Clients.FirstOrDefault(c => c.ClientId == sessionClientId);
             if (client == null)
             {
