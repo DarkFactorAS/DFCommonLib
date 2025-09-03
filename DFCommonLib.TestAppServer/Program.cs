@@ -69,7 +69,7 @@ namespace DFCommonLib.TestAppServer
             Host.CreateDefaultBuilder(args)
             .ConfigureServices((hostContext, services) =>
             {
-                services.AddTransient<IConfigurationHelper, ConfigurationHelper<TestAppConfig> >();
+                services.AddTransient<IConfigurationHelper, ConfigurationHelper<AppSettings> >();
 
                 new DFServices(services)
                     .SetupLogger()
