@@ -34,7 +34,6 @@ namespace DFCommonLibApp
         public void ConfigureServices(IServiceCollection services)
         {
             DFServices.Create(services);
-            OAuth2Server.SetupService(services);
 
             services.AddControllers();
             services.AddMvc();
@@ -50,6 +49,8 @@ namespace DFCommonLibApp
                 // Make the session cookie essential
                 options.Cookie.IsEssential = true;
             });
+
+            OAuth2Server.SetupService(services);
 
             services.AddHttpContextAccessor();
 

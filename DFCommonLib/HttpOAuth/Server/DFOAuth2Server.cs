@@ -12,6 +12,27 @@ namespace DFCommonLib.HttpApi.OAuth2
         {
             services.AddTransient<IServerOAuth2Provider, ServerOAuth2Provider>();
             services.AddTransient<IServerOAuth2Repository, ServerOAuth2Repository>();
-            services.AddTransient<IServerOAuth2Session, ServerOAuth2Session>();}
+            services.AddTransient<IServerOAuth2Session, ServerOAuth2Session>();
+
+            services.AddAuthentication(
+                options =>
+                {
+                    options.DefaultAuthenticateScheme = "Bearer";
+                    options.DefaultChallengeScheme = "Bearer";
+                })
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = false;
+                    options.TokenHandlers.Add(new DFOAuth2JwtTokenHandler());
+                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true
+                    };
+                });
+ 
+        }
     }
 }

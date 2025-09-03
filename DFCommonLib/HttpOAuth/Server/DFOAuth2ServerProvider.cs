@@ -238,27 +238,5 @@ namespace DFCommonLib.HttpApi.OAuth2
 
             return new string(chars);
         }
-
-        public static void ConfigureService(IServiceCollection services)
-        {
-            services.AddAuthentication(
-                options =>
-                {
-                    options.DefaultAuthenticateScheme = "Bearer";
-                    options.DefaultChallengeScheme = "Bearer";
-                })
-                .AddJwtBearer(options =>
-                {
-                    options.RequireHttpsMetadata = false;
-                    options.TokenHandlers.Add(new DFOAuth2JwtTokenHandler());
-                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true
-                    };
-                });
-        }
    }
 }
