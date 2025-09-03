@@ -15,7 +15,6 @@ using DFCommonLib.Logger;
 using DFCommonLib.DataAccess;
 using Swashbuckle.AspNetCore.Swagger;
 using DFCommonLib.HttpApi.OAuth2;
-using DFCommonLib.TestAppClient.DataAccess;
 
 namespace DFCommonLib.TestAppClient
 {
@@ -46,9 +45,7 @@ namespace DFCommonLib.TestAppClient
                 options.Cookie.IsEssential = true;
             });
 
-            OAuth2Server.SetupService(services);
             services.AddHttpContextAccessor();
-            services.AddTransient(typeof(IStartupDatabasePatcher), typeof(TestAppDatabasePatcher));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

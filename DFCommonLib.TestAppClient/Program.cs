@@ -27,40 +27,8 @@ namespace DFCommonLib.TestAppClient
         public static void Main(string[] args)
         {
             var builder = CreateHostBuilder(args).Build();
-
             IDFLogger<Program> logger = new DFLogger<Program>();
-
-            try
-            {
-                IConfigurationHelper configurationHelper = DFServices.GetService<IConfigurationHelper>();
-                var settings = configurationHelper.Settings;
-                var msg = string.Format("Connecting to DB : {0}:{1}", settings.DatabaseConnection.Server, settings.DatabaseConnection.Port);
-                logger.LogDebug(msg);
-
-                try
-                {
-                    IStartupDatabasePatcher startupRepository = DFServices.GetService<IStartupDatabasePatcher>();
-                    startupRepository.WaitForConnection(1);
-                    if (startupRepository.RunPatcher())
-                    {
-                        logger.LogDebug("Database patcher ran successfully");
-                    }
-                    else
-                    {
-                        logger.LogError("Database patcher failed");
-                    }
-                }
-                catch (System.Exception ex)
-                {
-                    logger.LogException("An error occurred while running the database patcher", ex);
-                }
-
-                builder.Run();
-            }
-            catch (Exception ex)
-            {
-                logger.LogException("An error occurred during startup", ex);
-            }
+            builder.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -71,10 +39,10 @@ namespace DFCommonLib.TestAppClient
 
                 new DFServices(services)
                     .SetupLogger()
-                    .SetupMySql()
+//                    .SetupMySql()
                     .LogToConsole(DFLogLevel.INFO)
-                    .LogToMySQL(DFLogLevel.WARNING)
-                    .LogToEvent(DFLogLevel.ERROR, AppName)
+//                    .LogToMySQL(DFLogLevel.WARNING)
+//                    .LogToEvent(DFLogLevel.ERROR, AppName)
                 ;
             })
             .ConfigureWebHostDefaults(webBuilder =>
