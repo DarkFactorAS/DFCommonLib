@@ -35,9 +35,9 @@ jobs:
 
     # Build test server
     - name: Test Server - Restore dependencies
-      run: dotnet restore DFCommonLib.TestServer/DFCommonLib.TestServer.csproj
+      run: dotnet restore DFCommonLib.TestAppServer/DFCommonLib.TestAppServer.csproj
     - name: Test Server - Build
-      run: dotnet build DFCommonLib.TestServer/DFCommonLib.TestServer.csproj --no-restore --configuration Release
+      run: dotnet build DFCommonLib.TestAppServer/DFCommonLib.TestAppServer.csproj --no-restore --configuration Release
 
     # Run Unittests
     - name: Test Build
