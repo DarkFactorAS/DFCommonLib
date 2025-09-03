@@ -38,7 +38,6 @@ namespace DFCommonLib.HttpApi.OAuth2
 
         public ServerOAuth2Provider(
             IServerOAuth2Session sessionProvider,
-            IConfigurationHelper configurationHelper,
             IServerOAuth2Repository serverOAuth2Repository,
             IDFLogger<ServerOAuth2Provider> logger)
         {
