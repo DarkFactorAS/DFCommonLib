@@ -80,5 +80,11 @@ Icon?
 ehthumbs.db
 Thumbs.db
 Assets/VSCode
+
+# ================ #
+# all config files #
+# ================ #
+.env*
+appsettings*.json
 VSCode.meta
 settings.json
