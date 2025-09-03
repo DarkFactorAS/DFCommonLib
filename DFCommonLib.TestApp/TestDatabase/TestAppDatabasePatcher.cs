@@ -21,6 +21,9 @@ namespace DFCommonLibApp
             + ")"
             );
 
+            // Create OAuth2 tables
+            _dbPatcher.Patch(PATCHER, 3, DFCommonLib.HttpApi.OAuth2.ServerOAuth2Repository.GetCreateTableString());
+
             return _dbPatcher.Successful();
         }
     }

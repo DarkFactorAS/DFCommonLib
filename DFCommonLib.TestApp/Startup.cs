@@ -14,6 +14,7 @@ using DFCommonLib.Utils;
 using DFCommonLib.Logger;
 using DFCommonLib.DataAccess;
 using Swashbuckle.AspNetCore.Swagger;
+using DFCommonLib.HttpApi.OAuth2;
 
 namespace DFCommonLibApp
 {
@@ -33,6 +34,7 @@ namespace DFCommonLibApp
         public void ConfigureServices(IServiceCollection services)
         {
             DFServices.Create(services);
+            OAuth2Server.SetupService(services);
 
             services.AddControllers();
             services.AddMvc();
