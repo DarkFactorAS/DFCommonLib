@@ -19,7 +19,7 @@ namespace DFCommonLib.TestAppServer.Controller
             return new RestDataModel
             {
                 Id = model.Id,
-                Name = model.Name
+                Name = "Server:" + model.Name
             };
         }
 
@@ -30,7 +30,7 @@ namespace DFCommonLib.TestAppServer.Controller
             return new RestDataModel
             {
                 Id = model.Id,
-                Name = model.Name
+                Name = "Server Auth OK:" + model.Name
             };
         }
 

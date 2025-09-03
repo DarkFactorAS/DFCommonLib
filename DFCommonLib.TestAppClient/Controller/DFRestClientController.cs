@@ -6,6 +6,7 @@ using DFCommonLib.Config;
 using TestApp;
 using TestApp.Model;
 using System.Threading.Tasks;
+using DFCommonLib.HttpApi.OAuth2;
 
 namespace DFCommonLib.TestApp.Controller
 {
@@ -25,6 +26,11 @@ namespace DFCommonLib.TestApp.Controller
 
             _authRestClient = new TestAuthRestClient();
             _authRestClient.SetEndpoint(config.TestApi.Endpoint);
+            _authRestClient.SetAuthClient(new OAuth2ClientData
+            {
+                ClientId = config.AppName,
+                ClientSecret = config.TestApi.ApiKey
+            });
         }
 
         [HttpGet("RunAllPrograms")]

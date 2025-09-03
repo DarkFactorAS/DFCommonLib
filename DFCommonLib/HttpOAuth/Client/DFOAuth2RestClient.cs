@@ -43,7 +43,7 @@ namespace DFCommonLib.HttpApi.OAuth2
 
         public async Task<string> AuthenticateIfNeeded()
         {
-            if (string.IsNullOrEmpty(_accessToken))
+            if (string.IsNullOrEmpty(_accessToken) && _clientData != null)
             {
                 var response = await LoginOAuth2Client(_clientData);
                 if (response == null || response.errorCode != 0 || response.State != _clientData.State)
