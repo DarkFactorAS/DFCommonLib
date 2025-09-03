@@ -1,3 +1,4 @@
+// ...existing code from Program.cs, with namespace and AppName updated...
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,11 +17,11 @@ using DFCommonLib.DataAccess;
 using TestApp;
 using Google.Protobuf.WellKnownTypes;
 
-namespace DFCommonLibApp
+namespace DFCommonLib.TestAppClient
 {
     public class Program
     {
-        public static string AppName = "DFCommonLib.TestApp";
+        public static string AppName = "DFCommonLib.TestAppClient";
         public static string AppVersion = "1.0.1";
 
         public static void Main(string[] args)

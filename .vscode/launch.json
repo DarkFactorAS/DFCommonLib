@@ -5,13 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "TestApp - Debug",
+            "name": "TestAppClient - Debug",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/DFCommonLib.TestApp/bin/Debug/net8.0/DFCommonLib.TestApp.dll",
+            "preLaunchTask": "build TestAppClient",
+            "program": "${workspaceFolder}/DFCommonLib.TestAppClient/bin/Debug/net8.0/DFCommonLib.TestAppClient.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/DFCommonLib.TestApp",
+            "cwd": "${workspaceFolder}/DFCommonLib.TestAppClient",
             "stopAtEntry": false,
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development"

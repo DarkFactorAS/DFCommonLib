@@ -2,12 +2,12 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "build TestAppClient",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/DFCommonLib.TestApp/DFCommonLib.TestApp.csproj",
+                "${workspaceFolder}/DFCommonLib.TestAppClient/DFCommonLib.TestAppClient.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],

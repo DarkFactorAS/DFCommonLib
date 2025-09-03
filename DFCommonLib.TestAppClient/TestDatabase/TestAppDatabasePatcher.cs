@@ -1,6 +1,6 @@
 using DFCommonLib.DataAccess;
 
-namespace DFCommonLibApp
+namespace DFCommonLib.TestAppClient.DataAccess
 {
     public class TestAppDatabasePatcher : StartupDatabasePatcher
     {
