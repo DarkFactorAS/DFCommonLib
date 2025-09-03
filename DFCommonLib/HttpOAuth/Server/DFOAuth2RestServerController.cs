@@ -2,6 +2,7 @@
 
 
 using DFCommonLib.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DFCommonLib.HttpApi.OAuth2
@@ -23,6 +24,7 @@ namespace DFCommonLib.HttpApi.OAuth2
             _provider = DFServices.GetService<IServerOAuth2Provider>();
         }
 
+        [AllowAnonymous]
         [HttpPut]
         [Route("auth")]
         public OAuth2AuthResponse Auth(OAuth2ClientData clientData)
@@ -30,6 +32,7 @@ namespace DFCommonLib.HttpApi.OAuth2
             return _provider.Auth(clientData);
         }
 
+        [AllowAnonymous]
         [HttpPut]
         [Route("code")]
         public OAuth2CodeResponse Code(OAuth2CodeData codeData)
