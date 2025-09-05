@@ -34,7 +34,7 @@ namespace DFCommonLib.Utils
         protected string GetConfigString(string keyName)
         {
             var context = GetContext();
-            if ( context != null )
+            if ( context != null && context.Session != null )
             {
                 return context.Session.GetString(_sessionName + "." + keyName);
             }
@@ -44,7 +44,7 @@ namespace DFCommonLib.Utils
         protected void SetConfigString(string keyName, string value)
         {
             var context = GetContext();
-            if ( context != null )
+            if ( context != null && context.Session != null )
             {
                 if ( value != null )
                 {
@@ -60,7 +60,7 @@ namespace DFCommonLib.Utils
         protected int? GetConfigInt(string keyName)
         {
             var context = GetContext();
-            if ( context != null )
+            if ( context != null && context.Session != null )
             {
                 return context.Session.GetInt32(_sessionName + "." + keyName);
             }
@@ -70,7 +70,7 @@ namespace DFCommonLib.Utils
         protected void SetConfigInt(string keyName, int? value)
         {
             var context = GetContext();
-            if ( context != null )
+            if ( context != null && context.Session != null )
             {
                 if ( value != null )
                 {
@@ -86,7 +86,7 @@ namespace DFCommonLib.Utils
         protected void RemoveConfig(string keyName)
         {
             var context = GetContext();
-            if ( context != null )
+            if ( context != null && context.Session != null )
             {
                 context.Session.Remove(_sessionName + "." + keyName);
             }
