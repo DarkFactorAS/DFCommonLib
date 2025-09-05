@@ -3,10 +3,11 @@
       "AccountServer": {
         "commandName": "Project",
         "launchBrowser": true,
+        "launchUrl": "swagger",
+        "applicationUrl": "http://localhost:7000",
         "environmentVariables": {
           "ASPNETCORE_ENVIRONMENT": "Development"
-        },
-        "applicationUrl": "http://localhost:7000"
+        }
       }
     }
   }
