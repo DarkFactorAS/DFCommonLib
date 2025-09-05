@@ -19,8 +19,8 @@ namespace DFCommonLib.HttpApi.OAuth2
             services.AddAuthentication(
                 options =>
                 {
-                    options.DefaultAuthenticateScheme = "Bearer";
-                    options.DefaultChallengeScheme = "Bearer";
+                    options.DefaultAuthenticateScheme = OAuth2Static.AuthenticationScheme;
+                    options.DefaultChallengeScheme = OAuth2Static.AuthenticationScheme;
                 })
                 .AddJwtBearer(options =>
                 {
@@ -37,19 +37,19 @@ namespace DFCommonLib.HttpApi.OAuth2
 
         }
 
-        public static void SetupSwaggerApi(IServiceCollection services)
+        public static void SetupSwaggerApi(string serviceName, IServiceCollection services)
         {
             // register the swagger generator
             services.AddSwaggerGen( c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Account API", Version = "v1" });
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = serviceName + " API", Version = "v1" });
+                c.AddSecurityDefinition(OAuth2Static.AuthenticationScheme, new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
                     Description = "Please enter a valid token",
                     Name = "Authorization",
                     Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer"
+                    Scheme = OAuth2Static.AuthenticationScheme
                 });
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
@@ -59,10 +59,10 @@ namespace DFCommonLib.HttpApi.OAuth2
                             Reference = new OpenApiReference
                             {
                                 Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
+                                Id = OAuth2Static.AuthenticationScheme
                             },
-                            Scheme = "Bearer",
-                            Name = "Bearer",
+                            Scheme = OAuth2Static.AuthenticationScheme,
+                            Name = OAuth2Static.AuthenticationScheme,
                             In = ParameterLocation.Header
                         },
                         new string[] {}

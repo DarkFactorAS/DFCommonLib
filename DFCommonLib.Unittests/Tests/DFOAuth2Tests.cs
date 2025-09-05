@@ -263,7 +263,7 @@ namespace DFCommonLib.Unittests.OAuth2
         public void SetupSwaggerApi_DoesNotThrow()
         {
             var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
-            Assert.DoesNotThrow(() => OAuth2Server.SetupSwaggerApi(services));
+            Assert.DoesNotThrow(() => OAuth2Server.SetupSwaggerApi("TestAppServer", services));
         }
     }
 

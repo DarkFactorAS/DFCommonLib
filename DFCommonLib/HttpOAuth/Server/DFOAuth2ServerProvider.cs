@@ -154,7 +154,7 @@ namespace DFCommonLib.HttpApi.OAuth2
             {
                 AccessToken = accessToken,
                 State = sessionState,
-                TokenType = "Bearer",
+                TokenType = OAuth2Static.AuthenticationScheme,
                 ExpiresIn = client.TokenExpiresInSeconds
             };
 

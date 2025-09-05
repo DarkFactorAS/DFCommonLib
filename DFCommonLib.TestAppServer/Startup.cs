@@ -41,7 +41,7 @@ namespace DFCommonLib.TestAppServer
             services.AddMvc();
 
             // register the swagger generator
-            OAuth2Server.SetupSwaggerApi(services);
+            OAuth2Server.SetupSwaggerApi(Program.AppName, services);
 
             services.AddSession(options =>
             {
