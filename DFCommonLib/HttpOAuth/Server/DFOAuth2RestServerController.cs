@@ -24,6 +24,8 @@ namespace DFCommonLib.HttpApi.OAuth2
             _provider = DFServices.GetService<IServerOAuth2Provider>();
         }
 
+        // https://stackoverflow.com/questions/29701573/how-to-omit-methods-from-swagger-documentation-on-webapi-using-swashbuckle
+        // Hide from Swagger
         [AllowAnonymous]
         [HttpPut]
         [Route("auth")]
@@ -32,6 +34,7 @@ namespace DFCommonLib.HttpApi.OAuth2
             return _provider.Auth(clientData);
         }
 
+        // Hide from Swagger
         [AllowAnonymous]
         [HttpPut]
         [Route("code")]
