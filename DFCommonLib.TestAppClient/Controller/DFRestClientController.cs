@@ -6,13 +6,15 @@ using DFCommonLib.Config;
 using TestApp;
 using TestApp.Model;
 using System.Threading.Tasks;
+using DFCommonLib.HttpApi.OAuth2;
 
 namespace DFCommonLib.TestApp.Controller
 {
-    
+
     public class DFRestClientController : DFRestClient
     {
         private readonly TestRestClient _restClient;
+        private readonly TestAuthRestClient _authRestClient;
 
         public DFRestClientController()
         {
@@ -21,6 +23,14 @@ namespace DFCommonLib.TestApp.Controller
 
             _restClient = new TestRestClient();
             _restClient.SetEndpoint(config.TestApi.Endpoint);
+
+            _authRestClient = new TestAuthRestClient();
+            _authRestClient.SetEndpoint(config.TestApi.Endpoint);
+            _authRestClient.SetAuthClient(new OAuth2ClientData
+            {
+                ClientId = config.AppName,
+                ClientSecret = config.TestApi.ApiKey
+            });
         }
 
         [HttpGet("RunAllPrograms")]
@@ -29,6 +39,8 @@ namespace DFCommonLib.TestApp.Controller
             RunLogTest();
             RunPingTest();
             await RunModelClassTest();
+            await RunModelNoAuthClassTest();
+            await RunModelAuthClassTest();
             return "All programs are running";
         }
 
@@ -71,6 +83,39 @@ namespace DFCommonLib.TestApp.Controller
                 Name = "Test Model"
             };
             RestDataModel resultModel = await _restClient.TestModelClass(model);
+            _logger.LogDebug($"Model class test result: {resultModel.Name}");
+            return resultModel;
+        }
+
+
+        //
+        // Try to call the method that requires authorization without token
+        //
+        [HttpGet("RunModelNoAuthClassTest")]
+        public async Task<RestDataModel> RunModelNoAuthClassTest()
+        {
+            var model = new RestDataModel
+            {
+                Id = 1,
+                Name = "Test NoAuth Model"
+            };
+            RestDataModel resultModel = await _restClient.TestAuthModelClass(model);
+            _logger.LogDebug($"Model class test result: {resultModel.Name}");
+            return resultModel;
+        }
+
+        //
+        // Try to call the method that requires authorization with automatically fetch token
+        //
+        [HttpGet("RunModelAuthClassTest")]
+        public async Task<RestDataModel> RunModelAuthClassTest()
+        {
+            var model = new RestDataModel
+            {
+                Id = 1,
+                Name = "Test Auth Model"
+            };
+            RestDataModel resultModel = await _authRestClient.TestAuthModelClass(model);
             _logger.LogDebug($"Model class test result: {resultModel.Name}");
             return resultModel;
         }

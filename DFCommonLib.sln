@@ -5,9 +5,11 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFCommonLib", "DFCommonLib\DFCommonLib.csproj", "{88CDB095-6A0D-4847-AF4A-603FE622EFEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFCommonLib.TestApp", "DFCommonLib.TestApp\DFCommonLib.TestApp.csproj", "{4944A7E1-4587-4206-B71E-ACD770872A39}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFCommonLib.TestAppClient", "DFCommonLib.TestAppClient\DFCommonLib.TestAppClient.csproj", "{4944A7E1-4587-4206-B71E-ACD770872A39}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFCommonLib.Unittests", "DFCommonLib.Unittests\DFCommonLib.Unittests.csproj", "{E987DFE2-6976-4C10-B886-64F815EB1F27}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFCommonLib.TestAppServer", "DFCommonLib.TestAppServer\DFCommonLib.TestAppServer.csproj", "{F0C4FF95-4C74-449A-BC77-3D2295B49024}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,5 +60,17 @@ Global
 		{E987DFE2-6976-4C10-B886-64F815EB1F27}.Release|x64.Build.0 = Release|Any CPU
 		{E987DFE2-6976-4C10-B886-64F815EB1F27}.Release|x86.ActiveCfg = Release|Any CPU
 		{E987DFE2-6976-4C10-B886-64F815EB1F27}.Release|x86.Build.0 = Release|Any CPU
+		{F0C4FF95-4C74-449A-BC77-3D2295B49024}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0C4FF95-4C74-449A-BC77-3D2295B49024}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0C4FF95-4C74-449A-BC77-3D2295B49024}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F0C4FF95-4C74-449A-BC77-3D2295B49024}.Debug|x64.Build.0 = Debug|Any CPU
+		{F0C4FF95-4C74-449A-BC77-3D2295B49024}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F0C4FF95-4C74-449A-BC77-3D2295B49024}.Debug|x86.Build.0 = Debug|Any CPU
+		{F0C4FF95-4C74-449A-BC77-3D2295B49024}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0C4FF95-4C74-449A-BC77-3D2295B49024}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0C4FF95-4C74-449A-BC77-3D2295B49024}.Release|x64.ActiveCfg = Release|Any CPU
+		{F0C4FF95-4C74-449A-BC77-3D2295B49024}.Release|x64.Build.0 = Release|Any CPU
+		{F0C4FF95-4C74-449A-BC77-3D2295B49024}.Release|x86.ActiveCfg = Release|Any CPU
+		{F0C4FF95-4C74-449A-BC77-3D2295B49024}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

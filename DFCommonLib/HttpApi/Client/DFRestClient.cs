@@ -27,21 +27,21 @@ namespace DFCommonLib.HttpApi
     public class DFRestClient : IDFRestClient
     {
         private const string UserAgentName = "DFRestClient";
-
         private static readonly HttpClient client = new HttpClient();
         protected IDFLogger<DFRestClient> _logger;
         protected string _endpoint;
-
-        private string _accessToken;
+        protected string _accessToken;
 
         public DFRestClient(IDFLogger<DFRestClient> logger)
         {
             _logger = logger;
+            _accessToken = string.Empty;
         }
 
         public DFRestClient()
         {
             _logger = DFServices.GetService<IDFLogger<DFRestClient>>();
+            _accessToken = string.Empty;
         }
 
         virtual protected string GetHostname()

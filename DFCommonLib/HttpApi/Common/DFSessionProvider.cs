@@ -1,21 +1,17 @@
+using System.Text;
 using Microsoft.AspNetCore.Http;
 
-namespace DFCommonLib.Utils
+namespace DFCommonLib.HttpApi
 {
-    public interface IDFUserSession
-    {
-        void RemoveSession();
-    }
-
-    public class DFUserSession : IDFUserSession
+    public class DFSessionProvider
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private string _sessionName;
+        private string _sessionKey;
 
-        public DFUserSession( string sessionName, IHttpContextAccessor httpContext )
+        public DFSessionProvider( string sessionKey, IHttpContextAccessor httpContext )
         {
-            _sessionName = sessionName;
             _httpContextAccessor = httpContext;
+            _sessionKey = sessionKey;
         }
 
         protected HttpContext GetContext()
@@ -27,16 +23,15 @@ namespace DFCommonLib.Utils
             return null;
         }
 
-        virtual public void RemoveSession()
-        {
-        }
-
         protected string GetConfigString(string keyName)
         {
             var context = GetContext();
-            if ( context != null && context.Session != null )
+            if ( context != null )
             {
-                return context.Session.GetString(_sessionName + "." + keyName);
+                if ( context.Session.TryGetValue(_sessionKey + "." + keyName, out var value))
+                {
+                    return Encoding.UTF8.GetString(value);
+                }
             }
             return null;
         }
@@ -44,15 +39,15 @@ namespace DFCommonLib.Utils
         protected void SetConfigString(string keyName, string value)
         {
             var context = GetContext();
-            if ( context != null && context.Session != null )
+            if ( context != null )
             {
                 if ( value != null )
                 {
-                    context.Session.SetString(_sessionName + "." + keyName, value);
+                    context.Session.SetString(_sessionKey + "." + keyName, value);
                 } 
                 else
                 {
-                    context.Session.Remove(_sessionName + "." + keyName);
+                    context.Session.Remove(_sessionKey + "." + keyName);
                 }
             }
         }
@@ -60,9 +55,9 @@ namespace DFCommonLib.Utils
         protected int? GetConfigInt(string keyName)
         {
             var context = GetContext();
-            if ( context != null && context.Session != null )
+            if ( context != null )
             {
-                return context.Session.GetInt32(_sessionName + "." + keyName);
+                return context.Session.GetInt32(_sessionKey + "." + keyName);
             }
             return null;
         }
@@ -70,15 +65,15 @@ namespace DFCommonLib.Utils
         protected void SetConfigInt(string keyName, int? value)
         {
             var context = GetContext();
-            if ( context != null && context.Session != null )
+            if ( context != null )
             {
                 if ( value != null )
                 {
-                    context.Session.SetInt32(_sessionName + "." + keyName, value.GetValueOrDefault());
+                    context.Session.SetInt32(_sessionKey + "." + keyName, value.GetValueOrDefault());
                 } 
                 else
                 {
-                    context.Session.Remove(_sessionName + "." + keyName);
+                    context.Session.Remove(_sessionKey + "." + keyName);
                 }
             }
         }
@@ -86,9 +81,9 @@ namespace DFCommonLib.Utils
         protected void RemoveConfig(string keyName)
         {
             var context = GetContext();
-            if ( context != null && context.Session != null )
+            if ( context != null )
             {
-                context.Session.Remove(_sessionName + "." + keyName);
+                context.Session.Remove(_sessionKey + "." + keyName);
             }
         }
     }

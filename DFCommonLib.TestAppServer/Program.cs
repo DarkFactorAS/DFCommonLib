@@ -13,15 +13,17 @@ using DFCommonLib.Config;
 using DFCommonLib.Logger;
 using DFCommonLib.Utils;
 using DFCommonLib.DataAccess;
-using TestApp;
+// using TestApp;
 using Google.Protobuf.WellKnownTypes;
 
-namespace DFCommonLibApp
+using DFCommonLib.TestAppServer.Model;
+
+namespace DFCommonLib.TestAppServer
 {
     public class Program
     {
-        public static string AppName = "DFCommonLib.TestApp";
-        public static string AppVersion = "1.0.1";
+        public static string AppName = "DFCommonLib.TestAppServer";
+        public static string AppVersion = "1.6.0";
 
         public static void Main(string[] args)
         {
@@ -58,22 +60,23 @@ namespace DFCommonLibApp
             }
             catch (Exception ex)
             {
-                logger.LogException("An error occurred during startup", ex);
+                logger.LogException("An error occurred while starting the application", ex);
             }
         }
+
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
             .ConfigureServices((hostContext, services) =>
             {
-                services.AddTransient<IConfigurationHelper, ConfigurationHelper<TestAppConfig> >();
+                services.AddTransient<IConfigurationHelper, ConfigurationHelper<AppSettings> >();
 
                 new DFServices(services)
                     .SetupLogger()
                     .SetupMySql()
                     .LogToConsole(DFLogLevel.INFO)
-                    //.LogToMySQL(DFLogLevel.WARNING)
-                    .LogToEvent(DFLogLevel.ERROR, AppName);
+                    .LogToMySQL(DFLogLevel.WARNING)
+                    .LogToEvent(DFLogLevel.ERROR, AppName)
                 ;
             })
             .ConfigureWebHostDefaults(webBuilder =>
@@ -81,5 +84,6 @@ namespace DFCommonLibApp
                 webBuilder.UseStartup<Startup>();
             }
         );
+
     }
 }

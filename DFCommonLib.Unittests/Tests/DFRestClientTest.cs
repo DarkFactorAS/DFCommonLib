@@ -5,7 +5,7 @@ using Moq;
 using DFCommonLib.Logger;
 using Moq.Protected;
 
-namespace DFCommonLib.Unittests.Tests
+namespace DFCommonLib.Unittests.RestClient
 {
     [TestFixture]
     public class DFRestClientTest

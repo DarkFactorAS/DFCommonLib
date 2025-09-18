@@ -25,6 +25,12 @@ namespace TestApp.Model
             return response;
         }
 
+        public async Task<RestDataModel> TestAuthModelClass(RestDataModel model)
+        {
+            var response = await PutDataAs<RestDataModel>(POST_TESTMODEL, "TestAuthModelClass", model);
+            return response;
+        }
+
         protected override string GetModule()
         {
             // Override to provide a specific module name for testing purposes

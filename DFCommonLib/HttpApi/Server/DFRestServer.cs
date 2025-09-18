@@ -22,6 +22,7 @@ namespace DFCommonLib.HttpApi
             _logger = DFServices.GetService<ILogger<DFRestServerController>>();
         }
 
+        [AllowAnonymous]
         [HttpGet("Ping")]
         public virtual string Ping()
         {

@@ -1,10 +1,10 @@
 using DFCommonLib.DataAccess;
 
-namespace DFCommonLibApp
+namespace DFCommonLib.TestAppServer.Database
 {
     public class TestAppDatabasePatcher : StartupDatabasePatcher
     {
-        private static string PATCHER = "TestApp";
+        private static string PATCHER = "TestAppServer";
 
         public TestAppDatabasePatcher(IDBPatcher dbPatcher) : base(dbPatcher)
         {
@@ -20,6 +20,9 @@ namespace DFCommonLibApp
             + " PRIMARY KEY (`id`)"
             + ")"
             );
+
+            // Create OAuth2 tables
+            _dbPatcher.Patch(PATCHER, 3, DFCommonLib.HttpApi.OAuth2.ServerOAuth2Repository.GetCreateTableString());
 
             return _dbPatcher.Successful();
         }

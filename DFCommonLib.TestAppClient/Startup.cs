@@ -14,8 +14,9 @@ using DFCommonLib.Utils;
 using DFCommonLib.Logger;
 using DFCommonLib.DataAccess;
 using Swashbuckle.AspNetCore.Swagger;
+using DFCommonLib.HttpApi.OAuth2;
 
-namespace DFCommonLibApp
+namespace DFCommonLib.TestAppClient
 {
     public class Startup
     {
@@ -29,36 +30,26 @@ namespace DFCommonLibApp
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             DFServices.Create(services);
 
             services.AddControllers();
             services.AddMvc();
-            // register the swagger generator
             services.AddSwaggerGen();
-            // services.AddSwaggerGen();
 
             services.AddSession(options =>
             {
-                // Set a short timeout for easy testing.
                 options.IdleTimeout = TimeSpan.FromMinutes(20);
                 options.Cookie.HttpOnly = true;
-                // Make the session cookie essential
                 options.Cookie.IsEssential = true;
             });
 
             services.AddHttpContextAccessor();
-
-            //services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddTransient(typeof(IStartupDatabasePatcher), typeof(TestAppDatabasePatcher));
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -66,7 +57,6 @@ namespace DFCommonLibApp
 
             app.UseHttpsRedirection();
             app.UseRouting();
-            //app.UseAuthorization();
             app.UseSession();
 
             app.UseEndpoints(endpoints =>
@@ -75,7 +65,6 @@ namespace DFCommonLibApp
             });
 
             app.UseSwagger();
-            // specify the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
