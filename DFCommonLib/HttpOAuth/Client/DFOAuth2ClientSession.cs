@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace DFCommonLib.HttpApi.OAuth2
 {
-    public interface IAccountSessionProvider
+    public interface IDFOAuth2ClientSession
     {
         void RemoveSession();
         string GetToken();
@@ -11,7 +11,7 @@ namespace DFCommonLib.HttpApi.OAuth2
         void SetEmail(string email);
     }
 
-    public class DFOAuth2ClientSession : DFSessionProvider, IAccountSessionProvider
+    public class DFOAuth2ClientSession : DFSessionProvider, IDFOAuth2ClientSession
     {
         public static readonly string SessionEmail = "Email";
         public static readonly string SessionTokenKey = "Token";
