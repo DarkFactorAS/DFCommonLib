@@ -41,7 +41,7 @@ namespace DFCommonLib.HttpApi.OAuth2
                             ClientSecret = reader["client_secret"].ToString(),
                             Scope = reader["scope"].ToString(),
                             TokenExpiresInSeconds = Convert.ToUInt32(reader["TokenExpiresInSeconds"]),
-                            TokenIssuer = reader["TokenIssuer"].ToString()
+                            TokenIssuer = reader["TokenIssuer"] == DBNull.Value ? string.Empty : reader["TokenIssuer"].ToString()
                         };
                         clients.Add(client);
                     }
