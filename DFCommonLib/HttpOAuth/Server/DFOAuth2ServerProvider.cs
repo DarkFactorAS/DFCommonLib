@@ -227,7 +227,6 @@ namespace DFCommonLib.HttpApi.OAuth2
 
         private string CreateString(int stringLength)
         {
-            Random rd = new Random();
             const string allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789!@$?_-";
             char[] chars = new char[stringLength];
 
