@@ -10,14 +10,14 @@ namespace DFCommonLib.Unittests.RestClient
     [TestFixture]
     public class DFRestClientTest
     {
-        private Mock<IDFLogger<DFRestClient>> _mockLogger;
-        private DFRestClient _mockClient;
+        private Mock<IDFLogger<DFHttpRestClient>> _mockLogger;
+        private DFHttpRestClient _mockClient;
 
-        private class TestableDFRestClient : DFRestClient
+        private class TestableDFRestClient : DFHttpRestClient
         {
             private readonly WebAPIData _mockResponse;
 
-            public TestableDFRestClient(IDFLogger<DFRestClient> logger, WebAPIData mockResponse) : base(logger)
+            public TestableDFRestClient(IDFLogger<DFHttpRestClient> logger, WebAPIData mockResponse) : base(logger)
             {
                 _mockResponse = mockResponse;
             }
@@ -41,8 +41,8 @@ namespace DFCommonLib.Unittests.RestClient
         [SetUp]
         public void Setup()
         {
-            _mockLogger = new Mock<IDFLogger<DFRestClient>>();
-            _mockClient = new DFRestClient(_mockLogger.Object);
+            _mockLogger = new Mock<IDFLogger<DFHttpRestClient>>();
+            _mockClient = new DFHttpRestClient(_mockLogger.Object);
         }
 
         [Test]

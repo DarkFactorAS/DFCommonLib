@@ -5,12 +5,12 @@ using DFCommonLib.HttpApi;
 
 namespace TestApp.Model
 {
-    public interface ITestRestClient : IDFRestClient
+    public interface ITestRestClient : IDFHttpRestClient
     {
         public Task<RestDataModel> TestModelClass(RestDataModel model);
     }
 
-    public class TestRestClient : DFRestClient, ITestRestClient
+    public class TestRestClient : DFHttpRestClient, ITestRestClient
     {
         private const int POST_TESTMODEL = 1;
 
