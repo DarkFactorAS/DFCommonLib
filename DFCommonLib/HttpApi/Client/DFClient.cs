@@ -14,9 +14,9 @@ namespace DFCommonLib.HttpApi
 
     public class DFClient : IDFClient
     {
-        private IDFRestClient _dfRestClient;
+        private IDFHttpRestClient _dfRestClient;
 
-        public DFClient(IDFRestClient restClient)
+        public DFClient(IDFHttpRestClient restClient)
         {
             _dfRestClient = restClient;
         }

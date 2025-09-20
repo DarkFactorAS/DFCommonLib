@@ -18,29 +18,29 @@ using DFCommonLib.Utils;
 
 namespace DFCommonLib.HttpApi
 {
-    public interface IDFRestClient
+    public interface IDFHttpRestClient
     {
         void SetEndpoint(string endpoint);
         Task<WebAPIData> Ping();
     }
 
-    public class DFRestClient : IDFRestClient
+    public class DFHttpRestClient : IDFHttpRestClient
     {
-        private const string UserAgentName = "DFRestClient";
+        private const string UserAgentName = "DFHttpRestClient";
         private static readonly HttpClient client = new HttpClient();
-        protected IDFLogger<DFRestClient> _logger;
+        protected IDFLogger<DFHttpRestClient> _logger;
         protected string _endpoint;
         protected string _accessToken;
 
-        public DFRestClient(IDFLogger<DFRestClient> logger)
+        public DFHttpRestClient(IDFLogger<DFHttpRestClient> logger)
         {
             _logger = logger;
             _accessToken = string.Empty;
         }
 
-        public DFRestClient()
+        public DFHttpRestClient()
         {
-            _logger = DFServices.GetService<IDFLogger<DFRestClient>>();
+            _logger = DFServices.GetService<IDFLogger<DFHttpRestClient>>();
             _accessToken = string.Empty;
         }
 

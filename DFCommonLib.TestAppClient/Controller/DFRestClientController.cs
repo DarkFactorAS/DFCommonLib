@@ -11,7 +11,7 @@ using DFCommonLib.HttpApi.OAuth2;
 namespace DFCommonLib.TestApp.Controller
 {
 
-    public class DFRestClientController : DFRestClient
+    public class DFRestClientController : DFHttpRestClient
     {
         private readonly TestRestClient _restClient;
         private readonly TestAuthRestClient _authRestClient;

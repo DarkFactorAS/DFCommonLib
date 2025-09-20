@@ -13,13 +13,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DFCommonLib.HttpApi.OAuth2
 {
-    public interface IDFOAuth2RestClient : IDFRestClient
+    public interface IDFOAuth2RestClient : IDFHttpRestClient
     {
         void SetAuthClient(OAuth2ClientData clientData);
         Task<string> AuthenticateIfNeeded();
     }
 
-    public class DFOAuth2RestClient : DFRestClient, IDFOAuth2RestClient
+    public class DFOAuth2RestClient : DFHttpRestClient, IDFOAuth2RestClient
     {
         private const int POST_AUTH = 1;
         private const int POST_CODE = 2;
