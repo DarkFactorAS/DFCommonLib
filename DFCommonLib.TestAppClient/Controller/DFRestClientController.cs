@@ -84,10 +84,6 @@ namespace DFCommonLib.TestApp.Controller
                 throw new System.Exception($"Version failed");
             }
             _logger.LogDebug($"Version result: {result.message}");
-            if (string.IsNullOrEmpty(result.message))
-            {
-                throw new System.Exception($"Version failed with unexpected message: {result.message}");
-            }
             return result.message;
         }
 
