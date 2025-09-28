@@ -24,7 +24,7 @@ namespace DFCommonLib.TestAppServer.Controller
             };
         }
 
-        [Authorize (AuthenticationSchemes = OAuth2Static.AuthenticationScheme)]
+        [Authorize(AuthenticationSchemes = OAuth2Static.AuthenticationScheme)]
         [HttpPut("TestAuthModelClass")]
         public RestDataModel TestAuthModelClass(RestDataModel model)
         {
@@ -35,5 +35,9 @@ namespace DFCommonLib.TestAppServer.Controller
             };
         }
 
+        public override string Version()
+        {
+            return Program.AppVersion;
+        }
     }
 }

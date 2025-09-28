@@ -29,5 +29,13 @@ namespace DFCommonLib.HttpApi
             _logger.LogInformation("Ping received at {Time}", DateTime.UtcNow);
             return "PONG";
         }
+
+        [AllowAnonymous]
+        [HttpGet("Version")]
+        public virtual string Version()
+        {
+            _logger.LogInformation("Version requested at {Time}", DateTime.UtcNow);
+            return "0.0.0";
+        }
     }
 }

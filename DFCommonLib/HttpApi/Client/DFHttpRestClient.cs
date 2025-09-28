@@ -22,6 +22,7 @@ namespace DFCommonLib.HttpApi
     {
         void SetEndpoint(string endpoint);
         Task<WebAPIData> Ping();
+        Task<WebAPIData> Version();
     }
 
     public class DFHttpRestClient : IDFHttpRestClient
@@ -132,6 +133,22 @@ namespace DFCommonLib.HttpApi
             {
                 _logger.LogWarning($"DFRestClient: Ping returned unexpected message: {data.message}");
                 return new WebAPIData { errorCode = 500, message = "Ping returned unexpected message" };
+            }
+            return new WebAPIData { errorCode = data.errorCode, message = data.message };
+        }
+
+        public async Task<WebAPIData> Version()
+        {
+            var data = await GetJsonData(0, "Version");
+            if (data == null)
+            {
+                _logger.LogWarning("DFRestClient: Version returned null data");
+                return new WebAPIData { errorCode = 500, message = "Version returned null data" };
+            }
+            if (data.errorCode != 0)
+            {
+                _logger.LogWarning($"DFRestClient: Version failed with error code {data.errorCode} and message: {data.message}");
+                return new WebAPIData { errorCode = data.errorCode, message = data.message };
             }
             return new WebAPIData { errorCode = data.errorCode, message = data.message };
         }
