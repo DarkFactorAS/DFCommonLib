@@ -30,5 +30,10 @@ namespace DFCommonLib.HttpApi
         {
             return await _dfRestClient.Ping();
         }
+
+        public async Task<WebAPIData> Version()
+        {
+            return await _dfRestClient.Version();
+        }
     }
 }

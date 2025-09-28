@@ -38,6 +38,7 @@ namespace DFCommonLib.TestApp.Controller
         {
             RunLogTest();
             RunPingTest();
+            RunVersionTest();
             await RunModelClassTest();
             await RunModelNoAuthClassTest();
             await RunModelAuthClassTest();
@@ -71,6 +72,18 @@ namespace DFCommonLib.TestApp.Controller
             {
                 throw new System.Exception($"Ping failed with unexpected message: {result.message}");
             }
+            return result.message;
+        }
+
+        [HttpGet("RunVersionTest")]
+        public string RunVersionTest()
+        {
+            var result = _restClient.Version().Result;
+            if (result == null || result.errorCode != 0 || string.IsNullOrEmpty(result.message))
+            {
+                throw new System.Exception($"Version failed");
+            }
+            _logger.LogDebug($"Version result: {result.message}");
             return result.message;
         }
 
