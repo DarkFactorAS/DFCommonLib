@@ -294,7 +294,7 @@ namespace DFCommonLib.HttpApi
                 else if (returnData.StatusCode == HttpStatusCode.Unauthorized)
                 {
                     _logger.LogWarning(string.Format("DFRestClient: {0} => 401:Unauthorized ", webUrl));
-                    _accessToken = null;
+                    ClearAccessToken();
                     return new WebAPIData((int)HttpStatusCode.Unauthorized, returnData.ReasonPhrase);
                 }
 
