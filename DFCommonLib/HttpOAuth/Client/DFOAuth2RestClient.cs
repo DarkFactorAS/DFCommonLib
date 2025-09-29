@@ -24,7 +24,7 @@ namespace DFCommonLib.HttpApi.OAuth2
         private const int POST_AUTH = 1;
         private const int POST_CODE = 2;
 
-        private static DateTime _authExpiryTime = DateTime.MinValue;
+        private DateTime _authExpiryTime = DateTime.MinValue;
 
         private OAuth2ClientData _clientData;
 
