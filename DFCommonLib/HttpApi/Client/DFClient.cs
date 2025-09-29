@@ -26,6 +26,11 @@ namespace DFCommonLib.HttpApi
             _dfRestClient.SetEndpoint(endpoint);
         }
 
+        public void ClearAccessToken()
+        {
+            _dfRestClient.ClearAccessToken();
+        }
+
         public async Task<WebAPIData> Ping()
         {
             return await _dfRestClient.Ping();

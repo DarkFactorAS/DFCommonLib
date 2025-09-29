@@ -24,6 +24,8 @@ namespace DFCommonLib.HttpApi.OAuth2
         private const int POST_AUTH = 1;
         private const int POST_CODE = 2;
 
+        private static DateTime _authExpiryTime = DateTime.MinValue;
+
         private OAuth2ClientData _clientData;
 
         public DFOAuth2RestClient() : base()
@@ -43,29 +45,37 @@ namespace DFCommonLib.HttpApi.OAuth2
 
         public async Task<string> AuthenticateIfNeeded()
         {
-            if (string.IsNullOrEmpty(_accessToken) && _clientData != null)
+            if (_clientData == null)
             {
-                var response = await LoginOAuth2Client(_clientData);
-                if (response == null || response.errorCode != 0 || response.State != _clientData.State)
-                {
-                    throw new Exception("Authentication failed");
-                }
-
-                // Trade code for access token
-                var oauth2CodeData = new OAuth2CodeData
-                {
-                    Code = response.Code,
-                    State = response.State
-                };
-
-                OAuth2CodeResponse codeResult = await LoginOAuth2WithCode(oauth2CodeData);
-                if (codeResult == null || codeResult.errorCode != 0 || codeResult.State != response.State)
-                {
-                    throw new Exception("Authentication failed");
-                }
-
-                _accessToken = codeResult.AccessToken;
+                throw new Exception("Client data not set");
             }
+
+            if ( !string.IsNullOrEmpty(_accessToken) && _authExpiryTime > DateTime.UtcNow)
+            {
+                return _accessToken;
+            }
+
+            var response = await LoginOAuth2Client(_clientData);
+            if (response == null || response.errorCode != 0 || response.State != _clientData.State)
+            {
+                throw new Exception("Authentication failed");
+            }
+
+            // Trade code for access token
+            var oauth2CodeData = new OAuth2CodeData
+            {
+                Code = response.Code,
+                State = response.State
+            };
+
+            OAuth2CodeResponse codeResult = await LoginOAuth2WithCode(oauth2CodeData);
+            if (codeResult == null || codeResult.errorCode != 0 || codeResult.State != response.State)
+            {
+                throw new Exception("Authentication failed");
+            }
+
+            _accessToken = codeResult.AccessToken;
+            _authExpiryTime = DateTime.UtcNow.AddSeconds(codeResult.ExpiresIn);
             return _accessToken;
         }
 

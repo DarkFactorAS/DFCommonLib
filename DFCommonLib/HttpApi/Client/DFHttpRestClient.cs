@@ -20,6 +20,7 @@ namespace DFCommonLib.HttpApi
 {
     public interface IDFHttpRestClient
     {
+        void ClearAccessToken();
         void SetEndpoint(string endpoint);
         Task<WebAPIData> Ping();
         Task<WebAPIData> Version();
@@ -62,6 +63,11 @@ namespace DFCommonLib.HttpApi
         public void SetAccessToken(string token)
         {
             _accessToken = token;
+        }
+
+        public void ClearAccessToken()
+        {
+            _accessToken = null;
         }
 
         public void SetEndpoint(string endpoint)
@@ -283,6 +289,13 @@ namespace DFCommonLib.HttpApi
                         _logger.LogWarning(string.Format("DFRestClient: {0} => 500:Could not read content ", webUrl));
                         return new WebAPIData(500, "Could not read content");
                     }
+                }
+                // Clear the access token if we get a 401 Unauthorized
+                else if (returnData.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    _logger.LogWarning(string.Format("DFRestClient: {0} => 401:Unauthorized ", webUrl));
+                    _accessToken = null;
+                    return new WebAPIData((int)HttpStatusCode.Unauthorized, returnData.ReasonPhrase);
                 }
 
                 _logger.LogWarning(string.Format("DFRestClient: {0} => {1}:{2} ",
