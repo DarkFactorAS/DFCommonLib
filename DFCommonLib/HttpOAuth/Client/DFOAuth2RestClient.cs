@@ -47,7 +47,7 @@ namespace DFCommonLib.HttpApi.OAuth2
         {
             if (_clientData == null)
             {
-                throw new Exception("Client data not set");
+                throw new InvalidOperationException("Client data not set");
             }
 
             if ( !string.IsNullOrEmpty(_accessToken) && _authExpiryTime > DateTime.UtcNow)
