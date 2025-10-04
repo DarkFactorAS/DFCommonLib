@@ -45,7 +45,6 @@ namespace TestApp
 
                 _commonRestClient.SetEndpoint(commonLibServer.Endpoint);
                 _commonAuthRestClient.SetEndpoint(commonLibServer.Endpoint);
-                _commonAuthRestClient.SetAuthClient(null);
 
                 var msg = string.Format("Connecting to API : {0}", commonLibServer.Endpoint);
                 _logger.LogInfo(msg);
