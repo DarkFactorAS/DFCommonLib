@@ -16,15 +16,15 @@ namespace DFCommonLib.Config
 
     public class ServerHost
     {
-        public string Server { get; set; }
-        public int Port { get; set; }
-        public string ApiKey { get; set; }
+        public string Endpoint { get; set; }
+        public string ClientId { get; set; }
+        public string ClientSecret { get; set; }
+        public string Scope { get; set; }
     }
 
     public class AppSettings
     {
         public string AppName { get; set; }
-        public string SecretKey { get; set; }
         public bool EnableLogging { get; set; }
         public DatabaseConnection DatabaseConnection { get; set; }
     }
