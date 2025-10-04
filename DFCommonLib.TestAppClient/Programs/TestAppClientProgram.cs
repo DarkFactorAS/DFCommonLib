@@ -13,11 +13,14 @@ namespace TestApp
 {
     public class TestAppClientProgram
     {
+        private IDFLogger<TestAppClientProgram> _logger;
         private ITestRestClient _commonRestClient;
         private ITestAuthRestClient _commonAuthRestClient;
+        private OAuth2ClientData _oauth2ClientData;
 
         public TestAppClientProgram(IConfigurationHelper configurationHelper)
         {
+            _logger = DFServices.GetService<IDFLogger<TestAppClientProgram>>();
             _commonRestClient = new TestRestClient();
             _commonAuthRestClient = new TestAuthRestClient();
 
@@ -29,21 +32,23 @@ namespace TestApp
                 if (commonLibServer == null || string.IsNullOrEmpty(commonLibServer.Endpoint) ||
                     string.IsNullOrEmpty(commonLibServer.ClientId) || string.IsNullOrEmpty(commonLibServer.ClientSecret))
                 {
-                    DFLogger.LogOutput(DFLogLevel.ERROR, "CommonLibServer", "CommonLibServer configuration is missing or incomplete.");
+                    _logger.LogError("CommonLibServer configuration is missing or incomplete.");
                     throw new Exception("CommonLibServer configuration is missing or incomplete.");
                 }
 
-                _commonRestClient.SetEndpoint(commonLibServer.Endpoint);
-                _commonAuthRestClient.SetEndpoint(commonLibServer.Endpoint);
-                _commonAuthRestClient.SetAuthClient(new OAuth2ClientData
+                _oauth2ClientData = new OAuth2ClientData
                 {
                     ClientId = commonLibServer.ClientId,
                     ClientSecret = commonLibServer.ClientSecret,
                     Scope = commonLibServer.Scope
-                });
+                };
+
+                _commonRestClient.SetEndpoint(commonLibServer.Endpoint);
+                _commonAuthRestClient.SetEndpoint(commonLibServer.Endpoint);
+                _commonAuthRestClient.SetAuthClient(null);
 
                 var msg = string.Format("Connecting to API : {0}", commonLibServer.Endpoint);
-                DFLogger.LogOutput(DFLogLevel.INFO, "CommonLibClient", msg);
+                _logger.LogInfo(msg);
             }
         }
 
@@ -52,10 +57,10 @@ namespace TestApp
             var pingResult = await _commonRestClient.Ping();
             if (pingResult.message == "PONG")
             {
-                DFLogger.LogOutput(DFLogLevel.INFO, "CommonLibClientProgram", $"Ping succeeded: {pingResult.message}");
+                _logger.LogInfo($"Ping succeeded: {pingResult.message}");
                 return true;
             }
-            DFLogger.LogOutput(DFLogLevel.ERROR, "CommonLibClientProgram", $"Ping failed: {pingResult.message}");
+            _logger.LogError($"Ping failed: {pingResult.message}");
             return false;
         }
 
@@ -64,12 +69,56 @@ namespace TestApp
             var pingResult = await _commonAuthRestClient.Ping();
             if (pingResult.message == "PONG")
             {
-                DFLogger.LogOutput(DFLogLevel.INFO, "CommonLibClientProgram", $"Ping succeeded: {pingResult.message}");
+                _logger.LogInfo($"Ping succeeded: {pingResult.message}");
                 return true;
             }
-            DFLogger.LogOutput(DFLogLevel.ERROR, "CommonLibClientProgram", $"Ping failed: {pingResult.message}");
+            _logger.LogError($"Ping failed: {pingResult.message}");
             return false;
-        }        
+        }
+
+        private async Task<bool> RunAuthenticateIfNeeded_NoClientData()
+        {
+            _commonAuthRestClient.SetAuthClient(null);
+            var authResult = await _commonAuthRestClient.AuthenticateIfNeeded();
+            if (string.IsNullOrEmpty(authResult))
+            {
+                _logger.LogInfo($"RunAuthenticateIfNeeded_NoClientData succeeded");
+                return true;
+            }
+            _logger.LogError($"RunAuthenticateIfNeeded_NoClientData failed: {authResult}");
+            return false;
+        }
+
+        private async Task<bool> RunAuthenticateIfNeeded_BrokenClientData()
+        {
+            _commonAuthRestClient.SetAuthClient(new OAuth2ClientData
+            {
+                ClientId = "broken_clientid",
+                ClientSecret = "broken_clientsecret",
+                Scope = "broken_scope"
+            });
+            var authResult = await _commonAuthRestClient.AuthenticateIfNeeded();
+            if (string.IsNullOrEmpty(authResult))
+            {
+                _logger.LogInfo($"RunAuthenticateIfNeeded_BrokenClientData succeeded");
+                return true;
+            }
+            _logger.LogError($"RunAuthenticateIfNeeded_BrokenClientData failed: {authResult}");
+            return false;
+        }
+
+        private async Task<bool> RunAuthenticateIfNeeded_OKClientData()
+        {
+            _commonAuthRestClient.SetAuthClient(_oauth2ClientData);
+            var authResult = await _commonAuthRestClient.AuthenticateIfNeeded();
+            if (!string.IsNullOrEmpty(authResult))
+            {
+                _logger.LogInfo($"RunAuthenticateIfNeeded_OKClientData succeeded");
+                return true;
+            }
+            _logger.LogError($"RunAuthenticateIfNeeded_OKClientData failed: {authResult}");
+            return false;
+        }
 
         public async Task<bool> Run()
         {
@@ -78,6 +127,18 @@ namespace TestApp
                 return false;
             }
             if (!await RunAuthPing())
+            {
+                return false;
+            }
+            if (!await RunAuthenticateIfNeeded_NoClientData())
+            {
+                return false;
+            }
+            if (!await RunAuthenticateIfNeeded_BrokenClientData())
+            {
+                return false;
+            }
+            if (!await RunAuthenticateIfNeeded_OKClientData())
             {
                 return false;
             }

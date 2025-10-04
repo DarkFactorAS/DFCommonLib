@@ -10,6 +10,7 @@ using DFCommonLib.Logger;
 using Newtonsoft.Json;
 using System.ComponentModel;
 using Microsoft.Extensions.DependencyInjection;
+using DFCommonLib.Utils;
 
 namespace DFCommonLib.HttpApi.OAuth2
 {
@@ -30,6 +31,8 @@ namespace DFCommonLib.HttpApi.OAuth2
 
         public DFOAuth2RestClient() : base()
         {
+            _accessToken = null;
+            _clientData = null;
         }
 
         override protected string GetModule()
@@ -40,17 +43,27 @@ namespace DFCommonLib.HttpApi.OAuth2
         public void SetAuthClient(OAuth2ClientData clientData)
         {
             _clientData = clientData;
-            _clientData.State = Guid.NewGuid().ToString();
+            if ( _clientData != null)
+            {
+                _clientData.State = Guid.NewGuid().ToString();
+            }
         }
 
         public async Task<string> AuthenticateIfNeeded()
         {
             if (_clientData == null)
             {
-                throw new InvalidOperationException("Client data not set");
+                _logger.LogError("OAuth2 client data is not set.");
+                return null;
+            }
+            
+            if (_clientData.IsValid() == false)
+            {
+                _logger.LogError("OAuth2 client data is not valid.");
+                return null;
             }
 
-            if ( !string.IsNullOrEmpty(_accessToken) && _authExpiryTime > DateTime.UtcNow)
+            if (!string.IsNullOrEmpty(_accessToken) && _authExpiryTime > DateTime.UtcNow)
             {
                 return _accessToken;
             }
@@ -58,7 +71,8 @@ namespace DFCommonLib.HttpApi.OAuth2
             var response = await LoginOAuth2Client(_clientData);
             if (response == null || response.errorCode != 0 || response.State != _clientData.State)
             {
-                throw new Exception("Authentication failed");
+                _logger.LogError("OAuth2 login failed. Client: {0}", _clientData.ToString());
+                return null;
             }
 
             // Trade code for access token
@@ -71,7 +85,8 @@ namespace DFCommonLib.HttpApi.OAuth2
             OAuth2CodeResponse codeResult = await LoginOAuth2WithCode(oauth2CodeData);
             if (codeResult == null || codeResult.errorCode != 0 || codeResult.State != response.State)
             {
-                throw new Exception("Authentication failed");
+                _logger.LogError("OAuth2 code exchange failed. Code: {0}, State: {1}", oauth2CodeData.Code, oauth2CodeData.State);
+                return null;
             }
 
             _accessToken = codeResult.AccessToken;

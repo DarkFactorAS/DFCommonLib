@@ -2,6 +2,8 @@
 // CS8632 fix: Enable nullable reference types
 #nullable enable
 
+using ZstdSharp.Unsafe;
+
 namespace DFCommonLib.HttpApi.OAuth2
 {
     public class OAuth2ClientData
@@ -23,6 +25,16 @@ namespace DFCommonLib.HttpApi.OAuth2
             RedirectUri = redirectUri;
             Scope = scope;
             State = state;
+        }
+
+        public bool IsValid()
+        {
+            return !string.IsNullOrEmpty(ClientId) && !string.IsNullOrEmpty(ClientSecret);
+        }
+
+        public override string ToString()
+        {
+            return $"ClientId: '{ClientId}', Scope: '{Scope}', Scope: '{Scope}' State: '{State}'";
         }
     }
 }
