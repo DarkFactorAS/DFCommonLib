@@ -27,7 +27,6 @@ public class DFConfigTest
     public void TestReadConfigName()
     {
         Assert.That(appSettings.AppName, Is.EqualTo("TestApp"));
-        Assert.That(appSettings.SecretKey, Is.EqualTo("TestSecret"));
         Assert.That(appSettings.EnableLogging, Is.True);
         Assert.That(appSettings.DatabaseConnection.Server, Is.EqualTo("DatabaseServer"));
         Assert.That(appSettings.DatabaseConnection.Database, Is.EqualTo("testdatabase"));
@@ -35,8 +34,9 @@ public class DFConfigTest
         Assert.That(appSettings.DatabaseConnection.Password, Is.EqualTo("dbpass"));
 
         // Extended
-        Assert.That(appSettings.AccountServer?.Server, Is.EqualTo("127.0.0.1"));
-        Assert.That(appSettings.AccountServer?.Port, Is.EqualTo(6606));
-        Assert.That(appSettings.AccountServer?.ApiKey, Is.EqualTo("ApiKey"));
+        Assert.That(appSettings.CommonLibServer?.Endpoint, Is.EqualTo("http://127.0.0.1:7000"));
+        Assert.That(appSettings.CommonLibServer?.ClientId, Is.EqualTo("test_client_id"));
+        Assert.That(appSettings.CommonLibServer?.ClientSecret, Is.EqualTo("test_client_secret"));
+        Assert.That(appSettings.CommonLibServer?.Scope, Is.EqualTo("read write"));
     }
 }

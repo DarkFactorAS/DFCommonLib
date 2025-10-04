@@ -41,7 +41,8 @@ namespace DFCommonLib.Unittests.OAuth2
         public void GetModule_ReturnsExpected()
         {
             var client = new DFOAuth2RestClient();
-            var module = client.GetType().GetMethod("GetModule", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Invoke(client, null);
+            var method = client.GetType().GetMethod("GetModule", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var module = method?.Invoke(client, null);
             Assert.IsInstanceOf<string>(module);
         }
 
@@ -62,8 +63,8 @@ namespace DFCommonLib.Unittests.OAuth2
         public void Setup()
         {
             var mockSession = new Mock<ISession>();
-            byte[] valueBytesEmail = System.Text.Encoding.UTF8.GetBytes("test@example.com");
-            byte[] valueBytesToken = System.Text.Encoding.UTF8.GetBytes("token");
+            byte[]? valueBytesEmail = System.Text.Encoding.UTF8.GetBytes("test@example.com");
+            byte[]? valueBytesToken = System.Text.Encoding.UTF8.GetBytes("token");
 
             // Setup TryGetValue to return the expected value
             mockSession.Setup(s => s.TryGetValue("DFOAuth2ClientSession.Email", out valueBytesEmail)).Returns(true);

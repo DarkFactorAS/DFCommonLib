@@ -20,16 +20,18 @@ namespace DFCommonLib.TestApp.Controller
         {
             var configurationHelper = DFServices.GetService<IConfigurationHelper>();
             var config = configurationHelper.Settings as TestAppConfig;
+            var commonServer = config.CommonLibServer;
 
             _restClient = new TestRestClient();
-            _restClient.SetEndpoint(config.TestApi.Endpoint);
+            _restClient.SetEndpoint(commonServer.Endpoint);
 
             _authRestClient = new TestAuthRestClient();
-            _authRestClient.SetEndpoint(config.TestApi.Endpoint);
+            _authRestClient.SetEndpoint(commonServer.Endpoint);
             _authRestClient.SetAuthClient(new OAuth2ClientData
             {
-                ClientId = config.AppName,
-                ClientSecret = config.TestApi.ApiKey
+                ClientId = commonServer.ClientId,
+                ClientSecret = commonServer.ClientSecret,
+                Scope = commonServer.Scope
             });
         }
 
