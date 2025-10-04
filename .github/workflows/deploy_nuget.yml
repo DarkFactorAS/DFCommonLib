@@ -10,6 +10,14 @@ env:
   CONFIGURATION: Debug
 
 on:
+
+  release:
+    types: [published]
+
+  pull_request:
+    types: [closed]
+    branches: ["master"]
+
   workflow_dispatch:
 
 defaults:
