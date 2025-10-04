@@ -2,7 +2,6 @@
 // CS8632 fix: Enable nullable reference types
 #nullable enable
 
-using ZstdSharp.Unsafe;
 
 namespace DFCommonLib.HttpApi.OAuth2
 {
