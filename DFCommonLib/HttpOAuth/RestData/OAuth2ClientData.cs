@@ -33,7 +33,7 @@ namespace DFCommonLib.HttpApi.OAuth2
 
         public override string ToString()
         {
-            return $"ClientId: '{ClientId}', Scope: '{Scope}', Scope: '{Scope}' State: '{State}'";
+            return $"ClientId: '{ClientId}', Scope: '{Scope}', RedirectUri: '{RedirectUri}', State: '{State}'";
         }
     }
 }
