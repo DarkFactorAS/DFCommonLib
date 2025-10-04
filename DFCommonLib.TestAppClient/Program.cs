@@ -27,8 +27,30 @@ namespace DFCommonLib.TestAppClient
         public static void Main(string[] args)
         {
             var builder = CreateHostBuilder(args).Build();
-            IDFLogger<Program> logger = new DFLogger<Program>();
-            builder.Run();
+
+            try
+            {
+                IConfigurationHelper configuration = DFServices.GetService<IConfigurationHelper>();
+
+                var program = new TestAppClientProgram(configuration);
+                program.Run().ContinueWith(taskReturn =>
+                {
+                    if (!taskReturn.Result)
+                    {
+                        DFLogger.LogOutput(DFLogLevel.ERROR, "Startup", "TestAppClientProgram run failed.");
+                        Environment.Exit(-1);
+                        return;
+                    }
+                    DFLogger.LogOutput(DFLogLevel.INFO, "Startup", "TestAppClientProgram run succeeded.");
+                    Environment.Exit(0);
+                });
+
+                builder.Run();
+            }
+            catch (Exception ex)
+            {
+                DFLogger.LogOutput(DFLogLevel.ERROR, "Startup", ex.ToString());
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
