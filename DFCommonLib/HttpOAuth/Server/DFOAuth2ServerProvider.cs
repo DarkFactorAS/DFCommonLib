@@ -180,7 +180,7 @@ namespace DFCommonLib.HttpApi.OAuth2
         {
             var sessionClientId = _sessionProvider.GetClientId();
             var message = GetErrorMessage(errorCode);
-            _logger.LogError($"[{sessionClientId}] Error Code: {errorCode}, Message: {message}");
+            _logger.LogError($"[ClientId:{sessionClientId}] Error Code: {errorCode}, Message: {message}");
 
             returnObject.errorCode = errorCode;
             returnObject.message = message;
