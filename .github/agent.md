@@ -125,7 +125,7 @@ public async Task<WebAPIData> GetJsonData(int methodId, string url)
 
 ### Error Handling
 - Use `WebAPIData` base class for API responses with error handling
-- Include `ErrorMessage`, `Error`, and `Success` properties
+- Use the existing `errorCode` and `message` properties, and `IsCodeOK()` to determine success (do not introduce separate `ErrorMessage`, `Error`, or `Success` properties)
 - Log errors appropriately using `IDFLogger`
 - Return structured error responses rather than throwing exceptions in API controllers
 
