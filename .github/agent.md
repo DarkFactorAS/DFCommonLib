@@ -84,7 +84,7 @@ DFCommonLib/                    # Core library
 - **Async Methods**: Suffix with `Async` when appropriate (though not enforced for all async methods)
 
 ### Interface Pattern
-- All major classes should have corresponding interfaces (e.g., `DFLogger` implements `IDFLogger<T>`)
+- All major classes should have corresponding interfaces (e.g., the generic `DFLogger<T>` implements `IDFLogger<T>`, while the non-generic `DFLogger` is a static helper)
 - Interfaces enable dependency injection and unit testing with mocks
 - Use generic interfaces where type safety is needed (e.g., `IDFLogger<T>`)
 
