@@ -24,7 +24,7 @@ namespace DFCommonLib.Unittests.Database
     public class MySQLDbConnectionFactoryTest
     {
         private Mock<IConfigurationHelper> mockHelper;
-        private const string TestConnectionString = "Server=localhost;Port=3306;Database=testdb;Uid=testuser;Pwd=testpass;SslMode=None;";
+        private const string TestConnectionString = "Server=localhost;Port=3306;Database=testdb;Uid=testuser;Pwd=testpass;SslMode=Disabled;";
 
         [SetUp]
         public void Setup()
