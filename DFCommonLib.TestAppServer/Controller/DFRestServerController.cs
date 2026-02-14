@@ -1,10 +1,13 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using DFCommonLib.HttpApi;
 using DFCommonLib.Logger;
 using DFCommonLib.TestAppServer.Model;
 using Microsoft.AspNetCore.Authorization;
 using DFCommonLib.HttpApi.OAuth2;
+using DFCommonLib.HttpApi.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Linq;
 
 namespace DFCommonLib.TestAppServer.Controller
 {
@@ -25,13 +28,14 @@ namespace DFCommonLib.TestAppServer.Controller
         }
 
         [Authorize(AuthenticationSchemes = OAuth2Static.AuthenticationScheme)]
+        [RequireScope("write")]
         [HttpPut("TestAuthModelClass")]
         public RestDataModel TestAuthModelClass(RestDataModel model)
         {
             return new RestDataModel
             {
                 Id = model.Id,
-                Name = "Server Auth OK:" + model.Name
+                Name = "Server Auth OK with Write Scope:" + model.Name
             };
         }
 

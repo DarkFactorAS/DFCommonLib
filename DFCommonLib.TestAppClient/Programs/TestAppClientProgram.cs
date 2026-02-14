@@ -119,6 +119,24 @@ namespace TestApp
             return false;
         }
 
+        private async Task<bool> RunTestAuthModelWithScope()
+        {
+            var testModel = new RestDataModel
+            {
+                Id = 1,
+                Name = "Test Model"
+            };
+
+            var response = await _commonAuthRestClient.TestAuthModelClass(testModel);
+            if (response != null && response.Id == testModel.Id && response.Name == testModel.Name)
+            {
+                _logger.LogInfo($"RunAuthenticatedApiCall succeeded");
+                return true;
+            }
+            _logger.LogError($"RunAuthenticatedApiCall failed");
+            return false;
+        }
+
         public async Task<bool> Run()
         {
             if (!await RunPing())
@@ -138,6 +156,10 @@ namespace TestApp
                 return false;
             }
             if (!await RunAuthenticateIfNeeded_OKClientData())
+            {
+                return false;
+            }
+            if (!await RunTestAuthModelWithScope())
             {
                 return false;
             }

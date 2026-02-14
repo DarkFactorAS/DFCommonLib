@@ -143,10 +143,10 @@ namespace DFCommonLib.HttpApi.OAuth2
                 return ReturnOAuth2CodeError(INVALID_CREDENTIALS);
             }
 
-            //var sessionScope = _sessionProvider.GetScope();
+            var sessionScope = _sessionProvider.GetScope();
             var jwtSecret = CreateString(32); // Generate a random secret for JWT signing
 
-            string accessToken = GenerateJwtToken(jwtSecret, sessionClientId, client.TokenIssuer, client.TokenExpiresInSeconds);
+            string accessToken = GenerateJwtToken(jwtSecret, sessionClientId, client.TokenIssuer, client.TokenExpiresInSeconds, sessionScope);
 
             var responseCode = new OAuth2CodeResponse
             {
@@ -199,7 +199,7 @@ namespace DFCommonLib.HttpApi.OAuth2
         }
 
         
-        public string GenerateJwtToken(string secret, string audience, string issuer, uint expiresIn = 1)
+        public string GenerateJwtToken(string secret, string audience, string issuer, uint expiresIn = 1, string scope = null)
         {
             // Enforce minimum secret length for security (e.g., 32 characters for HMAC-SHA256)
             if (string.IsNullOrEmpty(secret) || secret.Length < 32)
@@ -211,9 +211,16 @@ namespace DFCommonLib.HttpApi.OAuth2
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var timeSpan = TimeSpan.FromSeconds(expiresIn);
 
+            // Create claims including scope if provided
+            var claims = new List<System.Security.Claims.Claim>();
+            if (!string.IsNullOrEmpty(scope))
+            {
+                claims.Add(new System.Security.Claims.Claim("scope", scope));
+            }
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                //Subject = new System.Security.Claims.ClaimsIdentity(claims.Select(c => new System.Security.Claims.Claim(c.Key, c.Value))),
+                Subject = new System.Security.Claims.ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.Add(timeSpan),
                 SigningCredentials = credentials,
                 Audience = audience,

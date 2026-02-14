@@ -32,7 +32,7 @@ namespace DFCommonLib.Utils
         }
 
         // JWT Token Generation
-        public static string GenerateJwtToken(string secret, string audience, string issuer, uint expiresIn = 1)
+        public static string GenerateJwtToken(string secret, string audience, string issuer, uint expiresIn = 1, string scope = null)
         {
             // Enforce minimum secret length for security (e.g., 32 characters for HMAC-SHA256)
             if (string.IsNullOrEmpty(secret) || secret.Length < 32)
@@ -43,8 +43,16 @@ namespace DFCommonLib.Utils
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var timeSpan = TimeSpan.FromMinutes(expiresIn);
 
+            // Create claims including scope if provided
+            var claims = new List<System.Security.Claims.Claim>();
+            if (!string.IsNullOrEmpty(scope))
+            {
+                claims.Add(new System.Security.Claims.Claim("scope", scope));
+            }
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
+                Subject = new System.Security.Claims.ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.Add(timeSpan),
                 SigningCredentials = credentials,
                 Audience = audience,
