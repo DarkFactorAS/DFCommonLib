@@ -5,7 +5,7 @@ using System;
 using System.Data;
 using System.Collections;
 
-namespace DFCommonLib.Unittests
+namespace DFCommonLib.Unittests.Database
 {
     [TestFixture]
     public class BaseDbDataReaderTest

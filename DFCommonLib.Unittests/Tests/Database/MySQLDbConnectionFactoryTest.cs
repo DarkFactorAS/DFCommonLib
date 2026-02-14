@@ -4,7 +4,7 @@ using DFCommonLib.DataAccess;
 using DFCommonLib.Config;
 using System.Data;
 
-namespace DFCommonLib.Unittests
+namespace DFCommonLib.Unittests.Database
 {
     // Concrete implementation for testing
     public class TestMySQLDbConnectionFactory : MySQLDbConnectionFactory
