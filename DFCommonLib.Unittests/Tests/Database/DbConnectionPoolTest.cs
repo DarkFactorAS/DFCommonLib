@@ -2,7 +2,7 @@ using NUnit.Framework;
 using Moq;
 using DFCommonLib.DataAccess;
 
-namespace DFCommonLib.Unittests
+namespace DFCommonLib.Unittests.Database
 {
     [TestFixture]
     public class DbConnectionPoolTest

@@ -3,7 +3,7 @@ using DFCommonLib.DataAccess;
 using System;
 using System.Data;
 
-namespace DFCommonLib.Unittests
+namespace DFCommonLib.Unittests.Database
 {
     [TestFixture]
     public class MySQLDbConnectionTest

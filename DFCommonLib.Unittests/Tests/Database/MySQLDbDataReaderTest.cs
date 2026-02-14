@@ -3,7 +3,7 @@ using Moq;
 using DFCommonLib.DataAccess;
 using System.Data;
 
-namespace DFCommonLib.Unittests
+namespace DFCommonLib.Unittests.Database
 {
     [TestFixture]
     public class MySQLDbDataReaderTest
