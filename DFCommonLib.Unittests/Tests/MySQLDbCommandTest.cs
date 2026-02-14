@@ -190,10 +190,8 @@ namespace DFCommonLib.Unittests
             var command = new MySQLDbCommand("SELECT 1", connection, false);
             command.Dispose();
             
-            // After dispose, the command should be disposed
-            // The MySQLDbCommand doesn't throw on property access after dispose,
-            // but the underlying MySQL command should be disposed
-            Assert.Pass("Command disposed successfully");
+            // Verify multiple dispose calls don't throw (proper disposal pattern)
+            Assert.DoesNotThrow(() => command.Dispose());
         }
 
         [Test]
