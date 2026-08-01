@@ -41,16 +41,13 @@ contributors working in this repository.
 
 ## Project Conventions
 
-- All configuration files are in the config folder.
-- Controllers, Providers, and Repositories are separated by folder.
-- Use tasks defined in tasks.json for build and run operations.
-- Automated tests are in DFWeb.FR.Tests and DFWeb.BE.Tests
+- All configuration files are in the Config folder.
+- Use tasks defined in .vscode/tasks.json for build and run operations.
+- Automated tests are in DFCommonLib.Unittests.
 
 ## Build & Run
 
-- Use the provided build tasks (e.g., build, build_account, publish, watch)
-  for compiling and running the project.
-- Docker support is available via docker-up.sh and docker-down.sh scripts.
+- Use `dotnet build` / `dotnet test` (or the VS Code tasks) for compiling and running the projects.
 
 ## Agent Instructions
 
