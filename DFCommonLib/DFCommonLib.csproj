@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <PackageId>DarkFactor.Common.Lib</PackageId>
-    <Version>1.6.7</Version>
+    <Version>1.7.0</Version>
     <Authors>Thor Richard Hanssen</Authors>
     <Company>DarkFactor</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>

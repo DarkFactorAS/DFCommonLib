@@ -8,6 +8,8 @@
 			"args": [
 				"build",
 				"${workspaceFolder}/DFCommonLib.TestAppClient/DFCommonLib.TestAppClient.csproj",
+				"--framework",
+				"net9.0",
 				"/property:GenerateFullPaths=true",
 				"/consoleloggerparameters:NoSummary"
 			],
@@ -20,6 +22,8 @@
 			"args": [
 				"build",
 				"${workspaceFolder}/DFCommonLib.TestAppServer/DFCommonLib.TestAppServer.csproj",
+				"--framework",
+				"net9.0",
 				"/property:GenerateFullPaths=true",
 				"/consoleloggerparameters:NoSummary"
 			],
@@ -32,7 +36,9 @@
 			"args": [
 				"run",
 				"--project",
-				"${workspaceFolder}/DFCommonLib.TestAppServer/DFCommonLib.TestAppServer.csproj"
+				"${workspaceFolder}/DFCommonLib.TestAppServer/DFCommonLib.TestAppServer.csproj",
+				"--framework",
+				"net9.0"
 			],
 			"isBackground": true
 		},
@@ -43,32 +49,34 @@
 			"args": [
 				"run",
 				"--project",
-				"${workspaceFolder}/DFCommonLib.TestAppClient/DFCommonLib.TestAppClient.csproj"
+				"${workspaceFolder}/DFCommonLib.TestAppClient/DFCommonLib.TestAppClient.csproj",
+				"--framework",
+				"net9.0"
 			],
 			"isBackground": true
 		},
 		{
 			"label": "run TestAppServer from project dir",
 			"type": "shell",
-			"command": "cd \"${workspaceFolder}/DFCommonLib.TestAppServer\" && dotnet run",
+			"command": "cd \"${workspaceFolder}/DFCommonLib.TestAppServer\" && dotnet run --framework net9.0",
 			"isBackground": true
 		},
 		{
 			"label": "run TestAppClient from project dir",
 			"type": "shell",
-			"command": "cd \"${workspaceFolder}/DFCommonLib.TestAppClient\" && dotnet run",
+			"command": "cd \"${workspaceFolder}/DFCommonLib.TestAppClient\" && dotnet run --framework net9.0",
 			"isBackground": true
 		},
 		{
 			"label": "run TestAppServer from project dir",
 			"type": "shell",
-			"command": "cd \"${workspaceFolder}/DFCommonLib.TestAppServer\" && dotnet run",
+			"command": "cd \"${workspaceFolder}/DFCommonLib.TestAppServer\" && dotnet run --framework net9.0",
 			"isBackground": true
 		},
 		{
 			"label": "run TestAppClient from project dir",
 			"type": "shell",
-			"command": "cd \"${workspaceFolder}/DFCommonLib.TestAppClient\" && dotnet run",
+			"command": "cd \"${workspaceFolder}/DFCommonLib.TestAppClient\" && dotnet run --framework net9.0",
 			"isBackground": true
 		}
 	]
