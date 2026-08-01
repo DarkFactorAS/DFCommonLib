@@ -88,7 +88,7 @@ namespace DFCommonLib .Config
                     }
                     catch (FormatException ex)
                     {
-                        throw new InvalidOperationException($"Configuration value '{propertyPath}.{property.Name}' is marked as encrypted but is not a valid encoded value.", ex);
+                        Logger.DFLogger.LogStaticError(propertyPath, $"Configuration value '{propertyPath}.{property.Name}' is marked as encrypted but is not a valid encoded value: {ex.Message}");
                     }
 
                     continue;

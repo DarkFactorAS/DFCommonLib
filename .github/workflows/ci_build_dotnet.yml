@@ -14,6 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     
+    env:
+      DFCOMMONLIB_ENCRYPTIONKEY: ${{ secrets.DFCOMMONLIB_ENCRYPTIONKEY }}
+
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET
@@ -44,4 +47,3 @@ jobs:
       run: dotnet build DFCommonLib.Unittests/DFCommonLib.Unittests.csproj --configuration Release
     - name: Test Run
       run: dotnet test --no-build --verbosity normal --configuration Release
-
