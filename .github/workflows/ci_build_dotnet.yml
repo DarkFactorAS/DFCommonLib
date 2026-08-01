@@ -15,7 +15,7 @@ jobs:
     timeout-minutes: 10
     
     env:
-      DFCOMMONLIB_ENCRYPTIONKEY: ${{ secrets.DFCOMMONLIB_ENCRYPTIONKEY }}
+      DFCommonLib_EncryptionKey: ${{ secrets.DFCOMMONLIB_ENCRYPTIONKEY }}
 
     steps:
     - uses: actions/checkout@v3
