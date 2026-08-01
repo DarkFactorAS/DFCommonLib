@@ -23,7 +23,7 @@ namespace DFCommonLib.TestAppServer
     public class Program
     {
         public static string AppName = "DFCommonLib.TestAppServer";
-        public static string AppVersion = "1.6.7";
+        public static string AppVersion = "1.7.0";
 
         public static void Main(string[] args)
         {
