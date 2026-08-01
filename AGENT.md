@@ -52,7 +52,7 @@ contributors working in this repository.
 ## Agent Instructions
 
 - When modifying code, ensure all related tests pass and that the TestAppClient
-  and TestAppServer projects succeeds
+  and TestAppServer projects succeed
 - Update documentation and configuration as needed for new features or
   changes.
 - Maintain compatibility with existing deployment scripts and Docker
