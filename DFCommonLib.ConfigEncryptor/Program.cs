@@ -12,9 +12,9 @@ if (args.Length == 0)
         return;
     }
 
-    Console.WriteLine(DFCrypt.EncryptInput(inputFromPrompt));
+    Console.WriteLine(DFCrypt.EncryptBase64(inputFromPrompt));
     return;
 }
 
 var input = string.Join(" ", args);
-Console.WriteLine(DFCrypt.EncryptInput(input));
+Console.WriteLine(DFCrypt.EncryptBase64(input));

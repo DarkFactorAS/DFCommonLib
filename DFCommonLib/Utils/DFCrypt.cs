@@ -1,34 +1,103 @@
 
-using System.Text;
 using System;
 using System.Collections.Generic;
-
+using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
+using DFCommonLib.HttpApi;
+using DFCommonLib.Logger;
+using DFCommonLib.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using DFCommonLib.HttpApi;
 using Microsoft.IdentityModel.Tokens;
-using DFCommonLib.Utils;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
-using DFCommonLib.Logger;
 
 namespace DFCommonLib.Utils
 {
     public class DFCrypt
     {
-        public static string EncryptInput(string plaintext)
+        private const string DefaultEncryptionKey = "DarkFactor-DFCommonLib-2026-Default-Key";
+        private const int IvSize = 16;
+
+        public static string Encrypt(string plaintext)
         {
-            var data = Encoding.UTF8.GetBytes(plaintext);
+            if (string.IsNullOrEmpty(plaintext))
+            {
+                return string.Empty;
+            }
+
+            using var aes = Aes.Create();
+            aes.Key = DeriveKey(GetEncryptionKey());
+            aes.GenerateIV();
+
+            using var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+            using var memoryStream = new MemoryStream();
+            memoryStream.Write(aes.IV, 0, aes.IV.Length);
+
+            using (var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
+            {
+                var plainBytes = Encoding.UTF8.GetBytes(plaintext);
+                cryptoStream.Write(plainBytes, 0, plainBytes.Length);
+                cryptoStream.FlushFinalBlock();
+            }
+
+            return Convert.ToBase64String(memoryStream.ToArray());
+        }
+
+        public static string Decrypt(string encryptedText)
+        {
+            if (string.IsNullOrWhiteSpace(encryptedText))
+            {
+                return string.Empty;
+            }
+
+            var encryptedBytes = Convert.FromBase64String(encryptedText);
+            using var aes = Aes.Create();
+            aes.Key = DeriveKey(GetEncryptionKey());
+            aes.IV = encryptedBytes.Take(IvSize).ToArray();
+
+            using var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+            using var memoryStream = new MemoryStream(encryptedBytes, IvSize, encryptedBytes.Length - IvSize);
+            using var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
+            using var reader = new StreamReader(cryptoStream, Encoding.UTF8);
+
+            return reader.ReadToEnd();
+        }
+
+        public static string EncryptBase64(string plaintext)
+        {
+            var data = Encoding.UTF8.GetBytes(plaintext ?? string.Empty);
             return Convert.ToBase64String(data);
         }
 
-        public static string DecryptInput(string encodedString)
+        public static string DecryptBase64(string encodedString)
         {
+            if (string.IsNullOrWhiteSpace(encodedString))
+            {
+                return string.Empty;
+            }
+
             var data = Convert.FromBase64String(encodedString);
-            string decodedString = Encoding.UTF8.GetString(data);
-            return decodedString;
+            return Encoding.UTF8.GetString(data);
+        }
+
+        public static string EncryptInput(string plaintext) => EncryptBase64(plaintext);
+
+        public static string DecryptInput(string encodedString) => DecryptBase64(encodedString);
+
+        private static byte[] DeriveKey(string secret)
+        {
+            using var sha256 = SHA256.Create();
+            return sha256.ComputeHash(Encoding.UTF8.GetBytes(secret));
+        }
+
+        private static string GetEncryptionKey()
+        {
+            var configuredKey = Environment.GetEnvironmentVariable("DFCommonLib_EncryptionKey");
+            return string.IsNullOrWhiteSpace(configuredKey) ? DefaultEncryptionKey : configuredKey;
         }
 
         // JWT Token Generation
