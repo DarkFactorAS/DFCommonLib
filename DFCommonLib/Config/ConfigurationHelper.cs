@@ -78,7 +78,7 @@ namespace DFCommonLib .Config
 
                     try
                     {
-                        property.SetValue(target, DFCrypt.DecryptInput(encodedValue));
+                        property.SetValue(target, DFCrypt.DecryptBase64(encodedValue));
                     }
                     catch (FormatException ex)
                     {
