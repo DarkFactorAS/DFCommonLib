@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -20,7 +19,8 @@ namespace DFCommonLib.Utils
     public class DFCrypt
     {
         private const string DefaultEncryptionKey = "DarkFactor-DFCommonLib-2026-Default-Key";
-        private const int IvSize = 16;
+        private const int NonceSizeBytes = 12;
+        private const int TagSizeBytes = 16;
 
         public static string Encrypt(string plaintext)
         {
@@ -29,22 +29,24 @@ namespace DFCommonLib.Utils
                 return string.Empty;
             }
 
-            using var aes = Aes.Create();
-            aes.Key = DeriveKey(GetEncryptionKey());
-            aes.GenerateIV();
+            var key = DeriveKey(GetEncryptionKey());
+            var nonce = new byte[NonceSizeBytes];
+            RandomNumberGenerator.Fill(nonce);
 
-            using var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
-            using var memoryStream = new MemoryStream();
-            memoryStream.Write(aes.IV, 0, aes.IV.Length);
+            var plainBytes = Encoding.UTF8.GetBytes(plaintext);
+            var cipherBytes = new byte[plainBytes.Length];
+            var tag = new byte[TagSizeBytes];
 
-            using (var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
-            {
-                var plainBytes = Encoding.UTF8.GetBytes(plaintext);
-                cryptoStream.Write(plainBytes, 0, plainBytes.Length);
-                cryptoStream.FlushFinalBlock();
-            }
+            using var aesGcm = new AesGcm(key, TagSizeBytes);
+            aesGcm.Encrypt(nonce, plainBytes, cipherBytes, tag);
 
-            return Convert.ToBase64String(memoryStream.ToArray());
+            // Format: nonce (12 bytes) + tag (16 bytes) + ciphertext
+            var result = new byte[NonceSizeBytes + TagSizeBytes + cipherBytes.Length];
+            Buffer.BlockCopy(nonce, 0, result, 0, NonceSizeBytes);
+            Buffer.BlockCopy(tag, 0, result, NonceSizeBytes, TagSizeBytes);
+            Buffer.BlockCopy(cipherBytes, 0, result, NonceSizeBytes + TagSizeBytes, cipherBytes.Length);
+
+            return Convert.ToBase64String(result);
         }
 
         public static string Decrypt(string encryptedText)
@@ -54,17 +56,20 @@ namespace DFCommonLib.Utils
                 return string.Empty;
             }
 
-var encryptedBytes = Convert.FromBase64String(encryptedText);
-if (encryptedBytes.Length <= IvSize) throw new FormatException("Encrypted payload is too short.");
-using var aes = Aes.Create();
-aes.Key = DeriveKey(GetEncryptionKey());
-aes.IV = encryptedBytes[..IvSize];
-            using var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-            using var memoryStream = new MemoryStream(encryptedBytes, IvSize, encryptedBytes.Length - IvSize);
-            using var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
-            using var reader = new StreamReader(cryptoStream, Encoding.UTF8);
+            var encryptedBytes = Convert.FromBase64String(encryptedText);
+            if (encryptedBytes.Length <= NonceSizeBytes + TagSizeBytes)
+                throw new FormatException("Encrypted payload is too short.");
 
-            return reader.ReadToEnd();
+            var key = DeriveKey(GetEncryptionKey());
+            var nonce = encryptedBytes[..NonceSizeBytes];
+            var tag = encryptedBytes[NonceSizeBytes..(NonceSizeBytes + TagSizeBytes)];
+            var cipherBytes = encryptedBytes[(NonceSizeBytes + TagSizeBytes)..];
+
+            var plainBytes = new byte[cipherBytes.Length];
+            using var aesGcm = new AesGcm(key, TagSizeBytes);
+            aesGcm.Decrypt(nonce, cipherBytes, tag, plainBytes);
+
+            return Encoding.UTF8.GetString(plainBytes);
         }
 
         public static string EncryptBase64(string plaintext)
