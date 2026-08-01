@@ -54,11 +54,11 @@ namespace DFCommonLib.Utils
                 return string.Empty;
             }
 
-            var encryptedBytes = Convert.FromBase64String(encryptedText);
-            using var aes = Aes.Create();
-            aes.Key = DeriveKey(GetEncryptionKey());
-            aes.IV = encryptedBytes.Take(IvSize).ToArray();
-
+var encryptedBytes = Convert.FromBase64String(encryptedText);
+if (encryptedBytes.Length <= IvSize) throw new FormatException("Encrypted payload is too short.");
+using var aes = Aes.Create();
+aes.Key = DeriveKey(GetEncryptionKey());
+aes.IV = encryptedBytes[..IvSize];
             using var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
             using var memoryStream = new MemoryStream(encryptedBytes, IvSize, encryptedBytes.Length - IvSize);
             using var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
