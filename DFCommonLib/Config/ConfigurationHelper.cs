@@ -68,6 +68,12 @@ namespace DFCommonLib .Config
                     continue;
                 }
 
+                if ( property.Name == "AppName" || property.Name == "AppVersion" )
+                {
+                    // Allow AppName and AppVersion to be unencrypted
+                    continue;
+                }
+
                 if (property.PropertyType == typeof(string))
                 {
                     var encodedValue = (string)value;
