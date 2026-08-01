@@ -9,12 +9,29 @@ if (args.Length == 0)
     if (string.IsNullOrWhiteSpace(inputFromPrompt))
     {
         Console.Error.WriteLine("No value provided.");
-        return;
+        return 1;
     }
 
-    Console.WriteLine(DFCrypt.Encrypt(inputFromPrompt));
-    return;
+    try
+    {
+        Console.WriteLine(DFCrypt.Encrypt(inputFromPrompt));
+    }
+    catch (InvalidOperationException ex)
+    {
+        Console.Error.WriteLine($"Error: {ex.Message}");
+        return 1;
+    }
+    return 0;
 }
 
 var input = string.Join(" ", args);
-Console.WriteLine(DFCrypt.Encrypt(input));
+try
+{
+    Console.WriteLine(DFCrypt.Encrypt(input));
+}
+catch (InvalidOperationException ex)
+{
+    Console.Error.WriteLine($"Error: {ex.Message}");
+    return 1;
+}
+return 0;
