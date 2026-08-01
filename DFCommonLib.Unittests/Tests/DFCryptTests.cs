@@ -7,6 +7,7 @@ public class DFCryptTests
     [Test]
     public void EncryptAndDecryptRoundTrip()
     {
+        Environment.SetEnvironmentVariable("DFCommonLib_EncryptionKey", "test-key-for-unit-tests-do-not-use");
         const string plaintext = "super-secret-value";
 
         var encrypted = DFCrypt.Encrypt(plaintext);

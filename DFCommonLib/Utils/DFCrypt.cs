@@ -21,6 +21,7 @@ namespace DFCommonLib.Utils
         private const string DefaultEncryptionKey = "DarkFactor-DFCommonLib-2026-Default-Key";
         private const int NonceSizeBytes = 12;
         private const int TagSizeBytes = 16;
+        private const int IvSize = 16;
 
         public static string Encrypt(string plaintext)
         {
@@ -102,7 +103,12 @@ namespace DFCommonLib.Utils
         private static string GetEncryptionKey()
         {
             var configuredKey = Environment.GetEnvironmentVariable("DFCommonLib_EncryptionKey");
-            return string.IsNullOrWhiteSpace(configuredKey) ? DefaultEncryptionKey : configuredKey;
+            if (string.IsNullOrWhiteSpace(configuredKey))
+            {
+                throw new InvalidOperationException(
+                    "Encryption key is not configured. Set the 'DFCommonLib_EncryptionKey' environment variable.");
+            }
+            return configuredKey;
         }
 
         // JWT Token Generation
