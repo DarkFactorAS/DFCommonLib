@@ -104,8 +104,12 @@ namespace DFCommonLib.Utils
             var configuredKey = Environment.GetEnvironmentVariable("DFCommonLib_EncryptionKey");
             if (string.IsNullOrWhiteSpace(configuredKey))
             {
+#if DEBUG
+                return DefaultEncryptionKey;
+#else                
                 throw new InvalidOperationException(
                     "Encryption key is not configured. Set the 'DFCommonLib_EncryptionKey' environment variable.");
+#endif
             }
             return configuredKey;
         }

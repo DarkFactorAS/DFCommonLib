@@ -108,6 +108,11 @@ namespace DFCommonLib.Logger
     {
         private static IList<OutputWriter> _ouputWriters = new List<OutputWriter>();
 
+        public static int LogStaticError(string groupname, string message, params object[] args)
+        {
+            return DFLogger.LogOutput(DFLogLevel.ERROR, groupname, string.Format(message, args));
+        }
+
         public static void AddOutput(DFLogLevel logLevel, ILogOutputWriter outputWriter)
         {
             var oldLogger = _ouputWriters.Where(x => x == outputWriter).FirstOrDefault();

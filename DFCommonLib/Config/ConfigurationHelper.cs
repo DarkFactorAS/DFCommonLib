@@ -68,6 +68,12 @@ namespace DFCommonLib .Config
                     continue;
                 }
 
+                if ( property.Name == "AppName" || property.Name == "AppVersion" )
+                {
+                    // Allow AppName and AppVersion to be unencrypted
+                    continue;
+                }
+
                 if (property.PropertyType == typeof(string))
                 {
                     var encodedValue = (string)value;
@@ -78,11 +84,11 @@ namespace DFCommonLib .Config
 
                     try
                     {
-                        property.SetValue(target, DFCrypt.DecryptBase64(encodedValue));
+                        property.SetValue(target, DFCrypt.Decrypt(encodedValue));
                     }
                     catch (FormatException ex)
                     {
-                        throw new InvalidOperationException($"Configuration value '{propertyPath}.{property.Name}' is marked as encrypted but is not a valid encoded value.", ex);
+                        Logger.DFLogger.LogStaticError(propertyPath, $"Configuration value '{propertyPath}.{property.Name}' is marked as encrypted but is not a valid encoded value: {ex.Message}");
                     }
 
                     continue;
