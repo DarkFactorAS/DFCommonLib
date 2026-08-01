@@ -20,7 +20,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DFCommonLib\DFCommonLib.csproj" />
-    <None Update="Config/appsettings.development.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Config/appsettings.Development.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Config/appsettings.Encrypted.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

@@ -5,6 +5,8 @@ using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using System.IO;
+using System.Reflection;
+using DFCommonLib.Utils;
 
 namespace DFCommonLib .Config
 {
@@ -38,7 +40,59 @@ namespace DFCommonLib .Config
         {
             var configSettings = new T();
             builder.Bind(configSettings);
+
+            if (configSettings.IsConfigEncrypted)
+            {
+                DecryptStringProperties(configSettings, nameof(AppSettings));
+            }
+
             return configSettings;
+        }
+
+        private void DecryptStringProperties(object target, string propertyPath)
+        {
+            if (target == null)
+            {
+                return;
+            }
+
+            var properties = target.GetType()
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.CanRead && p.CanWrite && p.GetIndexParameters().Length == 0);
+
+            foreach (var property in properties)
+            {
+                var value = property.GetValue(target);
+                if (value == null)
+                {
+                    continue;
+                }
+
+                if (property.PropertyType == typeof(string))
+                {
+                    var encodedValue = (string)value;
+                    if (string.IsNullOrWhiteSpace(encodedValue))
+                    {
+                        continue;
+                    }
+
+                    try
+                    {
+                        property.SetValue(target, DFCrypt.DecryptInput(encodedValue));
+                    }
+                    catch (FormatException ex)
+                    {
+                        throw new InvalidOperationException($"Configuration value '{propertyPath}.{property.Name}' is marked as encrypted but is not a valid encoded value.", ex);
+                    }
+
+                    continue;
+                }
+
+                if (!property.PropertyType.IsValueType)
+                {
+                    DecryptStringProperties(value, $"{propertyPath}.{property.Name}");
+                }
+            }
         }
 
         private IConfiguration GetConfigurationBuilder()
