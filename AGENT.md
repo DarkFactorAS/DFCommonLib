@@ -3,7 +3,7 @@ toolRestrictions: []
 maxParallelToolCalls: 20
 ---
 
-# Project Agent Configuration: DarkFactor CommonLib
+# Project Agent Configuration: DFCommonLib
 
 ## Purpose
 
