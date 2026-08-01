@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -20,7 +20,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DFCommonLib\DFCommonLib.csproj" />
-    <None Update="Config/appsettings.development.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Config/appsettings.Development.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Config/appsettings.Encrypted.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

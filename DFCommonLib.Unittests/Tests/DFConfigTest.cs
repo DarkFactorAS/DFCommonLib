@@ -27,6 +27,7 @@ public class DFConfigTest
     public void TestReadConfigName()
     {
         Assert.That(appSettings.AppName, Is.EqualTo("TestApp"));
+        Assert.That(appSettings.IsConfigEncrypted, Is.False);
         Assert.That(appSettings.EnableLogging, Is.True);
         Assert.That(appSettings.DatabaseConnection.Server, Is.EqualTo("DatabaseServer"));
         Assert.That(appSettings.DatabaseConnection.Database, Is.EqualTo("testdatabase"));
@@ -38,5 +39,28 @@ public class DFConfigTest
         Assert.That(appSettings.CommonLibServer?.ClientId, Is.EqualTo("test_client_id"));
         Assert.That(appSettings.CommonLibServer?.ClientSecret, Is.EqualTo("test_client_secret"));
         Assert.That(appSettings.CommonLibServer?.Scope, Is.EqualTo("read write"));
+    }
+
+    [Test]
+    public void TestReadEncryptedConfigValues()
+    {
+        var mockEnvironment = new Mock<IHostEnvironment>();
+        mockEnvironment
+            .Setup(m => m.EnvironmentName)
+            .Returns("Encrypted");
+
+        var helper = new ConfigurationHelper<TestAppSetting>(mockEnvironment.Object);
+        var encryptedSettings = (TestAppSetting)helper.Settings;
+
+        Assert.That(encryptedSettings.IsConfigEncrypted, Is.True);
+        Assert.That(encryptedSettings.AppName, Is.EqualTo("TestApp"));
+        Assert.That(encryptedSettings.DatabaseConnection.Server, Is.EqualTo("DatabaseServer"));
+        Assert.That(encryptedSettings.DatabaseConnection.Database, Is.EqualTo("testdatabase"));
+        Assert.That(encryptedSettings.DatabaseConnection.Username, Is.EqualTo("dbuser"));
+        Assert.That(encryptedSettings.DatabaseConnection.Password, Is.EqualTo("dbpass"));
+        Assert.That(encryptedSettings.CommonLibServer?.Endpoint, Is.EqualTo("http://127.0.0.1:7000"));
+        Assert.That(encryptedSettings.CommonLibServer?.ClientId, Is.EqualTo("test_client_id"));
+        Assert.That(encryptedSettings.CommonLibServer?.ClientSecret, Is.EqualTo("test_client_secret"));
+        Assert.That(encryptedSettings.CommonLibServer?.Scope, Is.EqualTo("read write"));
     }
 }

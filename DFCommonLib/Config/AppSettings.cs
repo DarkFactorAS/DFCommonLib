@@ -25,6 +25,7 @@ namespace DFCommonLib.Config
     public class AppSettings
     {
         public string AppName { get; set; }
+        public bool IsConfigEncrypted { get; set; }
         public bool EnableLogging { get; set; }
         public DatabaseConnection DatabaseConnection { get; set; }
     }

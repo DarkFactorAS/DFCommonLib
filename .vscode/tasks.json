@@ -1,29 +1,75 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "build TestAppClient",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "build",
-                "${workspaceFolder}/DFCommonLib.TestAppClient/DFCommonLib.TestAppClient.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "build TestAppServer",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "build",
-                "${workspaceFolder}/DFCommonLib.TestAppServer/DFCommonLib.TestAppServer.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "problemMatcher": "$msCompile"
-        }
-    ]
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "build TestAppClient",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"build",
+				"${workspaceFolder}/DFCommonLib.TestAppClient/DFCommonLib.TestAppClient.csproj",
+				"/property:GenerateFullPaths=true",
+				"/consoleloggerparameters:NoSummary"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "build TestAppServer",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"build",
+				"${workspaceFolder}/DFCommonLib.TestAppServer/DFCommonLib.TestAppServer.csproj",
+				"/property:GenerateFullPaths=true",
+				"/consoleloggerparameters:NoSummary"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "run TestAppServer",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"run",
+				"--project",
+				"${workspaceFolder}/DFCommonLib.TestAppServer/DFCommonLib.TestAppServer.csproj"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "run TestAppClient",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"run",
+				"--project",
+				"${workspaceFolder}/DFCommonLib.TestAppClient/DFCommonLib.TestAppClient.csproj"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "run TestAppServer from project dir",
+			"type": "shell",
+			"command": "cd \"${workspaceFolder}/DFCommonLib.TestAppServer\" && dotnet run",
+			"isBackground": true
+		},
+		{
+			"label": "run TestAppClient from project dir",
+			"type": "shell",
+			"command": "cd \"${workspaceFolder}/DFCommonLib.TestAppClient\" && dotnet run",
+			"isBackground": true
+		},
+		{
+			"label": "run TestAppServer from project dir",
+			"type": "shell",
+			"command": "cd \"${workspaceFolder}/DFCommonLib.TestAppServer\" && dotnet run",
+			"isBackground": true
+		},
+		{
+			"label": "run TestAppClient from project dir",
+			"type": "shell",
+			"command": "cd \"${workspaceFolder}/DFCommonLib.TestAppClient\" && dotnet run",
+			"isBackground": true
+		}
+	]
 }
