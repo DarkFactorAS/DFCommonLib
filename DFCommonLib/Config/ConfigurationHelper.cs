@@ -41,15 +41,25 @@ namespace DFCommonLib .Config
             var configSettings = new T();
             builder.Bind(configSettings);
 
+            configSettings.EncryptionKey = ResolveEncryptionKey(configSettings);
+
             if (configSettings.IsConfigEncrypted)
             {
-                DecryptStringProperties(configSettings, nameof(AppSettings));
+                if (string.IsNullOrWhiteSpace(configSettings.EncryptionKey))
+                {
+                    var envVarName = GetEncryptionKeyEnvironmentVariableName(configSettings.AppName);
+                    throw new InvalidOperationException(string.IsNullOrWhiteSpace(envVarName)
+                        ? "Encryption key is not configured. Set AppSettings.EncryptionKey or set AppName to enable <AppName>_EncryptionKey resolution."
+                        : $"Encryption key is not configured. Set environment variable '{envVarName}'.");
+                }
+
+                DecryptStringProperties(configSettings, nameof(AppSettings), configSettings.EncryptionKey);
             }
 
             return configSettings;
         }
 
-        private void DecryptStringProperties(object target, string propertyPath)
+        private void DecryptStringProperties(object target, string propertyPath, string encryptionKey)
         {
             if (target == null)
             {
@@ -68,9 +78,9 @@ namespace DFCommonLib .Config
                     continue;
                 }
 
-                if ( property.Name == "AppName" || property.Name == "AppVersion" )
+                if ( property.Name == "AppName" || property.Name == "AppVersion" || property.Name == "EncryptionKey" )
                 {
-                    // Allow AppName and AppVersion to be unencrypted
+                    // Allow metadata fields to stay in plain text.
                     continue;
                 }
 
@@ -84,7 +94,7 @@ namespace DFCommonLib .Config
 
                     try
                     {
-                        property.SetValue(target, DFCrypt.Decrypt(encodedValue));
+                        property.SetValue(target, DFCrypt.Decrypt(encodedValue, encryptionKey));
                     }
                     catch (FormatException ex)
                     {
@@ -96,9 +106,35 @@ namespace DFCommonLib .Config
 
                 if (!property.PropertyType.IsValueType)
                 {
-                    DecryptStringProperties(value, $"{propertyPath}.{property.Name}");
+                    DecryptStringProperties(value, $"{propertyPath}.{property.Name}", encryptionKey);
                 }
             }
+        }
+
+        private string ResolveEncryptionKey(AppSettings settings)
+        {
+            if (!string.IsNullOrWhiteSpace(settings?.EncryptionKey))
+            {
+                return settings.EncryptionKey;
+            }
+
+            var envName = GetEncryptionKeyEnvironmentVariableName(settings?.AppName);
+            if (string.IsNullOrWhiteSpace(envName))
+            {
+                return string.Empty;
+            }
+
+            return Environment.GetEnvironmentVariable(envName);
+        }
+
+        private static string GetEncryptionKeyEnvironmentVariableName(string appName)
+        {
+            if (string.IsNullOrWhiteSpace(appName))
+            {
+                return string.Empty;
+            }
+
+            return $"{appName}_EncryptionKey";
         }
 
         private IConfiguration GetConfigurationBuilder()

@@ -17,19 +17,18 @@ namespace DFCommonLib.Utils
 {
     public class DFCrypt
     {
-        private const string DefaultEncryptionKey = "DarkFactor-DFCommonLib-2026-Default-Key";
         private const int NonceSizeBytes = 12;
         private const int TagSizeBytes = 16;
         private const int IvSize = 16;
 
-        public static string Encrypt(string plaintext)
+        public static string Encrypt(string plaintext, string encryptionKey)
         {
             if (string.IsNullOrEmpty(plaintext))
             {
                 return string.Empty;
             }
 
-            var key = DeriveKey(GetEncryptionKey());
+            var key = DeriveKey(ValidateEncryptionKey(encryptionKey));
             var nonce = new byte[NonceSizeBytes];
             RandomNumberGenerator.Fill(nonce);
 
@@ -49,7 +48,7 @@ namespace DFCommonLib.Utils
             return Convert.ToBase64String(result);
         }
 
-        public static string Decrypt(string encryptedText)
+        public static string Decrypt(string encryptedText, string encryptionKey)
         {
             if (string.IsNullOrWhiteSpace(encryptedText))
             {
@@ -60,7 +59,7 @@ namespace DFCommonLib.Utils
             if (encryptedBytes.Length <= NonceSizeBytes + TagSizeBytes)
                 throw new FormatException("Encrypted payload is too short.");
 
-            var key = DeriveKey(GetEncryptionKey());
+            var key = DeriveKey(ValidateEncryptionKey(encryptionKey));
             var nonce = encryptedBytes[..NonceSizeBytes];
             var tag = encryptedBytes[NonceSizeBytes..(NonceSizeBytes + TagSizeBytes)];
             var cipherBytes = encryptedBytes[(NonceSizeBytes + TagSizeBytes)..];
@@ -99,19 +98,14 @@ namespace DFCommonLib.Utils
             return sha256.ComputeHash(Encoding.UTF8.GetBytes(secret));
         }
 
-        private static string GetEncryptionKey()
+        private static string ValidateEncryptionKey(string encryptionKey)
         {
-            var configuredKey = Environment.GetEnvironmentVariable("DFCommonLib_EncryptionKey");
-            if (string.IsNullOrWhiteSpace(configuredKey))
+            if (string.IsNullOrWhiteSpace(encryptionKey))
             {
-#if DEBUG
-                return DefaultEncryptionKey;
-#else                
-                throw new InvalidOperationException(
-                    "Encryption key is not configured. Set the 'DFCommonLib_EncryptionKey' environment variable.");
-#endif
+                throw new ArgumentException("Encryption key is required.", nameof(encryptionKey));
             }
-            return configuredKey;
+
+            return encryptionKey;
         }
 
         // JWT Token Generation

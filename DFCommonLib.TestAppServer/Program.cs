@@ -23,10 +23,13 @@ namespace DFCommonLib.TestAppServer
     public class Program
     {
         public static string AppName = "DFCommonLib.TestAppServer";
-        public static string AppVersion = "1.7.0";
+        public static string AppVersion = "1.8.0";
 
         public static void Main(string[] args)
         {
+            // Set a fixed encryption key for the test app server. In a real application, this should be securely stored and managed.
+            Environment.SetEnvironmentVariable("TestAppServer_EncryptionKey", "EncryptionValue123");
+
             var builder = CreateHostBuilder(args).Build();
 
             IDFLogger<Program> logger = new DFLogger<Program>();

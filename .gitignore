@@ -85,6 +85,7 @@ Assets/VSCode
 # all config files #
 # ================ #
 .env*
-appsettings.Development.json
+appsettings.Development*.json
+appsettings.cleartext.json
 VSCode.meta
 settings.json

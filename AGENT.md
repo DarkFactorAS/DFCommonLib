@@ -57,6 +57,7 @@ contributors working in this repository.
   changes.
 - Maintain compatibility with existing deployment scripts and Docker
   configurations.
+- When increasing the version number for the DFCommonLib also change the version number in program.cs for both TestAppClient and TestAppServer
 
 ## Git Workflow Requirements
 
