@@ -7,11 +7,17 @@ using NUnit.Framework;
 
 public class DFConfigTest
 {
+    private const string ConfigEncryptionKeyEnvName = "TestApp_EncryptionKey";
+    private const string ConfigEncryptionKeyValue = "DarkFactor-DFCommonLib-2026-Default-Key";
+    private string? _previousConfigEncryptionKey;
     TestAppSetting appSettings;
 
     [SetUp]
     public void Setup()
     {
+        _previousConfigEncryptionKey = Environment.GetEnvironmentVariable(ConfigEncryptionKeyEnvName);
+        Environment.SetEnvironmentVariable(ConfigEncryptionKeyEnvName, ConfigEncryptionKeyValue);
+
         var mockEnvironment = new Mock<IHostEnvironment>();
         mockEnvironment
             .Setup(m => m.EnvironmentName)
@@ -21,6 +27,12 @@ public class DFConfigTest
         Assert.That(helper.Settings, Is.Not.Null, "AppSettings could not be initialized.");
         Assert.That(helper.Settings, Is.InstanceOf<TestAppSetting>(), "AppSettings is not of type TestAppSetting.");
         appSettings = (TestAppSetting)helper.Settings;
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        Environment.SetEnvironmentVariable(ConfigEncryptionKeyEnvName, _previousConfigEncryptionKey);
     }
 
     [Test]
