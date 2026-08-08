@@ -1,0 +1,1 @@
+dotnet run --project ../DFCommonLib.ConfigEncryptor/DFCommonLib.ConfigEncryptor.csproj -- EncryptionValue123 --file ../Templates/appsettings.sample.json

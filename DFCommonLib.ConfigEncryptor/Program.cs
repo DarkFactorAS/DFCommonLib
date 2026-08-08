@@ -148,6 +148,9 @@ static void EncryptJsonObject(JsonObject jsonObject, string encryptionKey)
             !property.Key.Equals("EncryptionKey", StringComparison.OrdinalIgnoreCase) &&
             jsonValue.TryGetValue<string>(out var stringValue) &&
             !string.IsNullOrWhiteSpace(stringValue))
+        {
+            jsonObject[property.Key] = DFCrypt.Encrypt(stringValue, encryptionKey);
+        }
     }
 }
 
