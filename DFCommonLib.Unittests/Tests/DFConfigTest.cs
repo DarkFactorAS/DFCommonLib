@@ -44,23 +44,33 @@ public class DFConfigTest
     [Test]
     public void TestReadEncryptedConfigValues()
     {
-        var mockEnvironment = new Mock<IHostEnvironment>();
-        mockEnvironment
-            .Setup(m => m.EnvironmentName)
-            .Returns("Encrypted");
+        var previousKey = Environment.GetEnvironmentVariable("TestApp__EncryptionKey");
+        Environment.SetEnvironmentVariable("TestApp__EncryptionKey", "DarkFactor-DFCommonLib-2026-Default-Key");
 
-        var helper = new ConfigurationHelper<TestAppSetting>(mockEnvironment.Object);
-        var encryptedSettings = (TestAppSetting)helper.Settings;
+        try
+        {
+            var mockEnvironment = new Mock<IHostEnvironment>();
+            mockEnvironment
+                .Setup(m => m.EnvironmentName)
+                .Returns("Encrypted");
 
-        Assert.That(encryptedSettings.IsConfigEncrypted, Is.True);
-        Assert.That(encryptedSettings.AppName, Is.EqualTo("TestApp"));
-        Assert.That(encryptedSettings.DatabaseConnection.Server, Is.EqualTo("DatabaseServer"));
-        Assert.That(encryptedSettings.DatabaseConnection.Database, Is.EqualTo("testdatabase"));
-        Assert.That(encryptedSettings.DatabaseConnection.Username, Is.EqualTo("dbuser"));
-        Assert.That(encryptedSettings.DatabaseConnection.Password, Is.EqualTo("dbpass"));
-        Assert.That(encryptedSettings.CommonLibServer?.Endpoint, Is.EqualTo("http://127.0.0.1:7000"));
-        Assert.That(encryptedSettings.CommonLibServer?.ClientId, Is.EqualTo("test_client_id"));
-        Assert.That(encryptedSettings.CommonLibServer?.ClientSecret, Is.EqualTo("test_client_secret"));
-        Assert.That(encryptedSettings.CommonLibServer?.Scope, Is.EqualTo("read write"));
+            var helper = new ConfigurationHelper<TestAppSetting>(mockEnvironment.Object);
+            var encryptedSettings = (TestAppSetting)helper.Settings;
+
+            Assert.That(encryptedSettings.IsConfigEncrypted, Is.True);
+            Assert.That(encryptedSettings.AppName, Is.EqualTo("TestApp"));
+            Assert.That(encryptedSettings.DatabaseConnection.Server, Is.EqualTo("DatabaseServer"));
+            Assert.That(encryptedSettings.DatabaseConnection.Database, Is.EqualTo("testdatabase"));
+            Assert.That(encryptedSettings.DatabaseConnection.Username, Is.EqualTo("dbuser"));
+            Assert.That(encryptedSettings.DatabaseConnection.Password, Is.EqualTo("dbpass"));
+            Assert.That(encryptedSettings.CommonLibServer?.Endpoint, Is.EqualTo("http://127.0.0.1:7000"));
+            Assert.That(encryptedSettings.CommonLibServer?.ClientId, Is.EqualTo("test_client_id"));
+            Assert.That(encryptedSettings.CommonLibServer?.ClientSecret, Is.EqualTo("test_client_secret"));
+            Assert.That(encryptedSettings.CommonLibServer?.Scope, Is.EqualTo("read write"));
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("TestApp__EncryptionKey", previousKey);
+        }
     }
 }

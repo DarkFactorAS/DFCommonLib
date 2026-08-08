@@ -1,35 +1,25 @@
 using DFCommonLib.Utils;
 
-if (args.Length == 0)
+if (args.Length < 2)
 {
-    Console.WriteLine("Usage: dotnet run --project DFCommonLib.ConfigEncryptor -- <value>");
-    Console.Write("Value to encrypt: ");
-
-    var inputFromPrompt = Console.ReadLine();
-    if (string.IsNullOrWhiteSpace(inputFromPrompt))
-    {
-        Console.Error.WriteLine("No value provided.");
-        return 1;
-    }
-
-    try
-    {
-        Console.WriteLine(DFCrypt.Encrypt(inputFromPrompt));
-    }
-    catch (InvalidOperationException ex)
-    {
-        Console.Error.WriteLine($"Error: {ex.Message}");
-        return 1;
-    }
-    return 0;
+    Console.WriteLine("Usage: dotnet run --project DFCommonLib.ConfigEncryptor -- <encryptionKey> <value>");
+    return 1;
 }
 
-var input = string.Join(" ", args);
+var encryptionKey = args[0];
+var input = string.Join(" ", args.Skip(1));
+
+if (string.IsNullOrWhiteSpace(encryptionKey) || string.IsNullOrWhiteSpace(input))
+{
+    Console.Error.WriteLine("Both encryption key and value are required.");
+    return 1;
+}
+
 try
 {
-    Console.WriteLine(DFCrypt.Encrypt(input));
+    Console.WriteLine(DFCrypt.Encrypt(input, encryptionKey));
 }
-catch (InvalidOperationException ex)
+catch (ArgumentException ex)
 {
     Console.Error.WriteLine($"Error: {ex.Message}");
     return 1;
