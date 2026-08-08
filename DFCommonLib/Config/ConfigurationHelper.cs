@@ -45,10 +45,13 @@ namespace DFCommonLib .Config
 
             if (configSettings.IsConfigEncrypted)
             {
-                var envVarName = GetEncryptionKeyEnvironmentVariableName(configSettings.AppName);
-                throw new InvalidOperationException(string.IsNullOrWhiteSpace(envVarName)
-                    ? "Encryption key is not configured. Set AppSettings.EncryptionKey or set AppName to enable <AppName>_EncryptionKey resolution."
-                    : $"Encryption key is not configured. Set environment variable '{envVarName}'.");
+                if (string.IsNullOrWhiteSpace(configSettings.EncryptionKey))
+                {
+                    var envVarName = GetEncryptionKeyEnvironmentVariableName(configSettings.AppName);
+                    throw new InvalidOperationException(string.IsNullOrWhiteSpace(envVarName)
+                        ? "Encryption key is not configured. Set AppSettings.EncryptionKey or set AppName to enable <AppName>_EncryptionKey resolution."
+                        : $"Encryption key is not configured. Set environment variable '{envVarName}'.");
+                }
 
                 DecryptStringProperties(configSettings, nameof(AppSettings), configSettings.EncryptionKey);
             }
