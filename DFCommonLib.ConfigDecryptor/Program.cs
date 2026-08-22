@@ -72,6 +72,7 @@ if (args[1] is "--file" or "-f")
             var decryptedFilePath = BuildDecryptedFilePath(filePath);
             File.WriteAllText(decryptedFilePath, decryptedContent + Environment.NewLine);
             Console.WriteLine($"Decrypted configuration values written to '{decryptedFilePath}'.");
+            return 0;
         }
 
         Console.WriteLine(decryptedContent);
