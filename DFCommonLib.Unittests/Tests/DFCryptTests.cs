@@ -52,6 +52,9 @@ public class DFCryptTests
         // 28 bytes is exactly NonceSizeBytes(12) + TagSizeBytes(16), which is too short (needs at least 1 byte of ciphertext)
         var tooShort = Convert.ToBase64String(new byte[28]);
 
-        Assert.Throws<FormatException>(() => DFCrypt.Decrypt(tooShort, TestEncryptionKey));
+        var exception = Assert.Throws<FormatException>(() => DFCrypt.Decrypt(tooShort, TestEncryptionKey));
+
+        Assert.That(exception!.Message, Does.Contain("28 bytes"));
+        Assert.That(exception.Message, Does.Not.Contain(tooShort));
     }
 }
