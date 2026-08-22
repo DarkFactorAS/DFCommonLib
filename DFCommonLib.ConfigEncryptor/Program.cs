@@ -28,11 +28,20 @@ if (args[1] is "--file" or "-f")
     var filePath = args[2];
     var trailingArgs = args.Skip(3).ToArray();
     var writeOutputFile = false;
-    foreach (var arg in trailingArgs)
+    string? outputFilePathArg = null;
+    for (var index = 0; index < trailingArgs.Length; index++)
     {
+        var arg = trailingArgs[index];
         if (arg is "--out" or "-o")
         {
             writeOutputFile = true;
+
+            if (index + 1 < trailingArgs.Length)
+            {
+                outputFilePathArg = trailingArgs[index + 1];
+                index++;
+            }
+
             continue;
         }
 
@@ -68,12 +77,17 @@ if (args[1] is "--file" or "-f")
         var encryptedContent = root.ToJsonString(options);
         if (writeOutputFile)
         {
-            var encryptedFilePath = BuildEncryptedFilePath(filePath);
+            var encryptedFilePath = string.IsNullOrWhiteSpace(outputFilePathArg)
+                ? BuildEncryptedFilePath(filePath)
+                : outputFilePathArg;
             File.WriteAllText(encryptedFilePath, encryptedContent + Environment.NewLine);
             Console.WriteLine($"Encrypted configuration values written to '{encryptedFilePath}'.");
         }
 
-        Console.WriteLine(encryptedContent);
+        if ( !writeOutputFile)
+        {
+            Console.WriteLine(encryptedContent);
+        }
         return 0;
     }
     catch (JsonException ex)
@@ -111,7 +125,7 @@ static void PrintUsage()
 {
     Console.WriteLine("Usage:");
     Console.WriteLine("  dotnet run --project DFCommonLib.ConfigEncryptor -- <encryptionKey> <value>");
-    Console.WriteLine("  dotnet run --project DFCommonLib.ConfigEncryptor -- <encryptionKey> --file <configFilePath> [--out]");
+    Console.WriteLine("  dotnet run --project DFCommonLib.ConfigEncryptor -- <encryptionKey> --file <configFilePath> [--out [outputFilePath]]");
 }
 
 static string BuildEncryptedFilePath(string inputFilePath)

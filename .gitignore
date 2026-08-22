@@ -86,7 +86,7 @@ Assets/VSCode
 # ================ #
 .env*
 appsettings.Development*.json
-appsettings.encrypted.json
-appsettings.cleartext.json
+appsettings.encrypted*.json
+appsettings.cleartext*.json
 VSCode.meta
 settings.json
