@@ -32,6 +32,7 @@ if (args[1] is "--file" or "-f")
     string? outputFilePathArg = null;
     for (var index = 0; index < trailingArgs.Length; index++)
     {
+        var arg = trailingArgs[index];
         if (arg is "--out" or "-o")
         {
             writeOutputFile = true;
