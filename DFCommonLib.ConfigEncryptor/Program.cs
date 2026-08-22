@@ -36,7 +36,8 @@ if (args[1] is "--file" or "-f")
         {
             writeOutputFile = true;
 
-            if (index + 1 < trailingArgs.Length)
+            if (index + 1 < trailingArgs.Length &&
+                !trailingArgs[index + 1].StartsWith("-", StringComparison.Ordinal))
             {
                 outputFilePathArg = trailingArgs[index + 1];
                 index++;
