@@ -29,11 +29,21 @@ if (args[1] is "--file" or "-f")
     var filePath = args[2];
     var trailingArgs = args.Skip(3).ToArray();
     var writeOutputFile = false;
-    foreach (var arg in trailingArgs)
+    string? outputFilePathArg = null;
+    for (var index = 0; index < trailingArgs.Length; index++)
     {
+        var arg = trailingArgs[index];
         if (arg is "--out" or "-o")
         {
             writeOutputFile = true;
+
+            if (index + 1 < trailingArgs.Length &&
+                !trailingArgs[index + 1].StartsWith("-", StringComparison.Ordinal))
+            {
+                outputFilePathArg = trailingArgs[index + 1];
+                index++;
+            }
+
             continue;
         }
 
@@ -69,7 +79,9 @@ if (args[1] is "--file" or "-f")
         var decryptedContent = root.ToJsonString(options);
         if (writeOutputFile)
         {
-            var decryptedFilePath = BuildDecryptedFilePath(filePath);
+            var decryptedFilePath = string.IsNullOrWhiteSpace(outputFilePathArg)
+                ? BuildDecryptedFilePath(filePath)
+                : outputFilePathArg;
             File.WriteAllText(decryptedFilePath, decryptedContent + Environment.NewLine);
             Console.WriteLine($"Decrypted configuration values written to '{decryptedFilePath}'.");
             return 0;
@@ -133,7 +145,7 @@ static void PrintUsage()
 {
     Console.WriteLine("Usage:");
     Console.WriteLine("  dotnet run --project DFCommonLib.ConfigDecryptor -- <encryptionKey> <value>");
-    Console.WriteLine("  dotnet run --project DFCommonLib.ConfigDecryptor -- <encryptionKey> --file <configFilePath> [--out]");
+    Console.WriteLine("  dotnet run --project DFCommonLib.ConfigDecryptor -- <encryptionKey> --file <configFilePath> [--out [outputFilePath]]");
 }
 
 static string BuildDecryptedFilePath(string inputFilePath)

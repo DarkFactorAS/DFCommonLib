@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-: "${ENCRYPTION_KEY:?ENCRYPTION_KEY environment variable is required}"
-INPUT_FILE="${1:-appsettings.encrypted.json}"
+read -r -s -p "Enter encryption key: " ENCRYPTION_KEY
+echo
 
-dotnet run --project "../DFCommonLib.ConfigDecryptor/DFCommonLib.ConfigDecryptor.csproj" -- "$ENCRYPTION_KEY" --file "$INPUT_FILE" --out
+if [[ -z "$ENCRYPTION_KEY" ]]; then
+	echo "Encryption key is required." >&2
+	exit 1
+fi
+
+echo "encryption key: $ENCRYPTION_KEY"
+dotnet run --project "../DFCommonLib.ConfigDecryptor/DFCommonLib.ConfigDecryptor.csproj" -- $ENCRYPTION_KEY --file appsettings.encrypted.json --out appsettings.cleartext.out.json
