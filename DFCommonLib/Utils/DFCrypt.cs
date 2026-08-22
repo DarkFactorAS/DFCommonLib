@@ -57,7 +57,7 @@ namespace DFCommonLib.Utils
 
             var encryptedBytes = Convert.FromBase64String(encryptedText);
             if (encryptedBytes.Length <= NonceSizeBytes + TagSizeBytes)
-                throw new FormatException($"Encrypted payload {encryptedText} is too short.");
+                throw new FormatException($"Encrypted payload is too short: {encryptedBytes.Length} bytes.");
 
             var key = DeriveKey(ValidateEncryptionKey(encryptionKey));
             var nonce = encryptedBytes[..NonceSizeBytes];
